@@ -113,16 +113,41 @@ router.post('/addQuiz', checkJwtToken, async (req, res) => {
 })
 
 //---------PUT-----------
+//const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);//?
 // Route to edit a quiz
 router.put('/editQuiz/:id', checkJwtToken, async (req, res) => {
     const {id} = req.params;
-    const { quizName, questions } = req.body;
+
+ //  if (!isValidObjectId(id)) {
+   // return res.status(400).json({ message: 'Invalid quiz ID' });
+  //}
+
+  const { name, questions } = req.body;
+
+    // Validate the request body
+  // if (!name || !Array.isArray(questions) || questions.length === 0) {
+  //   return res.status(400).json({ message: 'Invalid request body' });
+  // }
+
+     // Ensure each question has exactly 3 options
+  // for (const question of questions) {
+  //   if (!question.questionText || !question.correctAnswer || !Array.isArray(question.options) || question.options.length !== 3) {
+  //     return res.status(400).json({ message: 'Each question must have exactly 3 options' });
+  //   }
+  // }
     try {
+        // Update the quiz in the database
         const updatedQuiz = await Quiz.findByIdAndUpdate(
             id, 
             {quizName, questions},
             { new: true });
+  // const updatedQuiz = await Quiz.findByIdAndUpdate(
+  //     id, 
+  //     { name, questions },
+  //     { new: true, runValidators: true } // Return the updated document and run validators
+  //   );
 
+        // If no quiz is found, return a 404 status with a message
         if (!updatedQuiz) {
             return res.status(404).json({ message: 'Quiz not found' });
         }
