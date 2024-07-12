@@ -1,5 +1,5 @@
 // Import necessary modules and packages
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';// Import the React module to use React functionalities
 import './App.css';//Import CSS stylesheet
 // React Router components
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
