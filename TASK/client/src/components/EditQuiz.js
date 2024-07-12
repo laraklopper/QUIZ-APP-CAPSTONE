@@ -1,73 +1,73 @@
-import React from 'react';
-//Bootstrap
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
+import React, { useState } from 'react';// Import the React module to use React functionalities
+// Bootstrap
+import Row from 'react-bootstrap/Row'; // Import the Row component from react-bootstrap
+import Col from 'react-bootstrap/Col'; // Import the Col component from react-bootstrap
+import Button from 'react-bootstrap/Button'; // Import the Button component from react-bootstrap
 
 //EditQuizFunction
 export default function EditQuiz(
   { //PROPS PASSED FROM PARENT COMPONENT
     quiz,
-    newQuizName,
-    editQuiz,
-    setNewQuestion,
-    setNewQuizName,
-    newQuestion
+    setError,
+    setQuizList,
+    quizList
+    // newQuizName,
+    // editQuiz,
+    // setNewQuestion,
+    // setNewQuizName,
+    // newQuestion
   }
 ) {
-
+//=============STATE VARIABLES======================
+  const [newQuizName, setNewQuizName] = useState(quiz.name);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [newQuestion, setNewQuestion] = useState(quiz.questions[currentQuestionIndex]);
+  
   //==================EVENT LISTENERS===========================
-  // Function to changing question details
-  const handleQuestionChange = (index, event) => {
-    const {name, value} = event.target;
-    setNewQuestion(prevQuestions => {
-      const updatedQuestions = [...prevQuestions]
-      if (name === 'newQuestionText' || name === 'newCorrectAnswer') {
-        updatedQuestions[index][name] = value
-        
-      } else if(name.startsWith('option')){
-        const optionIndex = parseInt(name.split('.')[1]);
-        updatedQuestions[index].options[optionIndex] = value;
+
+   const handleEditQuestion = () => {
+    const updatedQuestions = [...quiz.questions];
+    updatedQuestions[currentQuestionIndex] = newQuestion;
+    setQuizList(
+      quizList.map(q =>
+        q._id === quiz._id ? { ...q, questions: updatedQuestions, name: newQuizName } : q
+      )
+    );
+  };
+
+  //=================PUT REQUEST=================
+//Function to edit a quiz
+    const editQuiz = async () => {
+    const updatedQuiz = { name: newQuizName, questions: quiz.questions };
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3001/quiz/editQuiz/${quiz._id}`, {
+        method: 'PUT',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedQuiz)
+      });
+
+      if (response.ok) {
+        alert('Quiz successfully updated');
+      } else {
+        throw new Error('There was an error updating the quiz');
       }
-      return updatedQuestions
-    })
+    } catch (error) {
+      console.error('There was an error updating the quiz:', error);
+      setError('There was an error updating the quiz:', error);
+    }
   };
 
-  // Function to update a question
-  const handleAddNewQuestion = () => {
-    if (newQuestion.length >= 5) {
-      alert('You cannot add more than 5 questions.');
-      return;
-    }
-    setNewQuestion([
-      ...newQuestion,
-      { newQuestionText: '', newCorrectAnswer: '', options: ['', '', '', ''] }
-    ]);
-  };
-
-  // Function to move to the next question
-  const handleNewNextQuestion = () => {
-    const lastQuestion = newQuestion[newQuestion.length - 1];
-    if (!lastQuestion.newQuestionText || !lastQuestion.newCorrectAnswer || lastQuestion.options.some(option => !option)) {
-      alert('Please fill out all fields of the current question before moving to the next one.');
-      return;
-    }
-    if (newQuestion.length >= 5) {
-      alert('You cannot add more than 5 questions.');
-      return;
-    }
-    setNewQuestion([
-      ...newQuestion,
-      { newQuestionText: '', newCorrectAnswer: '', options: ['', '', '', ''] }
-    ]);
-  };
   //==========JSX RENDERING===========================
 
    return (
     <div>
       <Row className='formRow'>
         <Col>
-          <form onSubmit={(event) => { event.preventDefault(); editQuiz(quiz._id); }}>
             <label className='editQuizLabel'>
               <p className='labelText'>NEW QUIZ NAME:</p>
               <input 
@@ -75,6 +75,8 @@ export default function EditQuiz(
                 value={newQuizName} 
                 name='newQuizName'
                 onChange={(e) => setNewQuizName(e.target.value)}
+                autocomplete='off'
+                placeholder='QUIZ NAME'
               />
             </label>
              {/* Map over newQuestion array to render input fields for each question */}
