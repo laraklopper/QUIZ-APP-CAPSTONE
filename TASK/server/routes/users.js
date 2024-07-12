@@ -107,7 +107,7 @@ router.post('/login', async (req, res) => {
 })
 
 //Route to send a POST request the register endpoint
-router.post('register', async (req, res) => {
+router.post('/register', async (req, res) => {
     console.log(req.body);
     try {
         const { username, email, dateOfBirth, password, admin = false } = req.body;
