@@ -8,59 +8,26 @@ import Button from 'react-bootstrap/Button'; // Import the Button component from
 export default function AddQuiz({
   setError, 
   quizList, 
-  setQuizList
+  setQuizList,
+  quizName,
+  setQuizName, 
+  questions, 
+  setQuestions,
+  addNewQuiz
 }) {
-  //===============================
-  const [quizName, setQuizName] = useState('')
-  const [questions, setQuestions] = useState([])
-  const [currentQuestion, setCurrentQuestion] = useState({questionText: '', correctAnswer: '', options: ['','','']})
+  //==================STATE VARIABLES=============
+  const [currentQuestion, setCurrentQuestion] = useState(
+    {questionText: '', correctAnswer: '', options: ['','','']})
 
-  //============EVENT LISTENERS=========================
+    //============EVENT LISTENERS=========================
+  //Function to add a new question
   const handleAddQuestion = () => {
     setQuestions([...questions, currentQuestion]);
     setCurrentQuestion({ questionText: '', correctAnswer: '', options: ['', '', ''] });
   };
-
-  //Function to add a new quiz
-  const addNewQuiz = async () => {
-    // console.log('add new Quiz');
-
-    if (questions.length !== 5) {
-      return;
-    }
-
-    const quiz = {name: quizName, questions}
-    try {
-      const token = localStorage.getItem('token');
-      //Send a POST request to the server to add a new quiz
-      const response = await fetch('http://localhost:3001/quiz/addQuiz', {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(quiz)
-      });
-
-      //Response handling
-      // Conditional rendering if the response indicates success (status code 200-299)
-      if (response.ok) {
-        alert('Quiz Successfully added')
-        const newQuiz = await response.json(); // Parse the JSON response to get the new quiz
-        setQuizList([...quizList, newQuiz]);
-      }
-      else {
-        throw new Error('There was an error creating the quiz');
-      }
-
-    }
-    catch (error) {
-      console.error('There was an error creating the quiz:', error);
-      setError('There was an error creating the quiz:', error);
-    }
-  };
-  //============================
+  
+  //===============JSX RENDERING=============
+  
   return (
     <div>
       <Row>
