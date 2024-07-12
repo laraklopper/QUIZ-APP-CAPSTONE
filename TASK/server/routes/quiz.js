@@ -72,7 +72,7 @@ router.get('/:id', checkJwtToken, async (req, res) => {
 router.get('/findQuizzes', async (req, res) => {
 
     try {
-        const {quizName} = req.query;
+        const {name} = req.query;
         const query = quizName ? {quizName} : {};
         const quizzes = await Quiz.find(query);
         res.status(200).json(quizzes);
@@ -93,22 +93,21 @@ router.post('/addQuiz', checkJwtToken, async (req, res) => {
    
     console.log(req.body);
     console.log('Add Quiz');
-    try {
-    const { quizName, questions } = req.body;
-    const newQuiz = new Quiz({ quizName, questions });
-        if (!quizName || ! questions) {
-            return res.status(400).json(
-                {message: 'Quiz name and questions are required'}
-            )
-        }       
+    const { name, questions } = req.body;
 
+      if (!name || ! questions) {
+            return res.status(400).json({message: 'Quiz name and questions are required'})
+        } 
+    try {
+    const newQuiz = new Quiz({ name, questions });
+            
         const savedQuiz = await newQuiz.save();
 
         res.status(201).json(savedQuiz);
         console.log(savedQuiz);
 
     } catch (error) {
-        // console.error(`Error occured while adding new quiz`);
+        console.error('Error occurred while adding new quiz:', error);
         res.status(400).json({ error: error.message });
     }
 })
