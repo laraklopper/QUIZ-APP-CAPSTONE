@@ -24,16 +24,18 @@ export default function Page3(
 
   // ========STATE VARIABLES===============
   //New Quiz variables
-  const [quizName, setQuizName] = useState('')
-  const [newQuizName, setNewQuizName] = useState('');//State used for quiz being created
-  const [newQuestions, setNewQuestions] = useState([]);//State used to store the list of newQuestions being added to the quiz
+  const [quizName, setQuizName] = useState('');//App.js?
+  const [questions, setQuestions] = useState([]);//State used to store the list of Questions being added to the quiz
+  const [currentQuestion, setCurrentQuestion] = useState({questionText: '', correctAnswer: '', options: ['','','']});
   //Edit Quiz variables
+  //const [newQuizName, setNewQuizName] = useState('');
   const [update, setUpdate] = useState(false);//State to toggle between update and non-update mode.
   const [quizToUpdate, setQuizToUpdate] = useState(null);//State to store the ID of the quiz being updated.
   const [editQuizIndex, setEditQuizIndex] = useState(// State to store the questions for the quiz being edited.
     [{ questionText: '', correctAnswer: '', options: ['', '', ''] }]);
     //Form error message variables
-  const [formError, setFormError] = useState('');//State used to store any form error messages
+  // const [formError, setFormError] = useState('');
+  
 //========================================================
   /* useEffect to fetch quizzes when the component mounts
  or when fetchQuizzes function changes*/
@@ -45,45 +47,38 @@ export default function Page3(
   // ----------POST-------------------
   //Function to add a new quiz
   const addNewQuiz = async (event) => {//Define an async function to fetch a new quiz
-    console.log('add new Quiz');
-    event.preventDefault();// Prevent the default form submission behaviour
-    
-    //Conditional rendering to check if the number of new questions is exactly 5
+    //console.log('Add new Quiz');    
     if (newQuestions.length !== 5) {
-      setFormError('You must add exactly 5 questions.');//Set a form error message
+      alert('The quiz must have exactly 5 questions.');
       return;// Exit the function early if the condition is not met
     }
-
+    const quiz = { name: quizName, questions };
     try {
-      //Retrieve the authentication token from local storage
+     
       const token = localStorage.getItem('token');
       //Send a POST request to the server to add a new quiz
       const response = await fetch('http://localhost:3001/quiz/addQuiz', {
-        method: 'POST',//HTTP request method
-        mode: 'cors',// Enable Cross-Origin Resource Sharing
-
+        method: 'POST',
+        mode: 'cors',
         headers: {
-          'Content-Type': 'application/json',//Specify the content-type as JSON
-          'Authorization': `Bearer ${token}`//Include the token in the request header
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(
-          {
-            quizName: newQuizName,// The name of the new quiz
-            questions: newQuestions // The array of questions for the new quiz
-          }
-        )
+        body: JSON.stringify(quiz)
       });
 
       //Response handling
-      // Conditional rendering if the response indicates success (status code 200-299)
       if (response.ok) {
-        const createdQuiz = await response.json(); // Parse the JSON response to get the created quiz
-        setQuizList([...quizList, createdQuiz]);// Add the new quiz to the quiz list
-        setNewQuizName('');      // Reset the new quiz name state
-        setNewQuestions([]);// Reset the new questions state
-        setFormError('');//Clear any form errors
-        // console.log('Quiz created:', createdQuiz);
-        alert('New Quiz added')// Show an alert that the new quiz was added successfully
+        alert('New Quiz successfully added')
+        // console.log('New Quiz successfully added')
+        const newQuiz = await response.json(); 
+        // Add the new quiz to the quiz list
+        setQuizList([...quizList, newQuiz]);
+        setQuizName(''); 
+        setQuestions([]);
+        // setFormError('');
+        // console.log('Quiz created:', newQuiz);
+        
       } 
       else {
         throw new Error('There was an error creating the quiz');//Throw an error message if the request is unsuccessful
@@ -130,7 +125,11 @@ export default function Page3(
         setQuizList(quizList.map(q => (q._id === updatedQuiz._id ? updatedQuiz : q)));
         // Reset the form fields
         setEditQuizIndex([
-          { editQuestionText: '', editCorrectAnswer: '', options: ['', '', ''] }
+          { 
+            editQuestionText: '', 
+            editCorrectAnswer: '', 
+            options: ['', '', ''] 
+          }
         ]);
         setQuizToUpdate(null);// Clear the quiz being updated
       } 
@@ -147,25 +146,27 @@ export default function Page3(
 //Function to delete a quiz
   const deleteQuiz = async (quizId) => {
     try {
-      const token = localStorage.getItem('token');//Retrieve the authentication token from local storage
+      const token = localStorage.getItem('token');
       //Send a DELETE request to server to delete a quiz
       const response = await fetch(`http://localhost:3001/quiz/deleteQuiz/${quizId}`, {
-        method: 'DELETE',//HTTP request method
-        mode: 'cors',// Enable Cross-Origin Resource Sharing
+        method: 'DELETE',
+        mode: 'cors',
         headers: {
-          'Content-Type': 'application/json',// Specify the Content-Type being sent in the request payload.
-          'Authorization': `Bearer ${token}`,//Include the tokem in the request header
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         }
       });
-      // Conditional rendering if the response indicates success (status code 200-299)
+      //Response handling
       if (response.ok) {
-        setQuizList(quizList.filter(q => q._id !== quizId));// Remove the deleted quiz from the quiz list
-      } else {
-        throw new Error('Error deleting quiz');//Throw an error message if the DELETE request is unsuccessful
+        // Remove the deleted quiz from the quiz list
+        setQuizList(quizList.filter(q => q._id !== quizId));
+      } 
+      else {
+        throw new Error('Error deleting quiz');
       }
     } catch (error) {
-      setError('Error deleting quiz:', error);//Set the error state with an error message
-      console.error('Error deleting quiz:', error);//Log an error message in the console for debugging purposes
+      setError('Error deleting quiz:', error);
+      console.error('Error deleting quiz:', error);
     }
   }
  
@@ -221,8 +222,8 @@ export default function Page3(
                      {update && quizToUpdate === quiz._id && (//Show the EditQuiz component if in update mode
                       <EditQuiz
                           editQuizIndex={editQuizIndex}
-                  setEditQuizIndex={setEditQuizIndex}
-                  newQuizName={newQuizName}
+                          setEditQuizIndex={setEditQuizIndex}
+                          newQuizName={newQuizName}
                   setNewQuizName={setNewQuizName}
                   editQuiz={editQuiz}
                   quiz={quiz}
@@ -238,12 +239,12 @@ export default function Page3(
         {/* Form to Add Quiz */}
         <AddQuiz
           addNewQuiz={addNewQuiz}      
-          newQuestions={newQuestions}
-          setQuestions={setNewQuestions}
-          formError={formError}
-          setFormError={setFormError}
-          newQuizName={newQuizName}
-          setNewQuizName={setNewQuizName}
+          questions={questions}
+          setQuestions={setQuestions}
+          // formError={formError}
+          // setFormError={setFormError}
+          quizName={newQuizName}
+          setQuizName={setNewQuizName}
         />
      
       </section>
