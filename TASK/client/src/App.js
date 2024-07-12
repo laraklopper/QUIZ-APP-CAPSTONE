@@ -35,10 +35,10 @@ export default function App() {
   });
   //Quiz variables
   const [quizList, setQuizList] = useState([]); // State to store fetched quizzes
-  // const [quizName, setQuizName] = useState('');
-  const [questions, setQuestions] = useState([
-    { questionText: '', correctAnswer: '', options: ['', '', '',' '] }
-  ]);
+  const [quizName, setQuizName] = useState('');
+  // const [questions, setQuestions] = useState([
+  //   { questionText: '', correctAnswer: '', options: ['', '', '',' '] }
+  // ]);
   //Event variables
   const [error, setError] = useState(null);
   //State variables to manage user Login
@@ -258,10 +258,8 @@ export default function App() {
                     setError={setError}
                     setQuizList={setQuizList}
                     fetchQuizzes={fetchQuizzes}
-                    // quizName={quizName}
-                    // setQuizName={setQuizName}
-                    questions={questions}
-                    setQuestions={setQuestions}                  
+                    quizName={quizName}
+                    setQuizName={setQuizName}                
                   />}
                 />
                 <Route path='/page4' element={
