@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 //Schemas
 const Quiz = require('../models/quizModel');
 //Import custom middlewqe
-import { checkJwtToken } from '../middleware/middleware';
+import { checkJwtToken } from './middleware';
 
 //=======SETUP MIDDLEWARE===========
 router.use(cors())
