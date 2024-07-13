@@ -5,7 +5,8 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 //Schemas
 const Quiz = require('../models/quizModel');
-
+//Import custom middlewqe
+import { checkJwtToken } from '../middleware/middleware';
 
 //=======SETUP MIDDLEWARE===========
 router.use(cors())
@@ -48,29 +49,24 @@ router.get('/:id',/* checkJwtToken,*/ async (req, res) => {
 
 // Route to fetch all the quizzes from the database
 router.get('/findQuizzes', async (req, res) => {
-
+    //console.log('Finding Quizzes');//Display a message in the console for debugging purposes
     try {
         const {name} = req.query;
-        const query = quizName ? {quizName} : {};
         const quizzes = await Quiz.find(query);
         res.status(200).json(quizzes);
-        
     } 
     catch (error) {
         console.error('Error finding quizzes:', error.message); 
-        res.status(500).json(
-            { message: error.message }
-        );
+        res.status(500).json({ message: error.message });
     }
 });
 
 
 //------------POST--------------
 //Route to add new quiz
-router.post('/addQuiz', checkJwtToken, async (req, res) => {
-   
-    console.log(req.body);
-    console.log('Add Quiz');
+router.post('/addQuiz', async (req, res) => {
+    // console.log(req.body);
+    // console.log('Add Quiz');
     const { name, questions } = req.body;
 
       if (!name || ! questions) {
