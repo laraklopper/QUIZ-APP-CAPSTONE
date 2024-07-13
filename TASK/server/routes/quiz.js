@@ -11,28 +11,6 @@ const Quiz = require('../models/quizModel');
 router.use(cors())
 router.use(express.json())
 
-//Middleware to verify the JWT token
-const checkJwtToken = (req, res, next) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-
-    if (!token) {
-        return res.status(401).json(
-            { message: 'Access denied. No token provided.' });
-    }
-    try {
-        const decoded = jwt.verify(
-            token,
-            'Secret-Key',
-            /*process.env.JWT_SECRET*/
-        );
-        req.user = decoded;
-        next();
-    } catch (error) {
-        console.error('No token attatched to the request');
-        res.status(400).json({ message: 'Invalid token.' });
-    }
-} 
-
 
 //=============ROUTES=====================
 
@@ -51,7 +29,7 @@ const checkJwtToken = (req, res, next) => {
 */
 //------------------GET---------------
 //Route to GET a specific quiz using the quiz Id
-router.get('/:id', checkJwtToken, async (req, res) => {
+router.get('/:id',/* checkJwtToken,*/ async (req, res) => {
     try {
         const quiz = await Quiz.findById(req.params.id);
 
@@ -113,39 +91,35 @@ router.post('/addQuiz', checkJwtToken, async (req, res) => {
 })
 
 //---------PUT-----------
-//const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);//?
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 // Route to edit a quiz
 router.put('/editQuiz/:id', checkJwtToken, async (req, res) => {
     const {id} = req.params;
 
- //  if (!isValidObjectId(id)) {
-   // return res.status(400).json({ message: 'Invalid quiz ID' });
-  //}
+  if (!isValidObjectId(id)) {
+   return res.status(400).json({ message: 'Invalid quiz ID' });
+  }
 
   const { name, questions } = req.body;
 
     // Validate the request body
-  // if (!name || !Array.isArray(questions) || questions.length === 0) {
-  //   return res.status(400).json({ message: 'Invalid request body' });
-  // }
+  if (!name || !Array.isArray(questions) || questions.length === 0) {
+    return res.status(400).json({ message: 'Invalid request body' });
+  }
 
      // Ensure each question has exactly 3 options
-  // for (const question of questions) {
-  //   if (!question.questionText || !question.correctAnswer || !Array.isArray(question.options) || question.options.length !== 3) {
-  //     return res.status(400).json({ message: 'Each question must have exactly 3 options' });
-  //   }
-  // }
+  for (const question of questions) {
+    if (!question.questionText || !question.correctAnswer || !Array.isArray(question.options) || question.options.length !== 3) {
+      return res.status(400).json({ message: 'Each question must have exactly 3 options' });
+    }
+  }
     try {
         // Update the quiz in the database
-        const updatedQuiz = await Quiz.findByIdAndUpdate(
-            id, 
-            {quizName, questions},
-            { new: true });
-  // const updatedQuiz = await Quiz.findByIdAndUpdate(
-  //     id, 
-  //     { name, questions },
-  //     { new: true, runValidators: true } // Return the updated document and run validators
-  //   );
+              const updatedQuiz = await Quiz.findByIdAndUpdate(
+                  id, 
+                  { name, questions },
+                  { new: true, runValidators: true } // Return the updated document and run validators
+                );
 
         // If no quiz is found, return a 404 status with a message
         if (!updatedQuiz) {
