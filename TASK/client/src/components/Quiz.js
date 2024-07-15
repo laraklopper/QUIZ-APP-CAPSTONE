@@ -3,6 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
+//Quiz function component
 export default function Quiz({
   timerEnabled,
   timer,
@@ -12,14 +13,39 @@ export default function Quiz({
   lastQuestion,
   handleNextQuestion
 }) {
-  const optionIds = ['A', 'B', 'C', 'D'];
 
+//=======================================================  
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:3001/quiz/${id}`, {
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch quiz');
+        }
+
+        const quizData = await response.json();
+        setQuiz(quizData.quiz);
+      } catch (error) {
+        console.error('Error fetching quiz:', error);
+      }
+    };
+
+    fetchQuiz();
+  }, [id]);
   //================JSX RENDERING======================
 
   return (
     <div>
-      {/* Add timer if user chooses to add the timer option */}
-      
+      {/* Add timer if user chooses to add the timer option */}  
       {timerEnabled && (
         <Row>
           <Col xs={6} md={4}>
@@ -40,7 +66,7 @@ export default function Quiz({
               <Col>
                 {questions[currentQuestion].options.map((option, index) => (
                   <Button key={index} onClick={() => handleOptionClick(option)}>
-                    {optionIds[index]} {option}
+                    {optionIds[index]}{option}
                   </Button>
                 ))}
               </Col>
