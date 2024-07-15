@@ -41,9 +41,9 @@ export default function Page2({
       try {
         const token = localStorage.getItem('token'); // Retrieve token from local storage
         // Send a GET request to the server
-        const response = await fetch(`http://localhost:3001/quiz/quiz/${quizId}`, {
+        const response = await fetch(`http://localhost:3001/quiz/${quizId}`, {
           method: 'GET', // HTTP request method
-          mode: 'cors', //
+          mode: 'cors', 
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`, // Include authorization token
