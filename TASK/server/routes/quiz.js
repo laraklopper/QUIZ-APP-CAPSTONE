@@ -49,10 +49,9 @@ router.get('/:id',/* checkJwtToken,*/ async (req, res) => {
 
 // Route to fetch all the quizzes from the database
 router.get('/findQuizzes', async (req, res) => {
-    //console.log('Finding Quizzes');//Display a message in the console for debugging purposes
+    //console.log('Finding Quizzes');
     try {
-        const {name} = req.query;
-        const quizzes = await Quiz.find(query);
+        const quizzes = await Quiz.find({});
         res.status(200).json(quizzes);
     } 
     catch (error) {
