@@ -25,14 +25,16 @@ export default function Page2({
   // =========STATE VARIABLES====================
   // Quiz variables
   const [selectedQuiz, setSelectedQuiz] = useState(null);
-  const [lastQuestion, setLastQuestion] = useState(false);
+  // const [lastQuestion, setLastQuestion] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [quizStarted, setQuizStarted] = useState(false);
+  // const [quizStarted, setQuizStarted] = useState(false);
   // Score Variables
   const [score, setScore] = useState(0);
   // Timer variables
-  const [timerEnabled, setTimerEnabled] = useState(true);
-  const [timer, setTimer] = useState(10);
+  // const [timerEnabled, setTimerEnabled] = useState(true);
+  // const [timer, setTimer] = useState(10);
+  const [timer, setTimer] =useState(null);
+  const [quizTimer, setTimer] = useState(false);
 
   // useEffect to fetch quizzes when component mounts
   useEffect(() => {
@@ -122,6 +124,55 @@ export default function Page2({
     setTimer(timerEnabled ? 10 : 0);
   };
 
+  //-------------------------------------
+
+// useEffect to fetch quizzes when component mounts
+  useEffect(() => {
+    fetchQuizzes()
+  },[fetchQuizzes])
+  
+  const handleQuizSelect = () => {
+    setSelectedQuiz(quiz);
+    setCurrentQuestion(0);
+    setScore(0);
+    setTimer(null)
+  }
+
+  const handleRestart = () => {
+    setCurrentQuestion();
+    setScore();
+  }
+  
+  const handleNextQuestion = () => {
+    setCurrentQuestion(currentQuestion + 1)
+  }
+
+  const handleQuizStart = () => {
+    if(quizTimer){
+      setTimer();
+      const interval = setInterval(() => {
+        setTimer((prevTimer) => {
+          if(prevTimer === 1){
+            clearInterval(interval);
+            handleNextQuestion();
+            return null;
+          }
+          return prevTimer - 1;
+        })
+      }, 1000)
+    }
+  };
+  
+  const handleAnswerClick = (isCorrect) => {
+    if(isCorrect){
+      setScore(score-1);
+    }
+    handleNextQuestion()
+  }
+
+  const randomiseOptions = (options) => {
+    return options.sort(() => Math.random() - 0.5)
+  }
   // ======JSX RENDERING==========
   return (
     <>
@@ -129,6 +180,44 @@ export default function Page2({
       <Header heading="GAME" />
       {/* section 1 */}
       <section className='section1'>
+        <div>
+        <Row>
+          <Col><h2 className="h2">SELECT QUIZ</h2></Col>
+        </Row>
+        <Row>
+        <Col xs={6} md={4}>
+    <Drowdown onSelect={handleQuizSelect}>
+    
+    <Dropdown.Toggle variant="primary" id='dropDown'>
+    <p>SELECT QUIZ</p>
+    </Dropdown.toggle>
+    <Dropdown.Menu>
+      {quizList.map((quiz)=> (
+        <Dropdown.Item key={quiz._id} onClick={() => {handleQuizSelect(quiz)}}>
+          {quiz.name}
+        </Dropdown.Item>
+      ))}
+    </Dropdown.Menu>
+    </Dropdown>
+        </Col>
+        <Col xs={6} md={4}>
+          <label>
+        <input/>
+        ADD TIMER
+          </label>
+        </Col>
+        <Col xs={6} md={4}>
+          <Button onClick={handleQuizStart} type='button' variant='primary'>PLAY</Button>
+        </Col>
+      </Row>
+        </div>
+{selectedQuiz && (
+  <div>
+  <h2 className={selectedQuiz.name}>
+  
+  </div>
+)}
+    
         {!quizStarted ? (
           <div>
             <Row>
