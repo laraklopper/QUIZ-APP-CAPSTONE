@@ -1,0 +1,138 @@
+/* PAGE3 */
+.h4{
+    text-align: center;
+}
+/* QUIZ OUTPUT */
+.page3Section1{
+    background-color: #0095C7;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 0px;
+        margin-right: 0px;
+        padding: 10px;
+        display: block;
+}
+/* EDIT QUIZ FORM */
+#editQuizForm{
+    margin: 0px;
+    padding: 10px;
+    background-color: #16799b;
+        background-color: #000000;
+        border-style: solid;
+        border-width: 2px;
+}
+.editQuizInput {
+    border-radius: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 2px;
+    margin-right: 0px;
+    padding: 5px;
+}
+.editQuizLabel {
+    display: flex;
+    border-radius: 5px;
+    align-items: baseline;
+    margin-left: 2px;
+        margin-right: 5px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+}
+#editQuestionInput {
+    width: 280px;
+    border-radius: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 2px;
+    margin-right: 0px;
+    padding: 5px;
+}
+#page3Section2 {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 10px;
+    background-color: #0082AD;
+    ;
+
+}
+/* ADDQUIZ FORM */
+.addQuizLabel{
+    display: flex;
+    border-radius: 5px;
+        align-items: baseline;
+        margin-left: 2px;
+            margin-right: 5px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+}
+#quizInput{
+    background-color: #1e7997;
+    display: flex;
+    flex-direction: column;
+    border: solid;
+    border-color: #000000;
+    padding: 10px;
+    margin-left: 2px;
+    margin-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+#questionInput{
+    width: 280px;
+}
+#newQuizForm{
+    margin: 0px;
+    padding: 10px;
+    background-color: #0095C7;;
+}
+.buttonCol{
+    display: flex;
+    margin: 0px;
+    padding: 0px;
+}
+.addQuizLabel{
+    display: flex;
+}
+.questionsOutput {
+    background: aqua;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+.quizFormRow{
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-right: 0px;
+    margin-left: 0px;
+    padding: 2px;
+}
+.quizFormCol{
+    margin: 0px;
+    padding: 5px;
+    display: flex;
+}
+.addQuizInput{
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 2px;
+    margin-right: 0px;
+    padding: 5px;
+    border: 2px solid #000000;
+    border-radius: 5px;    
+}
+/* QUIZ OUTPUT */
+.quizOutput{
+    margin: 0px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    background-color: #000000;
+    border-style: solid;
+    border-width: 2px;
+}
