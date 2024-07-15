@@ -8,12 +8,12 @@
 ### PART-ONE
 #### ***Create and submit:***
 ##### (1) **A README.md document that contains the software requirements documentation:**
-1. System Architecture: 
 
+**1. System Architecture:**
 - Describing the intended architecture for developing the application: provide motivation for the choice of architecture.
 - What tools will be used to style the application: provide motivation for the choice?
 
-2. System requirements specification:
+**2. System requirements specification:**
 
 - Explain how the application will work, who will use the application and how they will benefit from using it.
 - Explain what other software there is that does something similar, and the software will be different.
@@ -66,3 +66,8 @@
 
 
 ## REFERENCES
+
+### CSS REFERENCES
+
+- https://www.w3schools.com/colors/colors_groups.asp
+- https://html-css-js.com/css/generator/
