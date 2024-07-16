@@ -40,14 +40,14 @@ export default function Page3(
   /* useEffect to fetch quizzes when the component mounts
  or when fetchQuizzes function changes*/
   useEffect(() => {
-    fetchQuizzes()
-  },[fetchQuizzes])
+    fetchQuizzes()// Call the fetchQuizzes function to retrieve the quiz list
+  },[fetchQuizzes])// Dependency array: runs this effect whenever fetchQuizzes changes
 
   // ==============REQUESTS=======================
   // ----------POST-------------------
   //Function to add a new quiz
   const addNewQuiz = async (event) => {//Define an async function to fetch a new quiz
-    //console.log('Add new Quiz');    
+    //console.log('Add new Quiz');//Log a message in the console for debugging purposes    
     if (newQuestions.length !== 5) {
       alert('The quiz must have exactly 5 questions.');
       return;// Exit the function early if the condition is not met
@@ -61,7 +61,7 @@ export default function Page3(
         method: 'POST',
         mode: 'cors',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json',// Specify the Content-Type being sent in the request payload. 
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(quiz)
