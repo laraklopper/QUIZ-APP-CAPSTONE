@@ -9,6 +9,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 // Components
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Quiz from '../components/Quiz';
 
 // Page 2 function component
 export default function Page2({
@@ -19,15 +20,15 @@ export default function Page2({
 }) {
   // =========STATE VARIABLES====================
   // Quiz variables
-  const [selectedQuiz, setSelectedQuiz] = useState(null); // State used to store the selected quiz
-  const [currentQuestion, setCurrentQuestion] = useState(0); // State to store the current question
+  const [selectedQuiz, setSelectedQuiz] = useState(null); 
+  const [currentQuestion, setCurrentQuestion] = useState(0); 
   // Score Variables
-  const [score, setScore] = useState(0); // State to store the user's score
+  const [score, setScore] = useState(0);
   // Timer variables
-  const [timer, setTimer] = useState(null); // State to store the current timer
-  const [quizTimer, setQuizTimer] = useState(false); // Boolean to indicate if the timer should be used
+  const [timer, setTimer] = useState(null); 
+  const [quizTimer, setQuizTimer] = useState(false); 
 
-  //==============================
+  //============USE EFFECT HOOK==================
   // Fetch quizzes when the component mounts
   useEffect (() => {
     fetchQuizzes()
@@ -79,19 +80,8 @@ export default function Page2({
     handleNextQuestion();
   };
 
-  // Function to randomize the answer options
- const randomizeOptions = (options) => {
-  // Sort the options array using a custom comparison function
-  return options.sort(() => 
-    // Generate a random number between 0 and 1, then subtract 0.5
-    // This results in a random number between -0.5 and 0.5
-    Math.random() - 0.5//Subtracting 0.5 from this random number results in a value between -0.5 and 0.5.
-  );
-};
-
 
   // ======JSX RENDERING==========
-  
   return (
     <>
       {/* Header */}
@@ -99,8 +89,8 @@ export default function Page2({
       {/* Section 1 */}
       <section className='section1'>
         {/* Form to select quiz */}
-        <div id='selectQuiz'>
-          <Row>
+        <div id='selectQuizForm'>
+          <Row className='selectQuizForm'>
             <Col>
               <h2 className='h2'>SELECT QUIZ</h2>
             </Col>
@@ -150,59 +140,15 @@ export default function Page2({
         <div>
           {/* Display selected quiz and questions */}
           {selectedQuiz && (
-            <div>
-              <Row>
-                <Col>
-                  <h3 className='h3'>{selectedQuiz.name}</h3>
-                </Col>
-              </Row>
-              <div>
-                <Row>
-                  <Col xs={6} md={4}>
-                    <div>
-                      <h3>QUESTION {currentQuestion + 1} of {selectedQuiz.questions.length}</h3>
-                    </div>
-                    <div>
-                      <p>{selectedQuiz.questions[currentQuestion].questionText}</p>
-                    </div>
-                  </Col>
-                  <Col xs={6} md={4}></Col>
-                  <Col xs={6} md={4}>
-                    {quizTimer && <div>TIMER: {timer}</div>}
-                  </Col>
-                </Row>
-                <div>
-                  {/* Map through and randomize options */}
-                  {randomizeOptions(selectedQuiz.questions[currentQuestion].options).map(
-                    (option, index) => (
-                      <Button
-                        key={index}
-                        onClick={() => handleAnswerClick
-                          (option === selectedQuiz.questions[currentQuestion].correctAnswer)}
-                      >
-                        {option}
-                      </Button>
-                    )
-                  )}
-                </div>
-                <Row>
-                  <Col xs={6} md={4}>
-                    <div>
-                      <p>Result: {score} of {selectedQuiz.questions.length}</p>
-                    </div>
-                  </Col>
-                  <Col xs={6} md={4}></Col>
-                  <Col xs={6} md={4}>
-                  {/* Buttom to move to next question */}
-                    <Button type='button' onClick={handleNextQuestion}>
-                      Next Question
-                      </Button>
-                      {/* button to restart quiz */}
-                    <Button type='reset' onClick={handleRestart}>Restart</Button>
-                  </Col>
-                </Row>
-              </div>
-            </div>
+           <Quiz 
+           selectedQuiz={selectedQuiz}
+           currentQuestion={currentQuestion}
+           handleAnswerClick={handleAnswerClick}
+           quizTimer={quizTimer}
+           timer={timer}
+           score={score}
+           handleRestart={handleRestart}
+           />
           )}
         </div>
       </section>
