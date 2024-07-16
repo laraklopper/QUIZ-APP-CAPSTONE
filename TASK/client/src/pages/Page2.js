@@ -7,122 +7,25 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 // Components
 import Header from '../components/Header';
-// import LogoutBtn from '../components/LogoutBtn';
-import Quiz from '../components/Quiz';
-import Score from '../components/Score';
 import Footer from '../components/Footer';
 
 // Page 2 function component
-export default function Page2({
-  // PROPS PASSED FROM PARENT COMPONENT
+export default function Page2(
+  {// PROPS PASSED FROM PARENT COMPONENT
   quizList = [],
   questions = [],
-  setQuestions,
-  setQuizName,
   logout,
   fetchQuizzes,
 }) {
   // =========STATE VARIABLES====================
   // Quiz variables
-  const [selectedQuiz, setSelectedQuiz] = useState(null);
-  // const [lastQuestion, setLastQuestion] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  // const [quizStarted, setQuizStarted] = useState(false);
+  const [selectedQuiz, setSelectedQuiz] = useState(null);//State used to store the selected quiz
+  const [currentQuestion, setCurrentQuestion] = useState(0);//State to store the current question
   // Score Variables
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(0);//State to store the users score
   // Timer variables
-  // const [timerEnabled, setTimerEnabled] = useState(true);
-  // const [timer, setTimer] = useState(10);
-  const [timer, setTimer] =useState(null);
-  const [quizTimer, setTimer] = useState(false);
-
-  // useEffect to fetch quizzes when component mounts
-  useEffect(() => {
-    // Function to fetch a single quiz
-    const fetchQuiz = async (quizId) => {
-      try {
-        const token = localStorage.getItem('token'); // Retrieve token from local storage
-        // Send a GET request to the server
-        const response = await fetch(`http://localhost:3001/quiz/${quizId}`, {
-          method: 'GET', // HTTP request method
-          mode: 'cors', 
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, // Include authorization token
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Error fetching Quiz');
-        }
-
-        const quiz = await response.json(); // Parse the response as JSON
-        setQuestions(quiz[0].questions); // Set quiz questions state
-        console.log(questions); // Log the fetched questions in the console for debugging purposes
-      } catch (error) {
-        console.error('Failed to fetch selected quiz', error); // Log errors in console for debugging purposes
-      }
-    };
-
-    if (selectedQuiz) {
-      fetchQuiz(selectedQuiz);
-    }
-  }, [selectedQuiz, questions, setQuestions]);
-
-  useEffect(() => {
-    if (quizStarted && timerEnabled) {
-      const interval = setInterval(() => {
-        setTimer((prevTimer) => {
-          if (prevTimer > 0) {
-            return prevTimer - 1;
-          } else {
-            return 10;
-          }
-        });
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [quizStarted, timerEnabled]);
-
-  // useEffect to set questions and quiz name when the selected quiz changes
-  useEffect(() => {
-    if (selectedQuiz) {
-      setQuestions(selectedQuiz.questions);
-      setQuizName(selectedQuiz.quizName);
-    }
-  }, [selectedQuiz, setQuestions, setQuizName]);
-
-  // useEffect to fetch quizzes when component mounts
-  useEffect(() => {
-    fetchQuizzes();
-  }, [fetchQuizzes]);
-
-  // =========EVENTS=================
-  // Function to go to the next question
-  const handleNextQuestion = () => {
-    if (currentQuestion + 1 === questions.length) {
-      setLastQuestion(true);
-    }
-    setCurrentQuestion((prevQuestion) => prevQuestion + 1);
-    setTimer(10);
-  };
-
-  // Function to handle option click for quiz questions
-  const handleOptionClick = (selectedAnswer) => {
-    if (selectedAnswer === questions[currentQuestion].answer) {
-      setScore((prevScore) => prevScore + 1);
-    }
-    handleNextQuestion();
-  };
-
-  // Function to start the quiz
-  const startQuiz = () => {
-    setQuizStarted(true);
-    setScore(0);
-    setCurrentQuestion(0);
-    setLastQuestion(false);
-    setTimer(timerEnabled ? 10 : 0);
-  };
+  const [timer, setTimer] =useState(null);//State to store the timer value
+  const [quizTimer, setTimer] = useState(false);//Boolean to indicate if the timer should be used
 
   //-------------------------------------
 
@@ -143,26 +46,29 @@ export default function Page2({
     setScore();
   }
   
+//Function to move to next question
   const handleNextQuestion = () => {
-    setCurrentQuestion(currentQuestion + 1)
+    setCurrentQuestion(currentQuestion + 1);
   }
 
+  // Start the quiz and initialize a timer if the timer option is selected
   const handleQuizStart = () => {
-    if(quizTimer){
-      setTimer();
+    if (quizTimer) {
+      setTimer(30); // Set timer to 30 seconds for each question
       const interval = setInterval(() => {
         setTimer((prevTimer) => {
-          if(prevTimer === 1){
+          if (prevTimer === 1) {
             clearInterval(interval);
             handleNextQuestion();
             return null;
           }
           return prevTimer - 1;
-        })
-      }, 1000)
+        });
+      }, 1000);
     }
   };
-  
+
+    // Handle answer selection and update the score if correct
   const handleAnswerClick = (isCorrect) => {
     if(isCorrect){
       setScore(score-1);
@@ -170,9 +76,19 @@ export default function Page2({
     handleNextQuestion()
   }
 
-  const randomiseOptions = (options) => {
-    return options.sort(() => Math.random() - 0.5)
-  }
+    // Randomise the order of answer options
+ const randomizeOptions = (options) => {
+  // Sort the options array using a custom comparison function
+   
+  return options.sort(() => //Uses the sort method on the options array. The sort method sorts the array in place and returns the sorted array.
+    // Generate a random number between 0 and 1, then subtract 0.5
+    // This results in a random number between -0.5 and 0.5
+    Math.random() - 0.5//Math.random() generates a random floating-point number between 0 (inclusive) and 1 (exclusive).
+                      //Subtracting 0.5 from this random number results in a value between -0.5 and 0.5.
+                      //The sort method uses these random values to decide the order of elements, effectively shuffling the array.
+  );
+};
+
   // ======JSX RENDERING==========
   return (
     <>
