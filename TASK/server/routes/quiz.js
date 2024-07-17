@@ -1,24 +1,21 @@
 // Import necessary modules and packages
 const express = require('express'); // Import Express framework
 const router = express.Router(); // Create a router object
-const cors = require('cors'); // Import CORS for enabling Cross-Origin Resource Sharing
-const jwt = require('jsonwebtoken'); // Import JSON Web Token for authentication
-// JSON Web Token is a standard used to create access tokens for an application
+const cors = require('cors');
+// Import JSON Web Token for authentication
+const jwt = require('jsonwebtoken'); 
 //Schemas
-const Quiz = require('../models/quizModel');// Import Quiz model
+const Quiz = require('../models/quizModel');
+const User = require('../models/userSchema');
 
 //=======SETUP MIDDLEWARE===========
-router.use(express.json()); // Parse incoming request bodies in JSON format
-/*Built-Middleware function used to parse incoming requests with JSON payloads.
-Returns middleware that only parses JSON and only looks at requests where the
-Content-Type header matches the type option.*/
-router.use(cors()); //Enable Cross-Origin Resource sharing 
+router.use(express.json()); 
+router.use(cors());
 
 //Middleware to verify the JWT token
 const checkJwtToken = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
-        //Conditional rendering to check if the token is present
     if (!token) {
         // console.log('Unauthorized: token missing');
         return res.status(401).json(
@@ -26,7 +23,7 @@ const checkJwtToken = (req, res, next) => {
         );
     }
     try {
-        const decoded = jwt.verify(//Verify the JWT token
+        const decoded = jwt.verify(
             token,
             'Secret-Key',//SecretKey
             /*process.env.JWT_SECRET*/
@@ -34,9 +31,7 @@ const checkJwtToken = (req, res, next) => {
         req.user = decoded;
         next();//Call the next middleware function
     } catch (ex) {
-         //ex is the variable that holds the caught exception or error
-        console.error('No token attatched to the request');// Log the error message in the console for debugging purposes
-        // If token verification fails, respond with a 400 status code and an error message
+        console.error('No token attatched to the request');
         res.status(400).json({ message: 'Invalid token.' });
     }
 }
@@ -60,7 +55,7 @@ const checkJwtToken = (req, res, next) => {
 //------------------GET---------------
 //Route to GET a specific quiz using the quiz Id
 router.get('/quizId/:id', async (req, res) => {
-    console.log('Finding Quiz');//Log a message in the console for debugging purposes
+    console.log('Finding Quiz');
     try {
         //Find the quiz by its ID from the request parameters
         const quiz = await Quiz.findById(req.params.id); 
@@ -82,17 +77,26 @@ router.get('/quizId/:id', async (req, res) => {
     }
 });
 
+/* 
 // Route to fetch all the quizzes from the database
 router.get('/findQuizzes', async (req, res) => {
-    //console.log('Finding Quizzes');//Log a message in the console for debugging purposes
+    try {
+        const quizzes = await Quiz.find({}).populate('user', 'username');
+        res.status(200).json(quizzes);
+    } catch (error) {
+        console.error('Error finding quizzes:', error.message);
+        res.status(500).json({ message: error.message });
+    }
+});*/
+// Route to fetch all the quizzes from the database
+router.get('/findQuizzes', async (req, res) => {
+    //console.log('Finding Quizzes')
     try {
         const quizzes = await Quiz.find({});//Find all quizzes
-                // If quizzes are found, return them with a 200 status code
-        res.status(200).json(quizzes); // Return all quizzes in JSON format
+        res.status(200).json(quizzes); 
     } 
     catch (error) {
-        console.error('Error finding quizzes:', error.message); // Log the error to the console for debugging purposes
-        //Respond with a 500 status code (Internal Server Error) and the error message as JSON in the response body
+        console.error('Error finding quizzes:', error.message);
         res.status(500).json({ message: error.message });
     }
 });
@@ -112,11 +116,10 @@ router.get('/findQuizzes', async (req, res) => {
 
 //Route to add new quiz
 router.post('/addQuiz', async (req, res) => {
-    console.log(req.body); // Log request body to the console for debugging
-    console.log('Add Quiz'); // Log 'Add Quiz' to the console for debugging
-    const { name, questions } = req.body;// Extract the name and questions from request body
+    console.log(req.body); 
+    console.log('Add Quiz'); 
+    const { name, questions } = req.body;
 
-    // Conditional rendering to check if both name and questions are provided
       if (!name || ! questions) {
             return res.status(400).json(
                 {message: 'Quiz name and questions are required'})
@@ -130,15 +133,13 @@ router.post('/addQuiz', async (req, res) => {
             createdBy: req.user.username
         }
     );
-            
+    
         const savedQuiz = await newQuiz.save();// Save the new quiz to the database
-
-        res.status(201).json(savedQuiz);// Respond with a 201 status code and the saved quiz object as JSON
-        console.log(savedQuiz);//Log the new quiz in the console for debugging purposes
+        res.status(201).json(savedQuiz);
+        // console.log(savedQuiz);
 
     } catch (error) {
-        console.error('Error occurred while adding new quiz:', error);// Log the error for debugging
-        // Return 400 if there's a validation error or other client-side error
+        console.error('Error occurred while adding new quiz:', error);
         res.status(400).json({ error: error.message });
     }
 })
@@ -149,49 +150,46 @@ router.post('/addQuiz', async (req, res) => {
 router.put('/editQuiz/:id', checkJwtToken, async (req, res) => {
     const {id} = req.params;// Extract the quiz ID from the request parameters
     try {
-        const {name, questions} = req.body;//Extract the name and questions from the request body
-                // Find the quiz by ID and update it with the new name and questions
+        //Extract the name and questions from the request body
+        const {name, questions} = req.body;
         const updatedQuiz = await Quiz.findByIdAndUpdate(
             id, 
             {name, questions},
             { new: true }); // Return the updated document
 
-        //Conditional rendering to check if the updated quiz exists
         if (!updatedQuiz) {
-            // If no quiz is found with the given ID, return a 404 status and a "Quiz not found" message
+       
             return res.status(404).json({ message: 'Quiz not found' });
         }
-        res.json(updatedQuiz);//Return the updated quiz object as a JSON response
+        res.json(updatedQuiz);
     } 
     catch (error) {
-        console.error('Error editing quiz:', error);// Log error message in the console for debugging purposes
-        // If there's a validation error or other client-side error, return a 400 status with the error message
-        return res.status(400).json({ error: error.message });// Return 400 if validation error
+        console.error('Error editing quiz:', error);
+        return res.status(400).json({ error: error.message });
     }
 });
 
 
 //--------DELETE---------------
 // Route to delete a quiz
-router.delete('/deleteQuiz/:id', checkJwtToken, async (req, res) => {
-    const { id } = req.params; // Extract the quiz ID from the request parameters
+router.delete('/deleteQuiz/:id', async (req, res) => {
+    // Extract the quiz ID from the request parameters
+    const { id } = req.params; 
     try {
-        const quiz = await Quiz.findByIdAndDelete(id);// Find and delete the quiz by its ID
+        const quiz = await Quiz.findByIdAndDelete(id);
 
-        // If the quiz is not found, return a 404 status with a message
         if (!quiz) {
-            // If no quiz is found with the given ID, return a 404 status and a "Quiz not found" message
             return res.status(404).json(
                 { message: 'Quiz not found' }); 
         }
 
         
-        res.status(200).json({ message: 'Quiz successfully deleted' });// Return success message and status 200
-        res.json({ message: 'Quiz successfully deleted', quiz }); // Return success message and deleted quiz
+        res.status(200).json({ message: 'Quiz successfully deleted' });
+        res.json({ message: 'Quiz successfully deleted', quiz }); 
     } catch (error) {
-        console.error('Error deleting quiz:', error);// Log the error to the console for debugging purposes
+        console.error('Error deleting quiz:', error);
         // Return a 500 status if there is a server error
-        return res.status(500).json({ message: 'Internal Server Error' }); // Return 500 if server error
+        return res.status(500).json({ message: 'Internal Server Error' }); 
     }
 });
 
