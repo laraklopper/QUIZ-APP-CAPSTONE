@@ -27,7 +27,11 @@ const quizSchema = new mongoose.Schema({
         ],
         required: true,
         validate: [arrayLimit5, '{PATH} must have exactly 5 questions']
-    }
+    }/*,
+    createdBy:{
+        type: String,
+        required: true,
+    }*/
 }, { timestamps: true });
 
 // Custom validation function to ensure each question has exactly 3 options
