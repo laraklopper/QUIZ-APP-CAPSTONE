@@ -13,10 +13,10 @@ export default function AddQuiz(
   questions, 
   setQuestions,
   addNewQuiz,
+  currentQuestion,
+    setCurrentQuestion
 }) {
   //===========STATE VARIABLES====================
-  const [currentQuestion, setCurrentQuestion] = useState(// State used to store current question being added
-    {questionText: '', correctAnswer: '', options: ['','','']})
   const [errorMessage, setErrorMessage] = useState('');// State for error messages
 
   //============EVENT LISTENERS=========================
