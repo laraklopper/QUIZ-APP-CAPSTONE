@@ -16,14 +16,17 @@ const uri = process.env.DATABASE_URL;//Extract the database URL from the envirom
 const app = express();// Create an Express application
 
 //=====CHECK IF ALL THE ENVIRONMENTAL VARIABLES A PRESENT=========
+// Conditional rendering to check if the PORT environment variable is missing
 if (!port) {
     console.error('Error: PORT environment variable is missing');// If PORT is missing, log an error message to the console for debugging purposes
     process.exit(1);// Exit the Node.js process with a non-zero exit code (1)
 }
+// Conditional rendering to check if the DATABASE_NAME environment variable is missing
 else if(!database){
     console.error('Error: DATABASE_NAME enviromental variable is missing');// If DATABASE_NAME is missing, log an error message to the console for debugging purposes
     process.exit(1);// Exit the Node.js process with a non-zero exit code (1)
 }
+// Conditional rendering to check if the DATABASE_URL environment variable is missing
 else if(!uri){
     console.error('Error: DATABASE_URL enviromental variable is missing');// If DATABASE_URL is missing, log an error message to the console for debugging purposes
     process.exit(1);// Exit the Node.js process with a non-zero exit code (1)
