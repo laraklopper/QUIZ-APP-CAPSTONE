@@ -24,72 +24,89 @@ export default function Page3(
 
   // ========STATE VARIABLES===============
   //New Quiz variables
-  const [quizName, setQuizName] = useState('');//App.js?
+  const [quizName, setQuizName] = useState('');// State to hold the name of the quiz being created 
   const [questions, setQuestions] = useState([]);//State used to store the list of Questions being added to the quiz
-  // const [currentQuestion, setCurrentQuestion] = useState(
-    // { questionText: '', correctAnswer: '', options: ['', '', ''] })
+  const [currentQuestion, setCurrentQuestion] = useState(// State used to store current question being added
+    { questionText: '', correctAnswer: '', options: ['', '', ''] })
   //Edit Quiz variables
-  const [newQuizName, setNewQuizName] = useState('');
-  const [update, setUpdate] = useState(false);
-  const [quizToUpdate, setQuizToUpdate] = useState(null);
-  const [editQuizIndex, setEditQuizIndex] = useState(
+  const [newQuizName, setNewQuizName] = useState('');// State to hold the new name for the quiz being edited
+  const [update, setUpdate] = useState(false);// State to manage whether the edit mode is active or not
+
+  const [quizToUpdate, setQuizToUpdate] = useState(null);// State to hold the ID of the quiz being updated
+
+  const [editQuizIndex, setEditQuizIndex] = useState(// State to manage the list of questions for the quiz being edited
     [{ questionText: '', correctAnswer: '', options: ['', '', ''] }]);
     //Form error message variables
-  const [formError, setFormError] = useState('');
+  const [formError, setFormError] = useState('');// State to manage form error messages
   
 
-//========================================================
-  /* useEffect to fetch quizzes when the component mounts
- or when fetchQuizzes function changes*/
+//====================USE EFFECT HOOK====================================
+  /* useEffect to fetch quizzes when user is logged in and whenever 
+  the fetchQuizzes function or loggedIn state changes*/
   useEffect(() => {
+    //Conditional rendering to check if the user is logged in
     if (loggedIn === true) {
       fetchQuizzes()// Call the fetchQuizzes function to retrieve the quiz list
     }
-  }, [fetchQuizzes, loggedIn])// Dependency array: runs this effect whenever fetchQuizzes changes
+  }, [fetchQuizzes, loggedIn])
+  // Dependency array: this effect runs when either fetchQuizzes or loggedIn changes
 
   // ==============REQUESTS=======================
+  /*
+|============================|
+| CRUD OPERATION | HTTP VERB |
+|================|===========|
+|CREATE          | POST      | 
+|----------------|-----------|
+|READ            | GET       |  
+|----------------|-----------|     
+|UPDATE          | PUT       |
+|----------------|-----------|
+|DELETE          | DELETE    |
+|================|===========|
+*/
   // ----------POST-------------------
   //Function to add a new quiz
   const addNewQuiz = async () => {//Define an async function to fetch a new quiz
-    // console.log('add new Quiz');
+    // console.log('add new Quiz');//Log a message in the console for debugging purposes
     
     if (questions.length !== 5) {
       alert('You must add exactly 5 questions.');
-      return;// Exi the function early if the condition is not met
+      return;// Exit the function early if the condition is not met
 
     }
-
+  // Create the quiz object with the quiz name and list of questions
   const quiz = {name: quizName, questions}
     try {
       const token = localStorage.getItem('token');
       //Send a POST request to the server to add a new quiz
       const response = await fetch('http://localhost:3001/quiz/addQuiz', {
-        method: 'POST',
-        mode: 'cors',
+        method: 'POST',//HTTP request method
+        mode: 'cors',// Set the mode to 'cors' for cross-origin requests
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json',//Specify the content-type as JSON
           'Authorization': `Bearer ${token}`,//Include the token in the request header
         },
-        body: JSON.stringify(quiz)
+        body: JSON.stringify(quiz)// Convert the quiz object to a JSON string
       });
 
       //Response handling
       if (response.ok) {
         alert('New Quiz successfully added')
-        const newQuiz = await response.json(); 
-        setQuizList([...quizList, newQuiz]);
+        const newQuiz = await response.json(); // Parse the response as JSON
+        setQuizList([...quizList, newQuiz]);// Update the quiz list with the new quiz
         setQuizName('');     
         setQuestions([]);
         // console.log('Quiz created:', newQuiz);
       } 
       else {
-        throw new Error('There was an error creating the quiz');
+        throw new Error('There was an error creating the quiz');//Throw an Error message if the POST request is unsuccessful
       }
 
     } 
     catch (error) {
-      console.error('There was an error creating the quiz:', error);
-      setError('There was an error creating the quiz:', error);
+      console.error('There was an error creating the quiz:', error);//Log a message in the console for debugging purposes
+      setError('There was an error creating the quiz:', error);//Set the error state with an error message
     }
   };
 
@@ -240,6 +257,8 @@ export default function Page3(
           setFormError={setFormError}
           quizName={quizName}
           setQuizName={setQuizName}
+            currentQuestion={currentQuestion}
+              setCurrentQuestion={setCurrentQuestion}
         />
       </section>
       {/* Footer Component */}
