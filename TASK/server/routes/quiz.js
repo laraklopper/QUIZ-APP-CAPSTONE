@@ -63,7 +63,7 @@ const checkJwtToken = (req, res, next) => {
 //------------------GET---------------
 //Route to GET a specific quiz using the quiz Id
 router.get('/:id', async (req, res) => {
-    // console.log('Finding Quiz');//Log a
+    // console.log('Finding Quiz');//Log a message in the console for debugging purposes
     try {
         const quiz = await Quiz.findById(req.params.id); //Find the quiz by its ID from the request parameters
 
@@ -80,6 +80,7 @@ router.get('/:id', async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ message: error.message });// Send 500 status code and error message in JSON response
+        console.log
     }
 });
 
