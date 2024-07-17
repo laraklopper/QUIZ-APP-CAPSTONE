@@ -208,7 +208,9 @@ export default function Page3(
             <div className='quizItem' key = {quiz._id}>
             <Row  className='quizListRow'>
               <Col className='quizCol'>
+            {/* Display QuizName and username */}
                 <p className='itemText'>Quiz Name: {quiz.name}</p>
+                <p className="itemText">Created By: {quiz.createdBy}</p>
               </Col>
                 <Col xs={6} md={4} className='buttonCol'> 
                   <div>
