@@ -19,7 +19,8 @@ export default function Page3(
   setError,
   fetchQuizzes,
   questions,
-  logout
+  logout,
+    loggedIn
 }) {
 
   // ========STATE VARIABLES===============
@@ -28,21 +29,20 @@ export default function Page3(
   const [questions, setQuestions] = useState([]);//State used to store the list of Questions being added to the quiz
   const [currentQuestion, setCurrentQuestion] = useState({questionText: '', correctAnswer: '', options: ['','','']});
   //Edit Quiz variables
-  //const [newQuizName, setNewQuizName] = useState('');
+  //const [newQuizName, setNewQuizName] = useState('');//State to store the quizName after the quiz has been edited
   const [update, setUpdate] = useState(false);//State to toggle between update and non-update mode.
   const [quizToUpdate, setQuizToUpdate] = useState(null);//State to store the ID of the quiz being updated.
   const [editQuizIndex, setEditQuizIndex] = useState(// State to store the questions for the quiz being edited.
     [{ questionText: '', correctAnswer: '', options: ['', '', ''] }]);
-    //Form error message variables
-  // const [formError, setFormError] = useState('');
   
 //========================================================
   /* useEffect to fetch quizzes when the component mounts
  or when fetchQuizzes function changes*/
   useEffect(() => {
-    fetchQuizzes()// Call the fetchQuizzes function to retrieve the quiz list
-  },[fetchQuizzes])// Dependency array: runs this effect whenever fetchQuizzes changes
-
+    if (loggedIn === true) {
+      fetchQuizzes()// Call the fetchQuizzes function to retrieve the quiz list
+    }
+  }, [fetchQuizzes, loggedIn])// Dependency array: runs this effect whenever fetchQuizzes changes
   // ==============REQUESTS=======================
   // ----------POST-------------------
   //Function to add a new quiz
@@ -76,8 +76,6 @@ export default function Page3(
         setQuizList([...quizList, newQuiz]);
         setQuizName(''); 
         setQuestions([]);
-        // setFormError('');
-        // console.log('Quiz created:', newQuiz);
         
       } 
       else {
@@ -241,8 +239,6 @@ export default function Page3(
           addNewQuiz={addNewQuiz}      
           questions={questions}
           setQuestions={setQuestions}
-          // formError={formError}
-          // setFormError={setFormError}
           quizName={newQuizName}
           setQuizName={setNewQuizName}
         />
