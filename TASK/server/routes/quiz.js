@@ -6,9 +6,6 @@ const jwt = require('jsonwebtoken'); // Import JSON Web Token for authentication
 // JSON Web Token is a standard used to create access tokens for an application
 //Schemas
 const Quiz = require('../models/quizModel');// Import Quiz model
-/*Mongoose model that represents the Schema for quizzes in the database*/
-//Import custom middleware
-// import { checkJwtToken } from './middleware';
 
 //=======SETUP MIDDLEWARE===========
 router.use(express.json()); // Parse incoming request bodies in JSON format
@@ -19,12 +16,12 @@ router.use(cors()); //Enable Cross-Origin Resource sharing
 
 //Middleware to verify the JWT token
 const checkJwtToken = (req, res, next) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');// Get token from Authorization header
+    const token = req.header('Authorization')?.replace('Bearer ', '');
 
         //Conditional rendering to check if the token is present
     if (!token) {
         // console.log('Unauthorized: token missing');
-        return res.status(401).json(// Return 401 (Unauthorised) if no token is provided
+        return res.status(401).json(
             { message: 'Access denied. No token provided.' }
         );
     }
@@ -62,10 +59,11 @@ const checkJwtToken = (req, res, next) => {
 */
 //------------------GET---------------
 //Route to GET a specific quiz using the quiz Id
-router.get('/:id', async (req, res) => {
-    // console.log('Finding Quiz');//Log a message in the console for debugging purposes
+router.get('/quizId/:id', async (req, res) => {
+    console.log('Finding Quiz');//Log a message in the console for debugging purposes
     try {
-        const quiz = await Quiz.findById(req.params.id); //Find the quiz by its ID from the request parameters
+        //Find the quiz by its ID from the request parameters
+        const quiz = await Quiz.findById(req.params.id); 
 
         //Conditional rendering to check if the quiz exists
         if (!quiz) {
@@ -79,8 +77,8 @@ router.get('/:id', async (req, res) => {
         console.log(quiz);// Log quiz in the console for debugging purposes
     }
     catch (error) {
-        res.status(500).json({ message: error.message });// Send 500 status code and error message in JSON response
-        console.log
+        res.status(500).json(// Send 500 status code and error message in JSON response
+            { message: error.message });       
     }
 });
 
