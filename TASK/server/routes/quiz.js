@@ -124,7 +124,11 @@ router.post('/addQuiz', async (req, res) => {
     try {
         // Create a new quiz instance with the provided name and questions
     const newQuiz = new Quiz(
-        { name, questions }
+        { 
+            name, 
+            questions,
+            createdBy: req.user.username
+        }
     );
             
         const savedQuiz = await newQuiz.save();// Save the new quiz to the database
