@@ -1,16 +1,42 @@
 // Import necessary modules and packages
-const express = require('express');
-const router = express.Router();
-const cors = require('cors');
-const jwt = require('jsonwebtoken');
+const express = require('express'); // Import Express framework
+const router = express.Router(); // Create a router object
+const cors = require('cors'); // Import CORS for enabling Cross-Origin Resource Sharing
+const jwt = require('jsonwebtoken'); // Import JSON Web Token for authentication
+// JSON Web Token is a standard used to create access tokens for an application
 //Schemas
-const Quiz = require('../models/quizModel');
-//Import custom middlewqe
-import { checkJwtToken } from './middleware';
+const Quiz = require('../models/quizModel');// Import Quiz model
+/*Mongoose model that represents the Schema for quizzes in the database*/
+//Import custom middleware
+// import { checkJwtToken } from './middleware';
 
 //=======SETUP MIDDLEWARE===========
-router.use(cors())
-router.use(express.json())
+router.use(cors());// Enable CORS for all routes
+router.use(express.json());// Parse incoming JSON requests
+//Built-in middleware is used to parse incoming JSON requests
+
+//Middleware to verify the JWT token
+const checkJwtToken = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', '');// Get token from Authorization header
+
+    if (!token) {
+        return res.status(401).json(
+            { message: 'Access denied. No token provided.' }
+        );
+    }
+    try {
+        const decoded = jwt.verify(
+            token,
+            'Secret-Key',
+            /*process.env.JWT_SECRET*/
+        );
+        req.user = decoded;
+        next();
+    } catch (ex) {
+        console.error('No token attatched to the request');
+        res.status(400).json({ message: 'Invalid token.' });
+    }
+}
 
 
 //=============ROUTES=====================
@@ -30,7 +56,8 @@ router.use(express.json())
 */
 //------------------GET---------------
 //Route to GET a specific quiz using the quiz Id
-router.get('/:id',/* checkJwtToken,*/ async (req, res) => {
+router.get('/:id', async (req, res) => {
+    // console.log('Finding Quiz');//Log a
     try {
         const quiz = await Quiz.findById(req.params.id);
 
@@ -43,7 +70,7 @@ router.get('/:id',/* checkJwtToken,*/ async (req, res) => {
         // console.log(quiz);
     }
     catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message });// Send 500 status code and error message in JSON response
     }
 });
 
@@ -86,14 +113,11 @@ router.post('/addQuiz', async (req, res) => {
 })
 
 //---------PUT-----------
-const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
 // Route to edit a quiz
 router.put('/editQuiz/:id', checkJwtToken, async (req, res) => {
     const {id} = req.params;
 
-  if (!isValidObjectId(id)) {
-   return res.status(400).json({ message: 'Invalid quiz ID' });
-  }
 
   const { name, questions } = req.body;
 
