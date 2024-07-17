@@ -1,12 +1,20 @@
-const express = require('express');
-const router = express.Router();
+// Import necessary modules and packages
+const express = require('express');// Import Express Web framework 
+const router = express.Router();// Create an Express router
+/*
+The express.Router() function is used to create a new router object. 
+This function is used to create a new router object to handle requests. 
+*/
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const User = require('../models/userSchema')
 
 //=========SETUP MIDDLEWARE==========
-router.use(cors());
-router.use(express.json())
+router.use(express.json()); // Parse incoming request bodies in JSON format
+/*Built-Middleware function used to parse incoming requests with JSON payloads.
+Returns middleware that only parses JSON and only looks at requests where the
+Content-Type header matches the type option.*/
+router.use(cors()); //Enable Cross-Origin Resource sharing 
 
 // Middleware to verify JWT and extract user info
 const authenticateToken = (req, res, next) => {
@@ -42,48 +50,59 @@ const authenticateToken = (req, res, next) => {
 //=============GET=====================
 //Route to handle a GET request to fetch a single user
 router.get('/userId', authenticateToken, async (req, res) => {
-    console.log('Finding user');
+    console.log('Finding user');// Log a message in the console for debugging purposes
     try {
-        const user = await User.findById(req.user.userId)
+        // Retrieve user details using the authenticated user ID from req.user.userId
+        const user = await User.findById(req.user.userId);
 
-        if (!user) {
-            console.error('User not found');
-            return res.status(400).json({message: 'User Not Found'})
-            
-        }
-    } catch (error) {
-        console.error('Error fetching Users', error.message);
+    //Conditional rendering to check if the user exists
+         if (!user) {
+            console.error('User not found');//Log an error message in the console for debugging purposes
+            return res.status(400).json(// Return a JSON response with a 400 status code and 'User Not Found' message.
+                { message: 'User Not Found'}
+            )
+         }
+        
+        res.status(200).json(user);//If the user is found, sends a JSON response with the user details and a 200 status code (OK).
+        console.log('User details', user);//Log the user details to the console for debugging purposes.
+        
+    } 
+    catch (error) {
+     console.error('Error fetching Users', error.message);// Log error message in the console for debugging purposes
+        /* If an error occurs during database operation, 
+    return a 500 Internal Server Error response*/
         res.status(500).json(
-            {message: 'Internal Server Error', error: error.message})
+            {message: 'Internal Server Error', error: error.message}
+        )
     }
 })
 
 //Route to handle a GET request to fetch all users
 router.get('/findUsers', async (req, res) => {
-    console.log('Finding users');
+    console.log('Finding users');//Log a message in the console for debugging purposes
     try {
-        const {username} = req.query;
-        const query = username ? {username} : {};
-        const users = await User.find(query)
+        const {username} = req.query;// Extract the username from query parameters
+        const query = username ? {username} : {};// Create a MongoDB query object based on whether username is provided or not
+        const users = await User.find(query);// Using the User model to find users based on the query
 
-        console.log(users);
-        res.status(200).json(users);
+        console.log(users);//Log the fetched users to the console for debugging purposes
+        res.status(200).json(users);// Send a JSON response with the found users and a 200 (OK) status code
     } catch (error) {
-        console.error('Error fetching users');
-        res.status(500).json({message: 'Internal Server Error'})
+        console.error('Error fetching users');// Log error message in the console for debugging purposes
+        res.status(500).json({message: 'Internal Server Error'});// Send a 500 (Internal Server Error)status code and an error message in case of an error
     }
 })
 
 //=================POST==========================
 //Route to send POST request to login endpoint
 router.post('/login', async (req, res) => {
-    console.log(res.body);
-    console.log('User Login');
+    console.log(res.body);// Log the request body containing the username and password
+    console.log('User Login');// Log a message in the console indicating user login for debugging purposes
 
     try {
-        const {username, password} = req.body;
-        const user = await User.findOne({username, password})
-        console.log(user);
+        const {username, password} = req.body;// Extract username and password from the request body
+        const user = await User.findOne({username, password});// Find the user in the database by username and password
+        console.log(user);// Log a message in the console indicating user login for debugging purposes
 
         if (password === user.password) {
             const jwtToken = jwt.sign(
