@@ -12,6 +12,7 @@ const User = require('../models/userSchema');
 router.use(express.json()); 
 router.use(cors());
 
+//=========CUSTOM MIDDLEWARE================
 //Middleware to verify the JWT token
 const checkJwtToken = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -77,30 +78,21 @@ router.get('/quizId/:id', async (req, res) => {
     }
 });
 
-/* 
-// Route to fetch all the quizzes from the database
-router.get('/findQuizzes', async (req, res) => {
-    try {
-        const quizzes = await Quiz.find({}).populate('user', 'username');
-        res.status(200).json(quizzes);
-    } catch (error) {
-        console.error('Error finding quizzes:', error.message);
-        res.status(500).json({ message: error.message });
-    }
-});*/
+
 // Route to fetch all the quizzes from the database
 router.get('/findQuizzes', async (req, res) => {
     //console.log('Finding Quizzes')
     try {
-        const quizzes = await Quiz.find({});//Find all quizzes
-        res.status(200).json(quizzes); 
+        const quizzes = await Quiz.find({})//Find all quizzes
+        // const quizzes = await Quiz.find({}).populate('user', 'username');
+        res.status(200).json(quizzes);        
+        // console.log(quizzes);
     } 
     catch (error) {
-        console.error('Error finding quizzes:', error.message);
+        console.error('Error finding quizzes:', error.message); 
         res.status(500).json({ message: error.message });
     }
 });
-
 
 //------------POST--------------
 // Save quiz results
@@ -125,14 +117,15 @@ router.post('/addQuiz', async (req, res) => {
                 {message: 'Quiz name and questions are required'})
         } 
     try {
-        // Create a new quiz instance with the provided name and questions
-    const newQuiz = new Quiz(
+         // Create a new quiz instance with the provided name and questions
+        const newQuiz = new Quiz({ name, questions });
+     /*  const newQuiz = new Quiz(
         { 
             name, 
             questions,
             createdBy: req.user.username
         }
-    );
+    );*/
     
         const savedQuiz = await newQuiz.save();// Save the new quiz to the database
         res.status(201).json(savedQuiz);
@@ -158,7 +151,6 @@ router.put('/editQuiz/:id', checkJwtToken, async (req, res) => {
             { new: true }); // Return the updated document
 
         if (!updatedQuiz) {
-       
             return res.status(404).json({ message: 'Quiz not found' });
         }
         res.json(updatedQuiz);
@@ -183,7 +175,6 @@ router.delete('/deleteQuiz/:id', async (req, res) => {
                 { message: 'Quiz not found' }); 
         }
 
-        
         res.status(200).json({ message: 'Quiz successfully deleted' });
         res.json({ message: 'Quiz successfully deleted', quiz }); 
     } catch (error) {
