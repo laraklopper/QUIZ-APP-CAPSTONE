@@ -36,6 +36,7 @@ export default function EditQuiz(
   };
 
   //=================PUT REQUEST=================
+/*
 //Function to edit a quiz
     const editQuiz = async () => {
     const updatedQuiz = { name: newQuizName, questions: quiz.questions };
@@ -61,7 +62,7 @@ export default function EditQuiz(
       setError('There was an error updating the quiz:', error);
     }
   };
-
+*/
   //==========JSX RENDERING===========================
 
    return (
