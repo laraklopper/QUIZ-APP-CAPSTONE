@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const Quiz = require('../models/quizModel');
 const User = require('../models/userSchema');
 const Score = require('../models/scoreSchema')
+
 //=======SETUP MIDDLEWARE===========
 router.use(express.json()); 
 router.use(cors());
@@ -95,7 +96,7 @@ router.get('/findQuizzes', async (req, res) => {
 });
 
 //------------POST--------------
-// Save quiz results
+// Route to save quiz results
 /*router.post('/:id/result', async (req, res) => {
     try {
         const { quizId, score } = req.body;
