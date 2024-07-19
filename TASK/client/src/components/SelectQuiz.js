@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -6,22 +6,28 @@ import Button from 'react-bootstrap/Button';
 //SelectQuiz function component
 export default function SelectQuiz(
     {
-        quizList, 
-        setQuizName,
-        handleTimerChange,
-        startQuiz,
-        timerEnabled
-
+        fetchQuiz, 
+        setQuiz
     }
 ) {
+ const [error, setError] = useState('');
+
+    
+const handleFetchQuiz = async (quizId) => {
+    try {
+      const fetchedQuiz = await fetchQuiz(quizId);
+      setQuiz(fetchedQuiz);
+    } catch (err) {
+      setError('Error fetching quiz');
+    }
+  };
     //=========JSX RENDERING========
     
   return (
       <div id='selectQuiz'>
-          {/* <form> */}
           <Row>
               <Col>
-                  <h2 className='h1'>SELECT QUIZ</h2>
+                  <h2 className='h2'>SELECT QUIZ</h2>
               </Col>
           </Row>
           <Row>
@@ -51,7 +57,7 @@ export default function SelectQuiz(
                   </Button>
               </Col>
           </Row>
-          {/* </form> */}
+         
       </div>
   )
 }
