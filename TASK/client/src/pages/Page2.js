@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col'; 
 import Button from 'react-bootstrap/Button'; 
 import Dropdown from 'react-bootstrap/Dropdown';
+// import Form from 'react-bootstrap/Form';
 // Components
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -25,7 +26,7 @@ export default function Page2({//Export default Page2 function component
   const [selectedQuiz, setSelectedQuiz] = useState(null); 
   const [questionIndex, setQuestionIndex] = useState(0)
   // Score Variables
-  const [score, setScore] = useState(0);
+  //const [score, setScore] = useState(0);
   // Timer variables
   const [timer, setTimer] = useState(null);
   const [quizTimer, setQuizTimer] = useState(false); 
