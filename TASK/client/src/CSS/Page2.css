@@ -1,9 +1,11 @@
+/*  */
 .quiz{
     margin: 0px;
     padding: 10px;
 }
+
 /* QUIZ */
-.timerLabel{
+addTimerLabel{
     display: flex;
     align-items: baseline;
 }
