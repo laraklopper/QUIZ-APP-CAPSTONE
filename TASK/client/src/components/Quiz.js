@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button';
 export default function Quiz({
   selectedQuiz,
   timer,
-  currentQuestion,
+  questionIndex,
   handleAnswerClick,
   quizTimer,
   handleNextQuestion,
@@ -40,11 +40,11 @@ export default function Quiz({
         {/*Question*/}
             <div>
               <h3 id='question'>
-                QUESTION {currentQuestion + 1} of {selectedQuiz.questions.length}
+                QUESTION {questionIndex + 1} of {selectedQuiz.questions.length}
               </h3>
             </div>
             <div>
-              <p className='questionText'>{selectedQuiz.questions[currentQuestion].questionText}</p>
+              <p className='questionText'>{selectedQuiz.questions[questionIndex].questionText}</p>
             </div>
             </Col>
                 <Col xs={6} md={4}></Col>
@@ -55,12 +55,12 @@ export default function Quiz({
       </Row>
         <div className='questions'>
           {/* Map through and randomize options */}
-                {randomizeOptions(selectedQuiz.questions[currentQuestion].options).map(
+                {randomizeOptions(selectedQuiz.questions[questionIndex].options).map(
                   (option, index) => (
                     <Button
                       key={index}
                       onClick={() => handleAnswerClick
-                     (option === selectedQuiz.questions[currentQuestion].correctAnswer)}
+                     (option === selectedQuiz.questions[questionIndex].correctAnswer)}
                     >
                       {option}
                     </Button>
