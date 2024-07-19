@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 //Schemas
 const Quiz = require('../models/quizModel');
 const User = require('../models/userSchema');
-
+const Score = require('../models/scoreSchema')
 //=======SETUP MIDDLEWARE===========
 router.use(express.json()); 
 router.use(cors());
@@ -99,12 +99,15 @@ router.get('/findQuizzes', async (req, res) => {
 /*router.post('/:id/result', async (req, res) => {
     try {
         const { quizId, score } = req.body;
-        // Logic to save results in the database
+        const result = new Result({ user: req.user.id, quiz: quizId, score });
+        await score.save();
         res.status(200).json({ message: 'Result saved successfully' });
+        res.json({score})
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });*/
+
 
 //Route to add new quiz
 router.post('/addQuiz', async (req, res) => {
