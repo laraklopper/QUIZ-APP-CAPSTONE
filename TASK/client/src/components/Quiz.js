@@ -5,85 +5,85 @@ import Button from 'react-bootstrap/Button';
 
 //Quiz function component
 export default function Quiz({
-  timerEnabled,
+  selectedQuiz,
   timer,
-  questions,
   currentQuestion,
-  handleOptionClick,
-  lastQuestion,
-  handleNextQuestion
+  handleAnswerClick,
+  quizTimer,
+  handleNextQuestion,
+  handleRestart
 }) {
 
-//=======================================================  
-  useEffect(() => {
-    const fetchQuiz = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3001/quiz/${id}`, {
-          method: 'GET',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          }
-        });
+  //============EVENT LISTENERS=============
+   // Function to randomize the answer options
+  const randomizeOptions = (options) => {
+    return options.sort(() => Math.random() - 0.5);
+  };
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch quiz');
-        }
 
-        const quizData = await response.json();
-        setQuiz(quizData.quiz);
-      } catch (error) {
-        console.error('Error fetching quiz:', error);
-      }
-    };
-
-    fetchQuiz();
-  }, [id]);
   //================JSX RENDERING======================
 
   return (
-    <div>
-      {/* Add timer if user chooses to add the timer option */}  
-      {timerEnabled && (
-        <Row>
-          <Col xs={6} md={4}>
-            <p>TIME REMAINING: {timer}</p>
-          </Col>
-        </Row>
-      )}
-      <Row>
-        <Col xs={12} md={12}>
-          <h4 className='h4'>{questions[currentQuestion]._id}. {questions[currentQuestion].question}</h4>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={6} md={4}></Col>
-        <Col xs={6} md={4}>
-          <div id='options'>
-            <Row id='questionsRow'>
-              <Col>
-                {questions[currentQuestion].options.map((option, index) => (
-                  <Button key={index} onClick={() => handleOptionClick(option)}>
-                    {optionIds[index]}{option}
-                  </Button>
-                ))}
+    //Selected Quiz
+    <div id='quizDisplay'>
+      {/* Selected Quiz Name*/}  
+           <Row id='quizNameRow'>
+              <Col id='quizNameCol'>
+              {/* SelectedQuiz name */}
+                <h3 className='h3'>{selectedQuiz.name}</h3>
               </Col>
-            </Row>
+            </Row>   
+      {/*Quiz*/}
+      <div id='quiz'>
+       <Row id='questionRow'>
+        <Col xs={6} md={4} id='questionCol'>
+        {/*Question*/}
+            <div>
+              <h3 id='question'>
+                QUESTION {currentQuestion + 1} of {selectedQuiz.questions.length}
+              </h3>
+            </div>
+            <div>
+              <p className='questionText'>{selectedQuiz.questions[currentQuestion].questionText}</p>
+            </div>
+            </Col>
+                <Col xs={6} md={4}></Col>
+              {/*Timer display*/}
+                <Col xs={6} md={4} id='timerCol'>
+                  {quizTimer && <div>TIMER: {timer}</div>}
+                </Col>
+      </Row>
+        <div className='questions'>
+          {/* Map through and randomize options */}
+                {randomizeOptions(selectedQuiz.questions[currentQuestion].options).map(
+                  (option, index) => (
+                    <Button
+                      key={index}
+                      onClick={() => handleAnswerClick
+                     (option === selectedQuiz.questions[currentQuestion].correctAnswer)}
+                    >
+                      {option}
+                    </Button>
+                  )
+                )}
           </div>
-        </Col>
-        <Col xs={6} md={4}></Col>
-      </Row>
-      <Row>
-        <Col xs={6} md={4}></Col>
-        <Col xs={6} md={4}>
-          <Button onClick={handleNextQuestion}>
-            {lastQuestion ? 'Submit' : 'Next Question'}
-          </Button>
-        </Col>
-        <Col xs={6} md={4}></Col>
-      </Row>
+             <Row>
+                <Col xs={6} md={4}>
+                  <div className='score'>
+                    <p className='result'>Result: {score} of {selectedQuiz.questions.length}</p>
+                  </div>
+                </Col>
+                <Col xs={6} md={4}></Col>
+                <Col xs={6} md={4}>
+                  {/* Button to move to next question */}
+                  <Button type='button' onClick={handleNextQuestion}>
+                    Next Question
+                  </Button>
+                  {/* Button to restart quiz */}
+                  <Button type='reset' onClick={handleRestart}>Restart</Button>
+                </Col>
+             </Row>
+        </div>
     </div>
   );
 }
