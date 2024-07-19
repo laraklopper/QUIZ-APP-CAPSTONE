@@ -16,17 +16,18 @@ export default function Page2({//Export default Page2 function component
   // PROPS PASSED FROM PARENT COMPONENT
   quizList = [],
   logout,
-  fetchQuizzes,
+  quiz,
+  setQuiz,
+  fetchQuizzes
 }) {
   // =========STATE VARIABLES====================
   // Quiz variables
   const [selectedQuiz, setSelectedQuiz] = useState(null); 
-  const [currentQuestion, setCurrentQuestion] = useState(0); // => change state variable name
+  const [questionIndex, setQuestionIndex] = useState(0)
   // Score Variables
-  const [score, setScore] = useState(0);// State to store the user's score
+  const [score, setScore] = useState(0);
   // Timer variables
   const [timer, setTimer] = useState(null);
-  const [time, setTime] = useState(30)
   const [quizTimer, setQuizTimer] = useState(false); 
   //============USE EFFECT HOOK==================
  /* useEffect to fetch quizzes when the component 
@@ -36,37 +37,71 @@ useEffect(() => {
 }, [fetchQuizzes]); 
   // Dependency array: runs this effect whenever fetchQuizzes changes
 
+useEffect(() => {
+  //Function to fetch a single quiz
+    const fetchQuiz = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:3001/quiz/${id}`, {
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          }
+        });
 
+        if (!response.ok) {
+          throw new Error('Failed to fetch quiz');
+        }
+        
+        const quizData = await response.json();
+        setQuiz(quizData.quiz);
+      } catch (error) {
+        console.error('Error fetching quiz:', error);
+      }
+    };
+
+    fetchQuiz();
+  }, [id]);
   //=======EVENT LISTENERS============
 
   // Function to handle quiz selection
 const handleSelectQuiz = (quiz) => {
   setSelectedQuiz(quiz);
-  setCurrentQuestion(0);// => change variable name
+  setQuestionIndex(0);
   setScore(0);
   setTimer(null); 
 };
 
 //Function to move to next question
   const handleNextQuestion = () => {
-    if(currentQuestion < selectedQuiz.questions.length - 1){//=> change variable name
-      setCurrentQuestion(currentQuestion + 1)
+    if(questionIndex < selectedQuiz.questions.length - 1){
+      setQuestionIndex(questionIndex + 1)
     }
     else(
       setSelectedQuiz(null);
       setTimer(null)
     )
   }
-
+/*
+const handleNext = () => {
+  setQuestionIndex(questionIndex + 1);
+  if(questionIndex == selectedQuiz.questions.length){
+    //quiz completed
+    //post score to database
+  }
+}
+*/
   // Function to restart the quiz
   const handleRestart = () => {
-    setCurrentQuestion(0); // Reset the current question index to 0 (first question)
+    setQuestionIndex(0); // Reset the current question index to 0 (first question)
     setScore(0);  // Reset the score to 0
   };
 
   // Start the quiz and initialize a timer if the timer option is selected
   const handleQuizStart = () => {
-    setCurrentQuestion() //=> change variable name 
+    setQuestionIndex()  
     setScore(0)
     if (quizTimer) {
       setTimer(30); // Set timer to 30 seconds for each question => change to 10
@@ -154,7 +189,7 @@ const handleSelectQuiz = (quiz) => {
           {selectedQuiz && (
            <Quiz 
            selectedQuiz={selectedQuiz}
-           currentQuestion={currentQuestion}
+           questionIndex={questionIndex}
            handleAnswerClick={handleAnswerClick}
            quizTimer={quizTimer}
            timer={timer}
