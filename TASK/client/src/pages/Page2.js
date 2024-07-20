@@ -17,14 +17,14 @@ export default function Page2({//Export default Page2 function component
   // PROPS PASSED FROM PARENT COMPONENT
   quizList,
   logout,
-  // quiz,
-  // setQuiz,
+  quiz,
+  setQuiz,
   fetchQuizzes
 }) {
   // =========STATE VARIABLES====================
   // Quiz variables
   const [selectedQuizId, setSelectedQuizId] = useState('');//State to store the selected quizId
-  const [quiz, setQuiz] = useState(null);//Stores the fetched quiz data
+  // const [quiz, setQuiz] = useState(null);//Stores the fetched quiz data
   // const [questionIndex, setQuestionIndex] = useState(0)
   // Score Variables
   const [score, setScore] = useState(0);//State used to store current score
@@ -120,13 +120,6 @@ useEffect(() => {
       setError('Error fetching quiz'); // Set error message
     }
   };
-//   // Function to handle quiz selection
-// const handleSelectQuiz = (quiz) => {
-//   setSelectedQuiz(quiz);
-//   setQuestionIndex(0);
-//   setScore(0);
-//   setTimer(null); 
-// };
 
 //Function to move to next question
   const handleNextQuestion = () => {
@@ -138,42 +131,7 @@ useEffect(() => {
       setTimer(null)
     )
   }
-  
-/*
-const handleNext = () => {
-  setQuestionIndex(questionIndex + 1);
-  if(questionIndex == selectedQuiz.questions.length){
-    //quiz completed
-    //post score to database
-  }
-}
 
-  // Function to restart the quiz
-  const handleRestart = () => {
-    setQuestionIndex(0); // Reset the current question index to 0 (first question)
-    setScore(0);  // Reset the score to 0
-  };
-
-  // Start the quiz and initialize a timer if the timer option is selected
-  const handleQuizStart = () => {
-    setQuestionIndex()  
-    setScore(0)
-    if (quizTimer) {
-      setTimer(30); // Set timer to 30 seconds for each question => change to 10
-      const interval = setInterval(() => {
-        setTimer((prevTimer) => {
-          if (prevTimer === 1) { 
-            clearInterval(interval);
-            handleNextQuestion();
-            return null;
-          }
-          return prevTimer - 1;
-        });
-      }, 1000);//Set the interval to 1 second
-      return () => clearInterval(interval);// Clear interval on component unmount
-    }
-  };
-*/
 
     // Function to restart the quiz
   const handleRestart = () => {
