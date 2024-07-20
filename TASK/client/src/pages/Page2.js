@@ -106,6 +106,7 @@ export default function Page2(//Export default Page2 function component
   const fetchQuiz = async (quizId) => {
     try {
       const token = localStorage.getItem('token'); // Get token from local storage
+      //Send a GET request to the server to fetch a quiz
       const response = await fetch(`http://localhost:3001/quiz/quizId/${quizId}`, {
         method: 'GET',//HTTP request method
         mode: 'cors',
@@ -115,6 +116,7 @@ export default function Page2(//Export default Page2 function component
         },
       });
 
+      //Conditional rendering
       if (response.ok) {
         const quizData = await response.json(); // Parse response data
         setQuiz(quizData.quiz); // Set the fetched quiz data
@@ -143,7 +145,7 @@ export default function Page2(//Export default Page2 function component
         </Row>
         <div>
           <Row>
-            {/* Form Select Quiz */}
+            {/* Form to Select Quiz */}
             <Col xs={6} md={4} id='selectQuizCol'>
               <label htmlFor='quiz'>SELECT</label>
               <Form.Select value={selectedQuizId} onChange={handleSelectQuiz}>
@@ -161,6 +163,7 @@ export default function Page2(//Export default Page2 function component
         </div>
         <Col xs={6} md={4}></Col>
         <div>
+                {selectedQuizId && (
           <div id='quizDisplayForm'>
             {/* Form to start quiz */}
             <form>
@@ -176,9 +179,9 @@ export default function Page2(//Export default Page2 function component
                   <label id='addTimerLabel'>
                     <p className='labelText'>ADD TIMER:</p>
                     <input
-                      type='checkbox'
-                      checked={quizTimer}
-                      onChange={(e) => setQuizTimer(e.target.checked)}
+                      type='checkbox'//Input type
+                      checked={quizTimer}// Sets the checked state of the checkbox based on the `quizTimer` state
+                      onChange={(e) => setQuizTimer(e.target.checked)}// Updates the `quizTimer` state when the checkbox is toggled
                       id='quizTimer'
                     />
                   </label>
@@ -191,6 +194,8 @@ export default function Page2(//Export default Page2 function component
               </Row>
             </form>
           </div>
+        )}
+        {/*QUIZ*/}
           {quiz && (
             <Quiz
               selectedQuiz={quiz} // Pass selected quiz data
