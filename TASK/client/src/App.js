@@ -36,9 +36,6 @@ export default function App() {
   //Quiz variables
   const [quizList, setQuizList] = useState([]); // State to store fetched quizzes
   const [quizName, setQuizName] = useState('');
-  // const [questions, setQuestions] = useState([
-  //   { questionText: '', correctAnswer: '', options: ['', '', '',' '] }
-  // ]);
   //Event variables
   const [error, setError] = useState(null);
   //State variables to manage user Login
@@ -54,7 +51,7 @@ export default function App() {
         if (!token || !loggedIn) return;
 
         const response = await fetch('http://localhost:3001/users/findUsers', {
-          method: 'GET',
+          method: 'GET',//HTTP request method
           mode: 'cors',
           headers: {
             'Content-Type': 'application/json',
@@ -128,9 +125,9 @@ export default function App() {
       }
 
       const quizData = await response.json();
-      setQuizList(quizData);
-      
-    } catch (error) {
+      setQuizList(quizData);      
+    } 
+    catch (error) {
       console.error('Error fetching quizzes:', error);
       setError('Error fetching quizzes');
     }
