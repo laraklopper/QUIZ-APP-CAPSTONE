@@ -6,8 +6,8 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken'); 
 //Schemas
 const Quiz = require('../models/quizModel');
-const User = require('../models/userSchema');
-const Score = require('../models/scoreSchema')
+// const User = require('../models/userSchema');
+//const Score = require('../models/scoreSchema')
 
 //=======SETUP MIDDLEWARE===========
 router.use(express.json()); 
@@ -16,7 +16,7 @@ router.use(cors());
 //=========CUSTOM MIDDLEWARE================
 //Middleware to verify the JWT token
 const checkJwtToken = (req, res, next) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    const token = req.header('Authorization')?.replace('Bearer ', '');// Extract the token from the Authorization header
 
     if (!token) {
         // console.log('Unauthorized: token missing');
@@ -25,6 +25,7 @@ const checkJwtToken = (req, res, next) => {
         );
     }
     try {
+         // Verify the token using the secret key
         const decoded = jwt.verify(
             token,
             'Secret-Key',//SecretKey
@@ -38,6 +39,20 @@ const checkJwtToken = (req, res, next) => {
     }
 }
 
+// Function to format the quiz data
+const formatQuestionData = (quiz) => {
+// Map through each question in the quiz
+    return quiz.questions.map(question => {
+            // For each question, create an object with the question text and formatted options
+        return {
+            questionText: question.questionText, // The text of the question
+            optionsWithAnswer: question.options.map(option => ({
+                option,// Each option text
+                isCorrect: option === question.correctAnswer // Boolean indicating if this option is the correct answer
+            }))
+        };
+    });
+};
 
 //=============ROUTES=====================
 
@@ -69,16 +84,17 @@ router.get('/quizId/:id', async (req, res) => {
             return res.status(404).json({message: 'quiz not found'})
             
         }
-
+        // const formattedData = formatQuestionData(quiz); // Format the quiz data
+        // res.json({ quiz: formattedData }); // Return the formatted quiz data
         res.json({quiz});// If the quiz data is return quiz data JSON format
         console.log(quiz);// Log quiz in the console for debugging purposes
     }
     catch (error) {
+        console.error('Error finding quiz:', error.message); // Log any error message in the console for debugging purposes
         res.status(500).json(// Send 500 status code and error message in JSON response
             { message: error.message });       
     }
 });
-
 
 // Route to fetch all the quizzes from the database
 router.get('/findQuizzes', async (req, res) => {
