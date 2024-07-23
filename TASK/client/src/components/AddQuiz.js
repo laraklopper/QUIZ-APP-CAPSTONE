@@ -17,6 +17,7 @@ export default function AddQuiz(
     setCurrentQuestion
 }) {
   //===========STATE VARIABLES====================
+  const [username, setUsername] = useState(userData.username || '');
   const [errorMessage, setErrorMessage] = useState('');// State for error messages
 
   //============EVENT LISTENERS=========================
@@ -28,12 +29,12 @@ export default function AddQuiz(
       console.log('You must add up to 5 questions.');//Log a message in the console for debugging purposes
       return;
     }
-    // Conditional rendering to check if the current question has all required fields filled
+    
     if (!currentQuestion.questionText || !currentQuestion.correctAnswer || currentQuestion.options.some(opt => !opt)) {
       setErrorMessage('Please fill in all fields before adding a question.');
       return;
     }
-    setQuestions([...questions, currentQuestion]);// Add the current question to the list of questions
+    setQuestions([...questions, currentQuestion]);
     // Reset the current question state
     setCurrentQuestion(
       { questionText: '', correctAnswer: '', options: ['', '', ''] });
@@ -45,6 +46,10 @@ export default function AddQuiz(
     setQuestions(newQuestions)// Update the questions state
   }
 
+  
+  const handleAddNewQuiz = () => {
+    addNewQuiz(username);
+  };
 
   //============JSX RENDERING================
   return (
@@ -72,7 +77,22 @@ export default function AddQuiz(
             />
             </label>
           </Col>
-          <Col xs={12} md={8}>
+           <Col xs={6} md={4}>
+          </Col>
+          <Col xs={6} md={4}>
+            <label className='addQuizLabel'>
+              <p className='labelText'>USERNAME:</p>
+              <input
+                type='text'
+                name='username'
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete='off'
+                placeholder='USERNAME'
+                required
+                className='addQuizInput'
+              />
+            </label>
           </Col>
         </Row>
         <div id='quizInput'>
@@ -225,7 +245,7 @@ export default function AddQuiz(
             <Col md={8}></Col>
             {/* Button to add a new quiz */}
             <Col md={4}>
-              <Button variant='primary' type='button' onClick={addNewQuiz}>
+              <Button variant='primary' type='button' onClick={handleAddNewQuiz}>
                   ADD QUIZ
               </Button>
             </Col>
