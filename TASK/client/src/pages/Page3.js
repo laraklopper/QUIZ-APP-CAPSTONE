@@ -12,7 +12,7 @@ import Footer from '../components/Footer';//Import the Footer component from '..
 import EditQuiz from '../components/EditQuiz';//Import the EditQuiz component from '../components/EditQuiz'
 
 // Page3 function component
-export default function Page3(
+export default function Page3(//Export default Page3 function component
   {//PROPS PASSED FROM PARENT COMPONENT
   quizList, 
   setQuizList, 
@@ -39,70 +39,70 @@ export default function Page3(
   
 
 //====================REACT HOOKS====================================
+  // Memoized callback to fetch quizzes if the user is logged in
   const fetchQuizzesMemo = useCallback(() => {
-    if(loggedIn){
-      fetchQuizzes()
+    if (loggedIn) { // Check if the user is logged in
+      fetchQuizzes(); // Fetch the quizzes from the server
     }
-  },[fetchQuizzes, loggedIn])
+  }, [fetchQuizzes, loggedIn]); // Dependencies: fetchQuizzes function and loggedIn boolean
 
-  useEffect(() => {
-    fetchQuizzesMemo()
-  },[fetchQuizzesMemo]);
+
+// Fetch quizzes when the component mounts or when fetchQuizzesMemo changes
+useEffect(() => {
+  fetchQuizzesMemo(); // Call the memoized function to fetch quizzes
+}, [fetchQuizzesMemo]); // Dependency array: Re-run if fetchQuizzesMemo changes
+
+    /* useEffect to fetch quizzes when the component mounts
+ or when fetchQuizzes function changes*/
+  // useEffect(() => {
+  //   if (loggedIn === true) {
+  //     fetchQuizzes()
+  //   }
+  // }, [fetchQuizzes, loggedIn])
   // ==============REQUESTS=======================
-  /*
-|============================|
-| CRUD OPERATION | HTTP VERB |
-|================|===========|
-|CREATE          | POST      | 
-|----------------|-----------|
-|READ            | GET       |  
-|----------------|-----------|     
-|UPDATE          | PUT       |
-|----------------|-----------|
-|DELETE          | DELETE    |
-|================|===========|
-*/
   // ----------POST-------------------
   //Function to add a new quiz
-  const addNewQuiz = async () => {
-    console.log('add new Quiz');
-    
+  const addNewQuiz = async () => {//Define an async function to add a new Quiz
+    console.log('add new Quiz');//Log a message in the console for debugging purposes
+    // Check if exactly 5 questions are provided
     if (questions.length !== 5) {
-      alert('You must add exactly 5 questions.');
+      setFormError('You must add exactly 5 questions.')
+      // alert('You must add exactly 5 questions.'); // Alert the user if not 5 questions
       return;// Exit the function early if the condition is not met
 
     }
+      // Create a quiz object to send to the server
   const quiz = { name: quizName, questions, username };
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token');// Retrieve the authentication token from local storage
       //Send a POST request to the server to add a new quiz
       const response = await fetch('http://localhost:3001/quiz/addQuiz', {
-        method: 'POST',
-        mode: 'cors',
+        method: 'POST',//HTTP request method
+        mode: 'cors',//Enable CORS for cross-origin requests
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',//Specify the Content-Type as JSON
+          'Authorization': `Bearer ${token}`,//Include the token for authentication
         },
         body: JSON.stringify(quiz)
       });
 
       //Response handling
       if (response.ok) {
-        alert('New Quiz successfully added')
-        const newQuiz = await response.json(); 
-        setQuizList([...quizList, newQuiz]);
-        setQuizName('');     
-        setQuestions([]);
+        const newQuiz = await response.json(); // Parse the JSON response
+           setQuizList([...quizList, newQuiz]); // Update local quiz list state
+      setQuizName(''); // Clear the quiz name input
+      setQuestions([]); // Clear the questions input
+      alert('New Quiz successfully added'); // Notify the user of success
         // console.log('Quiz created:', newQuiz);
       } 
       else {
-        throw new Error('There was an error creating the quiz');
+        throw new Error('There was an error creating the quiz');// Throw an error if the POST request is unsuccessful
       }
 
     } 
     catch (error) {
-      console.error('There was an error creating the quiz:', error);
+      console.error('There was an error creating the quiz:', error);//Log an error message in the console for debugging purposes
       setError('There was an error creating the quiz:', error);
     }
   };
@@ -116,14 +116,14 @@ export default function Page3(
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token');// Retrieve the authentication token from local storage
       //Send a PUT request to the server to edit a quiz
       const response = await fetch(`http://localhost:3001/quiz/editQuiz/${quizId}`, {
-        method: 'PUT',
+        method: 'PUT',//HTTP request method
         mode: 'cors',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json', // Specify content type as JSON
+          'Authorization': `Bearer ${token}`,// Include the token for authentication
         },
         body: JSON.stringify(
           {
@@ -144,7 +144,7 @@ export default function Page3(
       }
       
     } catch (error) {
-      console.error(`Error editing the quiz: ${error}`);
+      console.error(`Error editing the quiz: ${error}`);//Log an error message in the console for debugging purposes
       setError(`Error editing the quiz: ${error}`);
     }
   }
@@ -156,10 +156,10 @@ export default function Page3(
       const token = localStorage.getItem('token');
       //Send a DELETE request to server to delete a quiz
       const response = await fetch(`http://localhost:3001/quiz/deleteQuiz/${quizId}`, {
-        method: 'DELETE',
-        mode: 'cors',
+        method: 'DELETE',//HTTP request method
+        mode: 'cors',//Enable CORS for cross-origin requests
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json',//Specify the content-type as JSON
           'Authorization': `Bearer ${token}`,
         }
       });
