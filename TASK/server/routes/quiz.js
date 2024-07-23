@@ -38,7 +38,7 @@ const checkJwtToken = (req, res, next) => {
         res.status(400).json({ message: 'Invalid token.' });
     }
 }
-
+/*
 // Function to format the quiz data
 const formatQuestionData = (quiz) => {
 // Map through each question in the quiz
@@ -53,7 +53,7 @@ const formatQuestionData = (quiz) => {
         };
     });
 };
-
+*/
 //=============ROUTES=====================
 
 /*
@@ -72,7 +72,7 @@ const formatQuestionData = (quiz) => {
 //------------------GET---------------
 //Route to GET a specific quiz using the quiz Id
 router.get('/quizId/:id', async (req, res) => {
-    console.log('Finding Quiz');
+    console.log('Finding Quiz'); // Log message in the console for debugging purposes
     try {
         //Find the quiz by its ID from the request parameters
         const quiz = await Quiz.findById(req.params.id); 
@@ -80,7 +80,7 @@ router.get('/quizId/:id', async (req, res) => {
         //Conditional rendering to check if the quiz exists
         if (!quiz) {
             /*If no quiz is found with the given ID, return
-                a 404 status code with a JSON response*/
+                a 404(Not Found) status code with a JSON response*/
             return res.status(404).json({message: 'quiz not found'})
             
         }
@@ -90,8 +90,8 @@ router.get('/quizId/:id', async (req, res) => {
         console.log(quiz);// Log quiz in the console for debugging purposes
     }
     catch (error) {
-        console.error('Error finding quiz:', error.message); // Log any error message in the console for debugging purposes
-        res.status(500).json(// Send 500 status code and error message in JSON response
+        console.error('Error finding quiz:', error.message); // Log an error message in the console for debugging purposes
+        res.status(500).json(// Send 500(Internal Server Error) status code and error message in JSON response
             { message: error.message });       
     }
 });
@@ -100,14 +100,15 @@ router.get('/quizId/:id', async (req, res) => {
 router.get('/findQuizzes', async (req, res) => {
     //console.log('Finding Quizzes')
     try {
-        const quizzes = await Quiz.find({})//Find all quizzes
+                // Retrieve all quizzes from the database
+        const quizzes = await Quiz.find({})// Empty query object returns all documents
         // const quizzes = await Quiz.find({}).populate('user', 'username');
-        res.status(200).json(quizzes);        
-        // console.log(quizzes);
+        res.status(200).json(quizzes); // Respond with the retrieved quizzes and a 200 status code       
+        // console.log(quizzes);//Log the quizzes in the database for debugging purposes
     } 
     catch (error) {
-        console.error('Error finding quizzes:', error.message); 
-        res.status(500).json({ message: error.message });
+        console.error('Error finding quizzes:', error.message);// Log an error message in the console for debugging purposes 
+        res.status(500).json({ message: error.message });// Send 500(Internal Server Error) status code and error message in JSON response
     }
 });
 
@@ -128,11 +129,14 @@ router.get('/findQuizzes', async (req, res) => {
 
 //Route to add new quiz
 router.post('/addQuiz', async (req, res) => {
-    console.log(req.body); 
-    console.log('Add Quiz'); 
-    const { name, questions } = req.body;
+    //Debugging
+    console.log(req.body); // Log the request body in the console for debugging purposes.
+    console.log('Add Quiz'); // Log a static message in the console to indicate that the "Add Quiz" endpoint 
+    
+    const { name, questions } = req.body;//Extract the name and question from the request body
 
       if (!name || ! questions) {
+          // Respond with a 400 status code and an error message if validation fails
             return res.status(400).json(
                 {message: 'Quiz name and questions are required'})
         } 
@@ -146,13 +150,22 @@ router.post('/addQuiz', async (req, res) => {
             createdBy: req.user.username
         }
     );*/
-    
+
+         /*// Conditional rendering to check if a quiz with the same name already exists in the database
+        const existingQuiz = await Quiz.findOne({ name });
+        if (existingQuiz) {
+            // Respond with a 400 status code and an error message if the quiz name already exists
+            return res.status(400).json({ message: 'Quiz name already exists' });
+        }*/
         const savedQuiz = await newQuiz.save();// Save the new quiz to the database
+        // Respond with a 201 status code and the saved quiz data if successful
         res.status(201).json(savedQuiz);
-        // console.log(savedQuiz);
+        // console.log(savedQuiz);// Log the saved quiz in the console for debugging purposes
 
     } catch (error) {
-        console.error('Error occurred while adding new quiz:', error);
+        console.error('Error occurred while adding new quiz:', error);//Log an error message in the console for debugging purposes
+        // Respond with a 500 status code and a generic error message if an error occurs
+        // res.status(500).json({ message: 'Internal Server Error' });//? status 400(Bad Request) or 500(Internal Server Error)
         res.status(400).json({ error: error.message });
     }
 })
@@ -161,23 +174,25 @@ router.post('/addQuiz', async (req, res) => {
 
 // Route to edit a quiz
 router.put('/editQuiz/:id', checkJwtToken, async (req, res) => {
+    
     const {id} = req.params;// Extract the quiz ID from the request parameters
     try {
         //Extract the name and questions from the request body
         const {name, questions} = req.body;
         const updatedQuiz = await Quiz.findByIdAndUpdate(
             id, 
-            {name, questions},
+            {name, questions},// Fields to update
             { new: true }); // Return the updated document
-
+        // Conditional rendering to check if the quiz was found and updated
         if (!updatedQuiz) {
+            // Return a 404 error if the quiz does not exist
             return res.status(404).json({ message: 'Quiz not found' });
         }
-        res.json(updatedQuiz);
+        res.json(updatedQuiz);// Respond with the updated quiz data
     } 
     catch (error) {
-        console.error('Error editing quiz:', error);
-        return res.status(400).json({ error: error.message });
+        console.error('Error editing quiz:', error);//Log an error message in the console for debugging purposes
+        return res.status(400).json({ error: error.message });// Respond with a 400(Bad Request) status code and the error message
     }
 });
 
@@ -188,15 +203,18 @@ router.delete('/deleteQuiz/:id', async (req, res) => {
     // Extract the quiz ID from the request parameters
     const { id } = req.params; 
     try {
-        const quiz = await Quiz.findByIdAndDelete(id);
+        const quiz = await Quiz.findByIdAndDelete(id); // Attempt to find and delete the quiz by ID
 
+        // Conditional rendering to check if the quiz was found and deleted
         if (!quiz) {
             return res.status(404).json(
+                // Return a 404 error if the quiz does not exist
                 { message: 'Quiz not found' }); 
         }
 
+        // Respond with a success message and the deleted quiz data
         res.status(200).json({ message: 'Quiz successfully deleted' });
-        res.json({ message: 'Quiz successfully deleted', quiz }); 
+        // res.json({ message: 'Quiz successfully deleted', quiz }); 
     } catch (error) {
         console.error('Error deleting quiz:', error);
         // Return a 500 status if there is a server error
