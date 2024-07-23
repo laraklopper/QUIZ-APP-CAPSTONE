@@ -1,5 +1,5 @@
 // Import necessary modules and packages
-import React, { useEffect, useState } from 'react';// Import the React module to use React functionalities
+import React, { useEffect, useState, useCallback } from 'react';// Import the React module to use React functionalities
 import '../CSS/Page3.css';//Import CSS stylesheet
 // Bootstrap
 import Row from 'react-bootstrap/Row'; // Import the Row component from react-bootstrap
@@ -38,17 +38,16 @@ export default function Page3(
   const [formError, setFormError] = useState('');// State to manage form error messages
   
 
-//====================USE EFFECT HOOK====================================
-  /* useEffect to fetch quizzes when user is logged in and whenever 
-  the fetchQuizzes function or loggedIn state changes*/
-  useEffect(() => {
-    //Conditional rendering to check if the user is logged in
-    if (loggedIn === true) {
-      fetchQuizzes()// Call the fetchQuizzes function to retrieve the quiz list
+//====================REACT HOOKS====================================
+  const fetchQuizzesMemo = useCallback(() => {
+    if(loggedIn){
+      fetchQuizzes()
     }
-  }, [fetchQuizzes, loggedIn])
-  // Dependency array: this effect runs when either fetchQuizzes or loggedIn changes
+  },[fetchQuizzes, loggedIn])
 
+  useEffect(() => {
+    fetchQuizzesMemo()
+  },[fetchQuizzesMemo]);
   // ==============REQUESTS=======================
   /*
 |============================|
@@ -65,7 +64,7 @@ export default function Page3(
 */
   // ----------POST-------------------
   //Function to add a new quiz
-  const addNewQuiz = async () => {//Define an async function to fetch a new quiz
+  const addNewQuiz = async () => {
     console.log('add new Quiz');
     
     if (questions.length !== 5) {
@@ -73,10 +72,8 @@ export default function Page3(
       return;// Exit the function early if the condition is not met
 
     }
-     // Create the quiz object with the quiz name and list of questions
-  const quiz = { name: quizName, questions, username }; // Include username
-      // Create the quiz object with the quiz name and list of questions
-  // const quiz = {name: quizName, questions}
+  const quiz = { name: quizName, questions, username };
+
     try {
       const token = localStorage.getItem('token');
       //Send a POST request to the server to add a new quiz
@@ -136,17 +133,16 @@ export default function Page3(
           )
       });
       //Response handling
-      if (response.ok) {
+     if (response.ok) {
         const updatedQuiz = await response.json();
         setQuizList(quizList.map(q => (q._id === updatedQuiz._id ? updatedQuiz : q)));
-        setEditQuizIndex([
-          { editQuestionText: '', editCorrectAnswer: '', options: ['', '', ''] }
-        ]);
+        setEditQuizIndex([]);
         setQuizToUpdate(null);
       } 
-      else {
+     else {
         throw new Error('Error editing quiz');
       }
+      
     } catch (error) {
       console.error(`Error editing the quiz: ${error}`);
       setError(`Error editing the quiz: ${error}`);
