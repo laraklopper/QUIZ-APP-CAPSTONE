@@ -1,5 +1,5 @@
 // Import necessary modules and packages
-import React, { useEffect, useState, useCallback } from 'react';// Import the React module to use React functionalities
+import React, { useEffect, useState/*, useCallback*/ } from 'react';// Import the React module to use React functionalities
 import '../CSS/Page3.css';//Import CSS stylesheet
 // Bootstrap
 import Row from 'react-bootstrap/Row'; // Import the Row component from react-bootstrap
@@ -19,7 +19,9 @@ export default function Page3(//Export default Page3 function component
   setError, 
   fetchQuizzes, 
   logout, 
-  loggedIn
+  loggedIn,
+  userData,
+  setUserData
 }) {
 
   // ========STATE VARIABLES===============
@@ -39,26 +41,26 @@ export default function Page3(//Export default Page3 function component
   
 
 //====================REACT HOOKS====================================
-  // Memoized callback to fetch quizzes if the user is logged in
-  const fetchQuizzesMemo = useCallback(() => {
-    if (loggedIn) { // Check if the user is logged in
-      fetchQuizzes(); // Fetch the quizzes from the server
-    }
-  }, [fetchQuizzes, loggedIn]); // Dependencies: fetchQuizzes function and loggedIn boolean
+//   // Memoized callback to fetch quizzes if the user is logged in
+//   const fetchQuizzesMemo = useCallback(() => {
+//     if (loggedIn) { // Check if the user is logged in
+//       fetchQuizzes(); // Fetch the quizzes from the server
+//     }
+//   }, [fetchQuizzes, loggedIn]); // Dependencies: fetchQuizzes function and loggedIn boolean
 
 
-// Fetch quizzes when the component mounts or when fetchQuizzesMemo changes
-useEffect(() => {
-  fetchQuizzesMemo(); // Call the memoized function to fetch quizzes
-}, [fetchQuizzesMemo]); // Dependency array: Re-run if fetchQuizzesMemo changes
+// // Fetch quizzes when the component mounts or when fetchQuizzesMemo changes
+// useEffect(() => {
+//   fetchQuizzesMemo(); // Call the memoized function to fetch quizzes
+// }, [fetchQuizzesMemo]); // Dependency array: Re-run if fetchQuizzesMemo changes
 
     /* useEffect to fetch quizzes when the component mounts
  or when fetchQuizzes function changes*/
-  // useEffect(() => {
-  //   if (loggedIn === true) {
-  //     fetchQuizzes()
-  //   }
-  // }, [fetchQuizzes, loggedIn])
+  useEffect(() => {
+    if (loggedIn === true) {
+      fetchQuizzes()
+    }
+  }, [fetchQuizzes, loggedIn])
   // ==============REQUESTS=======================
   // ----------POST-------------------
   //Function to add a new quiz
@@ -71,6 +73,8 @@ useEffect(() => {
       return;// Exit the function early if the condition is not met
 
     }
+    // Create the quiz object with the quiz name and list of questions
+  // const quiz = {name: quizName, questions, username : userData.username}
       // Create a quiz object to send to the server
   const quiz = { name: quizName, questions, username };
 
@@ -255,8 +259,10 @@ useEffect(() => {
           setFormError={setFormError}
           quizName={quizName}
           setQuizName={setQuizName}
-            currentQuestion={currentQuestion}
-              setCurrentQuestion={setCurrentQuestion}
+          currentQuestion={currentQuestion}
+          userData={userData}
+          setUserData={setUserData}
+          setCurrentQuestion={setCurrentQuestion}
         />
       </section>
       {/* Footer Component */}
