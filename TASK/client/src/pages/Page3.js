@@ -25,20 +25,26 @@ export default function Page3(//Export default Page3 function component
 }) {
   
   // ========STATE VARIABLES===============
-  //New Quiz variables
-  const [quizName, setQuizName] = useState('');
-  const [questions, setQuestions] = useState([]);
-  const [currentQuestion, setCurrentQuestion] = useState(// State used to store current question being added
-  { questionText: '', correctAnswer: '', options: ['', '', ''] })
+ // New Quiz variables
+  const [quizName, setQuizName] = useState(''); // State used to store the name of the new quiz
+  const [questions, setQuestions] = useState([]); // Array to store questions for the new quiz
+  const [currentQuestion, setCurrentQuestion] = useState({
+    questionText: '', // Text of the current question
+    correctAnswer: '', // Correct answer for the current question
+    options: ['', '', ''] // Array to store alternative answers
+  });
   //Edit Quiz variables
-  const [newQuizName, setNewQuizName] = useState('');
-  const [update, setUpdate] = useState(false);;// State to manage whether the edit mode is active or not
-  const [newQuestions, setNewQuestions] = useState([])
-  const [quizToUpdate, setQuizToUpdate] = useState(null);
-  const [editQuizIndex, setEditQuizIndex] = useState(// State used to store current question being added
-    { questionText: '', correctAnswer: '', options: ['', '', ''] });
-    //Form error message variables
-  const [formError, setFormError] = useState('');// State to manage form error messages
+  const [newQuizName, setNewQuizName] = useState(''); // Holds the new name for the quiz being edited
+  const [update, setUpdate] = useState(false); // Boolean to toggle edit form visibility
+  const [newQuestions, setNewQuestions] = useState([]); // Array to store updated questions for the quiz being edited
+  const [quizToUpdate, setQuizToUpdate] = useState(null); // ID of the quiz currently being edited
+  const [editQuizIndex, setEditQuizIndex] = useState({
+    questionText: '', // Text of the question being edited
+    correctAnswer: '', // Correct answer for the question being edited
+    options: ['', '', ''] // Array to store alternative answers for the question being edited
+  });
+  // Form error message variables
+  const [formError, setFormError] = useState(''); // Stores and displays error messages related to form validation
 
   //====================REACT HOOKS====================================
   //   // Memoized callback to fetch quizzes if the user is logged in
@@ -67,7 +73,7 @@ export default function Page3(//Export default Page3 function component
   // ----------POST-------------------
   //Function to add a new quiz
   const addNewQuiz = async () => {//Define an async function to add a new Quiz
-    console.log('add new Quiz');
+    console.log('add new Quiz');//Log a message in the console for debugging purposes
     
     if (questions.length !== 5) {
       alert('You must add exactly 5 questions.');
@@ -80,41 +86,43 @@ export default function Page3(//Export default Page3 function component
     // Create a quiz object to send to the server
     const quiz = {name: quizName, questions}
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token');// Retrieve token from localStorage
       //Send a POST request to the server to add a new quiz
       const response = await fetch('http://localhost:3001/quiz/addQuiz', {
-        method: 'POST',
-        mode: 'cors',
+        method: 'POST',//HTTP request method
+        mode: 'cors',//Set the mode to cors, allowing cross-origin requests 
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',// Specify the Content-Type being sent in the request payload. 
+          'Authorization': `Bearer ${token}`,// Include the token in the authorization header
         },
-        body: JSON.stringify(quiz)
+        body: JSON.stringify(quiz)// Convert quiz object to JSON format for the request body
       });
 
       //Response handling
+            // Conditional rendering if the response indicates success (status code 200-299)
       if (response.ok) {
-        alert('New Quiz successfully added')
-        const newQuiz = await response.json(); 
-        setQuizList([...quizList, newQuiz]);
-        setQuizName('');     
-        setQuestions([]);
+        alert('New Quiz successfully added')// Alert user upon successful addition of the quiz
+        const newQuiz = await response.json(); // Parse the response JSON to get the new quiz data
+        setQuizList([...quizList, newQuiz]);// Update the quiz list with the new quiz
+        setQuizName('');     // Reset the quiz name input field
+        setQuestions([]);// Clear the questions array
         // console.log('Quiz created:', newQuiz);
       } 
       else {
-        throw new Error('There was an error creating the quiz');
+        throw new Error('There was an error creating the quiz');// Throw an error if the POST request is unsuccessful
       }
 
     } 
     catch (error) {
       console.error('There was an error creating the quiz:', error);//Log an error message in the console for debugging purposes
-      setError('There was an error creating the quiz:', error);
+      setError('There was an error creating the quiz:', error);// Set error state with error message
     }
   };
 
   // ---------------PUT-----------------------
   //Function to edit a quiz
   const editQuiz = async (quizId) => {
+    //Conditional rendering to check if 
     if (questions.length !== 5) {
       setFormError('You must have exactly 5 questions.');
       return;
@@ -123,7 +131,7 @@ export default function Page3(//Export default Page3 function component
       const token = localStorage.getItem('token');
       //Send a PUT request to the server to edit a quiz
       const response = await fetch(`http://localhost:3001/quiz/editQuiz/${quizId}`, {
-        method: 'PUT',
+        method: 'PUT',//HTTP request method
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
