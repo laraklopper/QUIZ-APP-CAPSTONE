@@ -22,58 +22,9 @@ export default function EditQuiz(
   //=============STATE VARIABLES======================
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);//State to manage the index of the question currently being edited
 
-  //=================PUT REQUEST=================
-  /*
-//Function to edit a quiz
-    const editQuiz = async () => {
-    const updatedQuiz = { name: newQuizName, questions: quiz.questions };
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/quiz/editQuiz/${quiz._id}`, {
-        method: 'PUT',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(updatedQuiz)
-      });
 
-      if (response.ok) {
-        alert('Quiz successfully updated');
-      } else {
-        throw new Error('There was an error updating the quiz');
-      }
-    } catch (error) {
-      console.error('There was an error updating the quiz:', error);
-      setError('There was an error updating the quiz:', error);
-    }
-  };
-*/
   //============EVENT LISTENERS=================
 
-//Function to edit a question
-  const handleEditQuestion = () => {
-    // Conditional rendering to check if the quiz already has 5 questions
-    if (newQuestions.length > 5) {
-      alert('Quiz can only consist of 5 questions.')
-      // console.log('Quiz can only consist of 5 questions.');
-      return
-    }
-
-    // Create a copy of the current quiz questions array
-    const updatedQuestions = [...quiz.questions];
-    // Update the question at the current index with the edited question
-    updatedQuestions[currentQuestionIndex] = { ...editQuizIndex };
-    // Add the edited question to the new questions list
-    setNewQuestions([...newQuestions, editQuizIndex]);
-    // Update the quiz list with the updated quiz information
-    setQuizList(
-      quizList.map(q =>
-        q._id === quiz._id ? { ...q, questions: updatedQuestions, name: newQuizName } : q
-      )
-    );
-  };
 
   //=========JSX RENDERING===================
 
