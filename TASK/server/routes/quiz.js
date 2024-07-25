@@ -1,23 +1,22 @@
 // Import necessary modules and packages
 const express = require('express'); // Import Express framework
 const router = express.Router(); // Create a router object
-const cors = require('cors');
-// Import JSON Web Token for authentication
-const jwt = require('jsonwebtoken'); 
+const cors = require('cors'); // Import CORS middleware to enable cross-origin requests
+const jwt = require('jsonwebtoken'); // Import JSON Web Token for authentication
 //Schemas
-const Quiz = require('../models/quizModel');
-// const User = require('../models/userSchema');
-//const Score = require('../models/scoreSchema')
+const Quiz = require('../models/quizModel'); // Import the Quiz model
+// const User = require('../models/userSchema');//Import userSchema
+//const Score = require('../models/scoreSchema')//Import scoreSchema
 
 //=======SETUP MIDDLEWARE===========
-router.use(express.json()); 
-router.use(cors());
+router.use(cors()); // Enable CORS for all routes
+router.use(express.json()); // Parse incoming JSON requests
 
 //=========CUSTOM MIDDLEWARE================
 //Middleware to verify the JWT token
 const checkJwtToken = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');// Extract the token from the Authorization header
-
+// Conditional rendering to check if JWT token is present
     if (!token) {
         // console.log('Unauthorized: token missing');
         return res.status(401).json(
@@ -31,11 +30,13 @@ const checkJwtToken = (req, res, next) => {
             'Secret-Key',//SecretKey
             /*process.env.JWT_SECRET*/
         );
-        req.user = decoded;
+        req.user = decoded;// Attach the decoded token to the request object
         next();//Call the next middleware function
-    } catch (ex) {
-        console.error('No token attatched to the request');
-        res.status(400).json({ message: 'Invalid token.' });
+    } 
+    catch (error) {
+        //Error handling
+        console.error('No token attatched to the request');//Log an error message in the console for debugging purposes
+        res.status(400).json({ message: 'Invalid token.' });// Respond with a 400 status code if the token is invalid
     }
 }
 /*
@@ -107,8 +108,10 @@ router.get('/findQuizzes', async (req, res) => {
         // console.log(quizzes);//Log the quizzes in the database for debugging purposes
     } 
     catch (error) {
+        //Error handling
         console.error('Error finding quizzes:', error.message);// Log an error message in the console for debugging purposes 
-        res.status(500).json({ message: error.message });// Send 500(Internal Server Error) status code and error message in JSON response
+        res.status(500).json(// Send 500(Internal Server Error) status code and error message in JSON response
+            { message: error.message });
     }
 });
 
@@ -151,12 +154,12 @@ router.post('/addQuiz', async (req, res) => {
         }
     );*/
 
-         /*// Conditional rendering to check if a quiz with the same name already exists in the database
+         // Conditional rendering to check if a quiz with the same name already exists in the database
         const existingQuiz = await Quiz.findOne({ name });
         if (existingQuiz) {
             // Respond with a 400 status code and an error message if the quiz name already exists
             return res.status(400).json({ message: 'Quiz name already exists' });
-        }*/
+        }
         const savedQuiz = await newQuiz.save();// Save the new quiz to the database
         // Respond with a 201 status code and the saved quiz data if successful
         res.status(201).json(savedQuiz);
