@@ -1,5 +1,5 @@
 // Import necessary modules and packages
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';// Import the React module to use React functionalities
 import './App.css';//Import CSS stylesheet
 // React Router components
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -145,7 +145,7 @@ export default function App() {
     
   //---------POST---------------------------
   //Function to submit Login
-  const submitLogin = async () => {
+  const submitLogin = async () => {//Define an async function to submitLogin
     try {
       const response = await fetch('http://localhost:3001/users/login', {
         method: 'POST',
