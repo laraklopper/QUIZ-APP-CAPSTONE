@@ -1,15 +1,15 @@
 // Import necessary modules and packages
-import React, { useEffect, useState } from 'react';// Import the React module to use React functionalities
-import '../CSS/Page2.css';//Import CSS stylesheet
+import React, { useEffect, useState } from 'react';
+import '../CSS/Page2.css';
 // Bootstrap
-import Row from 'react-bootstrap/Row';// Import the Row component from react-bootstrap
-import Col from 'react-bootstrap/Col'; // Import the Col component from react-bootstrap
-import Button from 'react-bootstrap/Button';// Import the Button component from react-bootstrap
-import Form from 'react-bootstrap/Form';//Import the Bootstrap Form component
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 // Components
-import Header from '../components/Header';//Import Header Function component from '../components/Header'
-import Footer from '../components/Footer';//Import Footer function component from '../components/Footer'
-import Quiz from '../components/Quiz';//Import Quiz function component from '../components/Quiz'
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import Quiz from '../components/Quiz';
 
 // Page 2 function component
 export default function Page2(//Export default Page2 function component 
@@ -49,106 +49,123 @@ export default function Page2(//Export default Page2 function component
 
   // Function to start the quiz
   const handleQuizStart = () => {
-    fetchQuiz(selectedQuizId); // Fetch the selected quiz data
-    setQuizIndex(0); // Reset question index
-    setScore(0); // Reset score
+    fetchQuiz(selectedQuizId); 
+    setQuizIndex(0); 
+    setScore(0); 
     if (quizTimer) {
-      setTimer(30); // Set timer to 30 seconds for each question
+      setTimer(30);
+      // const interval = setInterval(() => {
+      //   setTimer((prevTimer) => {
+      //     if (prevTimer === 1) {
+      //       clearInterval(interval); 
+      //       handleNextQuestion(); 
+      //       return null; 
+      //     }
+      //     return prevTimer - 1;
+      //   });
+      // }, 1000);
+      // return () => clearInterval(interval); 
+    }
+  };
+ 
+  useEffect(() => {
+    if (quizTimer && timer !== null) {
       const interval = setInterval(() => {
         setTimer((prevTimer) => {
           if (prevTimer === 1) {
-            clearInterval(interval); // Clear interval when timer reaches 1
-            handleNextQuestion(); // Move to next question
-            return null; // Stop the timer
+            clearInterval(interval);
+            handleNextQuestion();
+            return null;
           }
-          return prevTimer - 1; // Decrement the timer
+          return prevTimer - 1;
         });
       }, 1000);
-      return () => clearInterval(interval); // Cleanup interval on unmount
+      return () => clearInterval(interval);
     }
-  };
+  }, [quizTimer, timer]);
 
-  // Function to move to the next question
-  const handleNextQuestion = () => {
+    // Function to move to the next question
+   const handleNextQuestion = () => {
     if (quizIndex < quiz.questions.length - 1) {
-      setQuizIndex(quizIndex + 1); // Increment question index
-    } else {
-      // Quiz is completed
-      setQuiz(null); // Reset quiz data
-      setTimer(null); // Reset timer
+      setQuizIndex(quizIndex + 1);
+      if (quizTimer) setTimer(30);
+    } 
+    else {
+      setQuiz(null);
+      setTimer(null);
     }
   };
 
   // Function to restart the quiz
-  const handleRestart = () => {
-    setQuizIndex(0); // Reset question index
-    setScore(0); // Reset score
-    setTimer(null); // Reset timer
+    const handleRestart = () => {
+    setQuizIndex(0);
+    setScore(0);
+    setTimer(null);
     if (quizTimer) {
-      handleQuizStart(); // Restart the quiz if timer is enabled
+      handleQuizStart();
     }
   };
-
-
 
   // Function to handle answer selection and update the score if correct
-  const handleAnswerClick = (isCorrect) => {
+    const handleAnswerClick = (isCorrect) => {
     if (isCorrect) {
-      setScore(score + 1); // Increment score if the answer is correct
+      setScore(score + 1);
     }
-    handleNextQuestion(); // Move to the next question
+    handleNextQuestion(); 
   };
-
+  
   //=========REQUEST================
   //-----------GET-----------------------
-  
   // Function to fetch a single quiz
-  const fetchQuiz = async (quizId) => {
+   const fetchQuiz = async (quizId) => {
     try {
-      const token = localStorage.getItem('token'); // Get token from local storage
-      //Send a GET request to the server to fetch a quiz
+      const token = localStorage.getItem('token');
+            //Send a GET request to the server to fetch a quiz
       const response = await fetch(`http://localhost:3001/quiz/quizId/${quizId}`, {
-        method: 'GET',//HTTP request method
+        method: 'GET',
         mode: 'cors',
         headers: {
-          'Content-Type': 'application/json',//Specify the Content-Type in the payload as JSON
-          'Authorization': `Bearer ${token}`, // Send token for authentication
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
       });
 
-      //Conditional rendering
       if (response.ok) {
-        const quizData = await response.json(); // Parse response data
-        setQuiz(quizData.quiz); // Set the fetched quiz data
+        const quizData = await response.json();
+        setQuiz(quizData.quiz);
       } 
       else {
-        throw new Error('Error fetching Quiz');//Throw an error message if the GET request is unsuccessful
+        throw new Error('Error fetching Quiz');
       }
     } catch (error) {
-      console.error('Error fetching quiz:', error);//Log an error message in the console for debugging purposes
-      setError('Error fetching quiz'); // Set the error state with an error message
+      console.error('Error fetching quiz:', error);
+      setError('Error fetching quiz');
     }
   };
-  
 
   // ==========JSX RENDERING==========
-  return (
+ return (
     <>
-    {/* Header */}
+   {/* Header */}
       <Header heading="GAME" />
-      {/* Section1 */}
+   {/* Section1 */}
       <section className='section1'>
-        <Row>
-          <Col>
-            <h2 className='h2'>SELECT QUIZ</h2>
-          </Col>
-        </Row>
         <div>
           <Row>
-            {/* Form to Select Quiz */}
+            <Col>
+              <h2 className='h2'>SELECT QUIZ</h2>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={4}></Col>
             <Col xs={6} md={4} id='selectQuizCol'>
-              <label htmlFor='quiz'>SELECT</label>
-              <Form.Select value={selectedQuizId} onChange={handleSelectQuiz}>
+              <label htmlFor='quizSelect'>
+                 <p className='labelText'>SELECT: </p>
+               </label>
+              <Form.Select
+                id='quizSelect'
+                value={selectedQuizId}
+                onChange={handleSelectQuiz}>
                 <option value=''>Select a quiz</option>
                 {quizList.map((quiz) => (
                   <option key={quiz._id} value={quiz._id}>
@@ -157,55 +174,53 @@ export default function Page2(//Export default Page2 function component
                 ))}
               </Form.Select>
             </Col>
-            <Col md={4}></Col>
             <Col xs={6} md={4}></Col>
           </Row>
         </div>
-        <Col xs={6} md={4}></Col>
         <div>
-                {selectedQuizId && (
-          <div id='quizDisplayForm'>
-            {/* Form to start quiz */}
-            <form>
-              <Row>
-                <Col md={12}>
-                {/* Display quiz name */}
-                  <h3 className='quizName'>{quiz?.name}</h3> 
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={6} md={4}></Col>
-                <Col xs={6} md={4}>
-                  <label id='addTimerLabel'>
-                    <p className='labelText'>ADD TIMER:</p>
-                    <input
-                      type='checkbox'//Input type
-                      checked={quizTimer}// Sets the checked state of the checkbox based on the `quizTimer` state
-                      onChange={(e) => setQuizTimer(e.target.checked)}// Updates the `quizTimer` state when the checkbox is toggled
-                      id='quizTimer'
-                    />
-                  </label>
-                </Col>
-                <Col xs={6} md={4}>
-                  <Button type='button' variant='primary' onClick={handleQuizStart}>
-                    START QUIZ
-                  </Button>
-                </Col>
-              </Row>
-            </form>
-          </div>
-        )}
-        {/*QUIZ*/}
+                {/* Display a form to start the selected quiz*/}
+          {selectedQuizId && (
+            <div id='quizDisplayForm'>
+              <form>
+                <Row>
+                  <Col md={12}>
+                 {/* Display quiz name */}
+                    <h3 className='quizName'>{quiz?.name}</h3>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={6} md={4}></Col>
+                  <Col xs={6} md={4}>
+                    <label id='addTimerLabel'>
+                      <p className='labelText'>ADD TIMER:</p>
+                      <input
+                        type='checkbox'
+                        checked={quizTimer}
+                        onChange={(e) => setQuizTimer(e.target.checked)}
+                        id='quizTimer'
+                      />
+                    </label>
+                  </Col>
+                  <Col xs={6} md={4}>
+                    <Button type='button' variant='primary' onClick={handleQuizStart}>
+                      START QUIZ
+                    </Button>
+                  </Col>
+                </Row>
+              </form>
+            </div>
+          )}
+        {/* QUIZ DISPLAY */}
           {quiz && (
             <Quiz
-              selectedQuiz={quiz} // Pass selected quiz data
-              quizIndex={quizIndex} // Pass current question index
-              handleAnswerClick={handleAnswerClick} // Pass answer click handler
-              handleNextQuestion={handleNextQuestion} // Pass next question handler
-              handleRestart={handleRestart} // Pass restart handler
-              score={score} // Pass current score
-              quizTimer={quizTimer} // Pass timer status
-              timer={timer} // Pass current timer value
+              selectedQuiz={quiz}
+              quizIndex={quizIndex}
+              handleAnswerClick={handleAnswerClick}
+              handleNextQuestion={handleNextQuestion}
+              handleRestart={handleRestart}
+              score={score}
+              quizTimer={quizTimer}
+              timer={timer}
             />
           )}
         </div>
