@@ -1,7 +1,7 @@
 // Import necessary modules and packages
 import React, { useEffect, useState } from 'react';
 import '../CSS/Page2.css';
-// Bootstrap
+//Bootstrap
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -12,62 +12,44 @@ import Footer from '../components/Footer';
 import Quiz from '../components/Quiz';
 
 // Page 2 function component
-export default function Page2(//Export default Page2 function component 
-  {// PROPS PASSED FROM PARENT COMPONENT
-    quizList,
-    logout,
-    fetchQuizzes,
-    setError,
-    quiz,
-    setQuiz
-  }
-) {
-  // =========STATE VARIABLES====================
-  // Quiz variables
-  const [selectedQuizId, setSelectedQuizId] = useState('');//State to store the selected quizId
-  const [quizIndex, setQuizIndex] = useState(0); // Current question index
-  // Score Variables
-  const [score, setScore] = useState(0);//State used to store current score
-  // Timer variables
-  const [timer, setTimer] = useState(null);//State to store the timer value
-  const [quizTimer, setQuizTimer] = useState(false);//Boolean to toggle the timer 
+export default function Page2(
+  {
+  quizList,
+  logout,
+  fetchQuizzes,
+  setError,
+  quiz,
+  setQuiz
+}) {
+   // =========STATE VARIABLES====================
+  const [selectedQuizId, setSelectedQuizId] = useState('');
+  const [quizIndex, setQuizIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const [timer, setTimer] = useState(null);
+  const [quizTimer, setQuizTimer] = useState(false);
 
-  //============USE EFFECT HOOK==================
+    //============USE EFFECT HOOK==================
   /* useEffect to fetch quizzes when the component 
   mounts or when fetchQuizzes changes*/
   useEffect(() => {
-    fetchQuizzes(); //Callback function to fetch quizzes from the server(database)
+    fetchQuizzes();
   }, [fetchQuizzes]);
-  // Dependency array: runs this effect whenever fetchQuizzes changes
 
-
-  //=======EVENT LISTENERS============
-  // Function to handle quiz selection
+    // Function to handle quiz selection
   const handleSelectQuiz = (event) => {
-    setSelectedQuizId(event.target.value); // Set the selected quiz ID
+    setSelectedQuizId(event.target.value);
   };
 
   // Function to start the quiz
   const handleQuizStart = () => {
-    fetchQuiz(selectedQuizId); 
-    setQuizIndex(0); 
-    setScore(0); 
+    fetchQuiz(selectedQuizId);
+    setQuizIndex(0);
+    setScore(0);
     if (quizTimer) {
       setTimer(30);
-      // const interval = setInterval(() => {
-      //   setTimer((prevTimer) => {
-      //     if (prevTimer === 1) {
-      //       clearInterval(interval); 
-      //       handleNextQuestion(); 
-      //       return null; 
-      //     }
-      //     return prevTimer - 1;
-      //   });
-      // }, 1000);
-      // return () => clearInterval(interval); 
     }
   };
- 
+
   useEffect(() => {
     if (quizTimer && timer !== null) {
       const interval = setInterval(() => {
@@ -84,20 +66,19 @@ export default function Page2(//Export default Page2 function component
     }
   }, [quizTimer, timer]);
 
-    // Function to move to the next question
-   const handleNextQuestion = () => {
+  // Function to move to the next question
+  const handleNextQuestion = () => {
     if (quizIndex < quiz.questions.length - 1) {
       setQuizIndex(quizIndex + 1);
       if (quizTimer) setTimer(30);
-    } 
-    else {
+    } else {
       setQuiz(null);
       setTimer(null);
     }
   };
 
-  // Function to restart the quiz
-    const handleRestart = () => {
+    // Function to restart the quiz
+  const handleRestart = () => {
     setQuizIndex(0);
     setScore(0);
     setTimer(null);
@@ -106,21 +87,20 @@ export default function Page2(//Export default Page2 function component
     }
   };
 
-  // Function to handle answer selection and update the score if correct
-    const handleAnswerClick = (isCorrect) => {
+    // Function to handle answer selection and update the score if correct
+  const handleAnswerClick = (isCorrect) => {
     if (isCorrect) {
       setScore(score + 1);
     }
-    handleNextQuestion(); 
+    handleNextQuestion();
   };
-  
-  //=========REQUEST================
+
+   //=========REQUEST================
   //-----------GET-----------------------
   // Function to fetch a single quiz
-   const fetchQuiz = async (quizId) => {
+  const fetchQuiz = async (quizId) => {
     try {
       const token = localStorage.getItem('token');
-            //Send a GET request to the server to fetch a quiz
       const response = await fetch(`http://localhost:3001/quiz/quizId/${quizId}`, {
         method: 'GET',
         mode: 'cors',
@@ -133,8 +113,7 @@ export default function Page2(//Export default Page2 function component
       if (response.ok) {
         const quizData = await response.json();
         setQuiz(quizData.quiz);
-      } 
-      else {
+      } else {
         throw new Error('Error fetching Quiz');
       }
     } catch (error) {
@@ -143,12 +122,12 @@ export default function Page2(//Export default Page2 function component
     }
   };
 
-  // ==========JSX RENDERING==========
- return (
+    // ==========JSX RENDERING==========
+  return (
     <>
-   {/* Header */}
+    {/* Header */}
       <Header heading="GAME" />
-   {/* Section1 */}
+     {/* Section1 */}
       <section className='section1'>
         <div>
           <Row>
@@ -159,9 +138,8 @@ export default function Page2(//Export default Page2 function component
           <Row>
             <Col md={4}></Col>
             <Col xs={6} md={4} id='selectQuizCol'>
-              <label htmlFor='quizSelect'>
-                 <p className='labelText'>SELECT: </p>
-               </label>
+    {/* Form to select quiz */}
+              <label htmlFor='quizSelect'><p className='labelText'>SELECT: </p></label>
               <Form.Select
                 id='quizSelect'
                 value={selectedQuizId}
@@ -181,10 +159,10 @@ export default function Page2(//Export default Page2 function component
                 {/* Display a form to start the selected quiz*/}
           {selectedQuizId && (
             <div id='quizDisplayForm'>
+            {/* Display quiz name */}
               <form>
                 <Row>
                   <Col md={12}>
-                 {/* Display quiz name */}
                     <h3 className='quizName'>{quiz?.name}</h3>
                   </Col>
                 </Row>
@@ -202,6 +180,7 @@ export default function Page2(//Export default Page2 function component
                     </label>
                   </Col>
                   <Col xs={6} md={4}>
+                  {/* Button to start quiz */}
                     <Button type='button' variant='primary' onClick={handleQuizStart}>
                       START QUIZ
                     </Button>
@@ -210,7 +189,6 @@ export default function Page2(//Export default Page2 function component
               </form>
             </div>
           )}
-        {/* QUIZ DISPLAY */}
           {quiz && (
             <Quiz
               selectedQuiz={quiz}
