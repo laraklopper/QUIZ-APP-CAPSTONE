@@ -1,15 +1,15 @@
 // Import necessary modules and packages
-import React from 'react';
-//Bootstrap
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
+import React from 'react';// Import the React module to use React functionalities
+// Bootstrap
+import Row from 'react-bootstrap/Row';// Import the Row component from react-bootstrap
+import Col from 'react-bootstrap/Col'; // Import the Col component from react-bootstrap
+import Button from 'react-bootstrap/Button';// Import the Button component from react-bootstrap
 
 //LoginForm function component
 export default function LoginForm(
   {//PROPS PASSED FROM PARENT COMPONENT
     handleLogin, 
-    handleUserLogin, // Event listener to handle user Login
+    handleUserLogin, 
     userData,
     setShowPassword,
     showPassword
@@ -27,16 +27,22 @@ export default function LoginForm(
       <Row className='loginRow'>
         <Col className='loginCol'>
           {/* Username input */}
-          <label className='loginLabel'>
+          <label 
+              className='loginLabel' // CSS class for styling
+              htmlFor='loginUsername'//Link the label to the input field with the id attribute
+          >
+              {/* Label for the username input field */}
             <p className='labelText'>USERNAME:</p>
+              {/* Input field for username */}
             <input
-              className='loginInput'
-              type='text'
-              name='username'
-              value={userData.username}
-              onChange={handleUserLogin}
-              autoComplete='off'
-              placeholder='USERNAME'
+                className='loginInput'// CSS class for styling
+                type='text'// Specify the input type as text                
+                name='username'// Input name for identification
+                value={userData.username}// Value attribute bound to userData.username state
+                onChange={handleUserLogin}// Event handler for input change, updates userData.username
+                autoComplete='off'// Disable the browser's autocomplete feature
+                placeholder='USERNAME'// Placeholder text for the input field
+                id='loginUsername'// Unique ID for styling or JavaScript access
             />
           </label>
         </Col>
@@ -44,35 +50,52 @@ export default function LoginForm(
       <Row className='loginRow'>
         <Col className='loginCol'>
           {/* Password Input */}
-          <label className='loginLabel'>
+          <label 
+              className='loginLabel' // CSS class for styling
+              htmlFor='loginPassword'//Link the label to the input field with the id attribute
+          >
+              {/* Label for the password input field */}
             <p className='labelText'>PASSWORD:</p>
+              {/* Input field for password */}
             <input
-              className='loginInput'
-              type={showPassword ? 'text' : 'password'}
-              name='password'
-              value={userData.password}
-              onChange={handleUserLogin}
-              autoComplete='current-password'
-              placeholder='PASSWORD'
+                className='loginInput'// CSS class for styling
+                type={showPassword ? 'text' : 'password'}// Toggle between text and password type
+                name='password'// Input name for identification
+                value={userData.password}// Value attribute bound to userData.password state
+                onChange={handleUserLogin}// Event handler for input change, updates userData.password
+                autoComplete='current-password'// Autocomplete setting for the password field
+                placeholder='PASSWORD'// Placeholder text for the input field
             />
             <div id='showPassword'>   
              {/* Button to display password */}
               <Button variant='success'
-                type='button'
-                id='passwordDisplay'
-                onMouseDown={(e) => { e.preventDefault(); setShowPassword(true); }}
-                onMouseUp={(e) => { e.preventDefault(); setShowPassword(false);}}
+                  type='button'// Bootstrap variant for success button styling
+                  id='passwordDisplay'// Unique ID for the button, useful for testing or styling
+                onMouseDown={(e) => { 
+                    e.preventDefault();// Prevent default action
+                    setShowPassword(true); // Show password on mouse down
+                  }}
+                onMouseUp={(e) => { 
+                  e.preventDefault(); // Prevent default action
+                  setShowPassword(false);// Hide password on mouse up 
+                }}
                 >
-                  {showPassword ? 'HIDE PASSWORD' : 'SHOW PASSWORD'}
+              {/* Button text based on visibility state*/}
+                  {showPassword ? 'HIDE PASSWORD' : 'SHOW PASSWORD'} 
                 </Button>
               </div>
           </label>
         </Col>
       </Row>
+        {/* Row for login button */}
       <Row className='loginRow'>
         <Col className='loginCol'>
           {/* Login Button */}
-          <Button variant="primary" id='loginBtn' type='submit'>
+          <Button 
+              variant="primary" // Bootstrap variant 
+              id='loginBtn'  // Unique ID for the button
+              type='submit'// Specify that the button will submit the form
+          >
             LOGIN
           </Button>
         </Col>  
