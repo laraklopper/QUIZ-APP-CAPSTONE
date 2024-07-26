@@ -86,6 +86,7 @@ router.get('/quizId/:id',  async (req, res) => {
 
         // const formattedData = formatQuestionData(quiz); // Format the quiz data
         // res.json({ quiz: formattedData }); // Return the formatted quiz data
+        //res.send({quiz})
         res.json({ quiz });// If the quiz data is return quiz data JSON format
         console.log(quiz);//Log the quiz in the console for debugging purposes
     }
