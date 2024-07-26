@@ -20,22 +20,29 @@ export default function Quiz(
 
      //================EVENT LISTENERS=========================
   
-  // Function to shuffle array
-  const shuffleArray = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
+  // // Function to shuffle array
+  // const shuffleArray = (array) => {
+  //   for (let i = array.length - 1; i > 0; i--) {
+  //     const j = Math.floor(Math.random() * (i + 1));
+  //     [array[i], array[j]] = [array[j], array[i]];
+  //   }
+  //   return array;
+  // };
 
-  // Function to randomize the answer options
-  const randomizeOptions = () => {
-    const answers = [...selectedQuiz.questions[quizIndex].options];
+  // // Function to randomize the answer options
+  // const randomizeOptions = () => {
+  //   const answers = [...selectedQuiz.questions[quizIndex].options];
+  //   answers.push(selectedQuiz.questions[quizIndex].correctAnswer);
+  //   return shuffleArray(answers);
+  // };
+
+    // Function to randomize the answer options
+  const randomizeOptions = (options) => {
+    const answers= [...options]
     answers.push(selectedQuiz.questions[quizIndex].correctAnswer);
-    return shuffleArray(answers);
+    const possibleAnswers = Math.random(answers)
+    return possibleAnswers
   };
-
   const currentQuestion = selectedQuiz.questions[quizIndex];
 
   return (
