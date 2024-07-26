@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col'; // Import the Col component from react-bo
 import Button from 'react-bootstrap/Button';// Import the Button component from react-bootstrap
 
 //LoginForm function component
-export default function LoginForm(
+export default function LoginForm(//Export default LoginForm function component
   {//PROPS PASSED FROM PARENT COMPONENT
     handleLogin, 
     handleUserLogin, 
@@ -15,8 +15,6 @@ export default function LoginForm(
     showPassword
   }
 ) {
-
-
 
   //============JSX RENDERING================
 
@@ -37,7 +35,7 @@ export default function LoginForm(
             <input
                 className='loginInput'// CSS class for styling
                 type='text'// Specify the input type as text                
-                name='username'// Input name for identification
+                name='username'// Input name for identification field
                 value={userData.username}// Value attribute bound to userData.username state
                 onChange={handleUserLogin}// Event handler for input change, updates userData.username
                 autoComplete='off'// Disable the browser's autocomplete feature
@@ -63,22 +61,24 @@ export default function LoginForm(
                 name='password'// Input name for identification
                 value={userData.password}// Value attribute bound to userData.password state
                 onChange={handleUserLogin}// Event handler for input change, updates userData.password
-                autoComplete='current-password'// Autocomplete setting for the password field
+                autoComplete='off'// Disable the browser's autocomplete feature
                 placeholder='PASSWORD'// Placeholder text for the input field
             />
             <div id='showPassword'>   
              {/* Button to display password */}
               <Button variant='success'
-                  type='button'// Bootstrap variant for success button styling
-                  id='passwordDisplay'// Unique ID for the button, useful for testing or styling
-                onMouseDown={(e) => { 
-                    e.preventDefault();// Prevent default action
-                    setShowPassword(true); // Show password on mouse down
-                  }}
-                onMouseUp={(e) => { 
-                  e.preventDefault(); // Prevent default action
-                  setShowPassword(false);// Hide password on mouse up 
-                }}
+                  type='button'// Bootstrap variant 
+                  id='passwordDisplay'// Unique ID for the button
+                    // onMouseDown={(e) => { 
+                    //     e.preventDefault();// Prevent default action
+                    //     setShowPassword(true); // Show password on mouse down
+                    //   }}
+                    // onMouseUp={(e) => { 
+                    //   e.preventDefault(); // Prevent default action
+                    //   setShowPassword(false);// Hide password on mouse up 
+                    // }}
+                  //OnClick event to display password
+                  onClick={() => setShowPassword(!showPassword)}
                 >
               {/* Button text based on visibility state*/}
                   {showPassword ? 'HIDE PASSWORD' : 'SHOW PASSWORD'} 
