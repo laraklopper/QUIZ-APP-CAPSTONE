@@ -1,26 +1,27 @@
 // Import necessary modules and packages
 import React from 'react';
-// Bootstrap components
+//Bootstrap
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import Col from 'react-bootstrap/Col'; 
 import Button from 'react-bootstrap/Button';
 
-// Quiz function component
-export default function Quiz({
-  selectedQuiz,          // The selected quiz data
-  quizIndex,             // Current question index
-  handleAnswerClick,     // Function to handle answer click
-  handleNextQuestion,    // Function to move to the next question
-  handleRestart,         // Function to restart the quiz
-  score,                 // Current score
-  quizTimer,             // Boolean to determine if the timer is enabled
-  timer,                 // Current timer value
+//Quiz function component
+export default function Quiz(
+  {//PROPS PASSED FROM PARENT COMPONENT
+  selectedQuiz,
+  quizIndex,
+  handleAnswerClick,
+  handleNextQuestion,
+  handleRestart,
+  score,
+  quizTimer,
+  timer,
 }) {
 
-  //============EVENT LISTENERS
-
+     //================EVENT LISTENERS=========================
+  
   // Function to shuffle array
-   const shuffleArray = (array) => {
+  const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
@@ -28,76 +29,71 @@ export default function Quiz({
     return array;
   };
 
-    // // Function to randomize the answer options
-  // const randomizeOptions = (options) => {
-  //   return options.sort(() => Math.random() - 0.5); // Shuffle options randomly
-  // };
-
   // Function to randomize the answer options
-  // const randomizeOptions = (options) => {
-  //   const answers= [...options]
-  //   answers.push(selectedQuiz.questions[quizIndex].correctAnswer);
-  //   const possibleAnswers = Math.random(answers)
-  //   return possibleAnswers
-  // };
-  // Function to randomize the answer options
-   const randomizeOptions = () => {
+  const randomizeOptions = () => {
     const answers = [...selectedQuiz.questions[quizIndex].options];
     answers.push(selectedQuiz.questions[quizIndex].correctAnswer);
     return shuffleArray(answers);
   };
 
+  const currentQuestion = selectedQuiz.questions[quizIndex];
 
-  const currentQuestion = selectedQuiz.questions[quizIndex]; // Get the current question
-
-  // ==========JSX RENDERING==========
   return (
     <div id='quizDisplay'>
       <Row>
         <Col>
-          <h3 className='h3'>{selectedQuiz.name}</h3> {/* Display quiz name */}
+          <h3 className='h3'>{selectedQuiz.name}</h3>
         </Col>
       </Row>
-      <div id='quiz'>
+      <div>
         <Row>
           <Col xs={6} md={4} id='questionCol'>
             <div>
               <h3 className='h3'>
-                QUESTION {quizIndex + 1} of {selectedQuiz.questions.length} {/* Display current question number */}
+                QUESTION {quizIndex + 1} of {selectedQuiz.questions.length}
               </h3>
             </div>
             <div>
-              <p className='questionText'>{currentQuestion.questionText}</p> {/* Display question text */}
+              <p>{currentQuestion.questionText}</p>
             </div>
           </Col>
           <Col xs={6} md={4}></Col>
           <Col xs={6} md={4} id='timerCol'>
-            {quizTimer && <div>TIMER: {timer}</div>} {/* Display timer if enabled */}
+            {quizTimer && <div id='timer'>TIMER: {timer}</div>}
           </Col>
         </Row>
         <div>
-          {randomizeOptions(currentQuestion.options).map((option, index) => (
+          {randomizeOptions().map((option, index) => (
             <Button
-              key={index} // Unique key for each option
-              onClick={() => handleAnswerClick(option === currentQuestion.correctAnswer)} // Check if the selected option is correct
+              variant='primary'
+              key={index}
+              onClick={() => handleAnswerClick(option === currentQuestion.correctAnswer)}
             >
-              {option} {/* Display answer option */}
+              {option}
             </Button>
           ))}
         </div>
         <Row>
           <Col xs={6} md={4}>
             <div>
-              <p>Result: {score} of {selectedQuiz.questions.length}</p> {/* Display current score */}
+              <p>RESULT: {score} of {selectedQuiz.questions.length}</p>
             </div>
           </Col>
           <Col xs={6} md={4}></Col>
           <Col xs={6} md={4}>
-            <Button type='button' onClick={handleNextQuestion}>
-              Next Question
+            <Button
+              variant='primary'
+              type='button'
+              onClick={handleNextQuestion}
+            >
+              NEXT QUESTION
             </Button>
-            <Button type='reset' onClick={handleRestart}>
-              Restart
+            <Button
+              variant='primary'
+              type='reset'
+              onClick={handleRestart}
+            >
+              RESTART
             </Button>
           </Col>
         </Row>
