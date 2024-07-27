@@ -22,6 +22,9 @@ const checkJwtToken = (req, res, next) => {
         );
         req.user = decoded;
         next();
+        //  const decoded = jwt.verify(token, process.env.JWT_SECRET || 'Secret-Key');
+        // req.user = decoded;
+        // next();
     }
     catch (error) {
         //Error handling
@@ -45,6 +48,19 @@ const authenticateToken = (req, res, next) => {
             next();
         });
 };
+
+/* const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (token == null) return res.sendStatus(401);
+
+    jwt.verify(token, process.env.JWT_SECRET || 'Secret-Key', (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+};*/
 
 //Middleware function to check that admin user is 18 years or older
 const checkAge = (req, res, next) => {
@@ -84,19 +100,19 @@ const checkAge = (req, res, next) => {
 |================|===========|===================|
 */
 //========QUIZ ROUTES=============
-router.get('/quiz/findQuizzes', checkJwtToken, quizControllers.getQuizzes)
-router.get('/quiz/:id', quizControllers.getQuiz)
-router.post('addQuiz', quizControllers.addQuiz)
-router.put('/quiz/editQuiz/:id', quizControllers.editQuizById)
-router.delete('/quiz/deleteQuiz/:id', quizControllers.deleteQuiz)
+router.get('/quiz/findQuizzes', checkJwtToken, quizControllers.getQuizzes);
+router.get('/quiz/:id', checkJwtToken, quizControllers.getQuiz);
+router.post('/quiz/addQuiz', checkJwtToken, quizControllers.addQuiz);
+router.put('/quiz/editQuiz/:id', checkJwtToken, quizControllers.editQuizById);
+router.delete('/quiz/deleteQuiz/:id', checkJwtToken, quizControllers.deleteQuiz);
 
 //=======USER ROUTES======================
-router.post('/users/login', userControllers.login)
-router.post('/users/register', checkAge, userControllers.addUser)
-router.get('/users/:id', authenticateToken, userControllers.findUser)
-router.get('/users/findUsers', userControllers.findUsers)
-router.put('/users/editAccount/:id', userControllers.editAccount)
-router.delete('/user/deleteUser/:id', userControllers.deleteUser)
+router.post('/users/login', userControllers.login);
+router.post('/users/register', checkAge, userControllers.addUser);
+router.get('/users/:id', authenticateToken, userControllers.findUser);
+router.get('/users/findUsers', checkJwtToken, userControllers.findUsers);
+router.put('/users/editAccount/:id', checkJwtToken, userControllers.editAccount);
+router.delete('/user/deleteUser/:id', checkJwtToken, userControllers.deleteUser);
 
 // Export the router to be used in other parts of the application
 module.exports = router
