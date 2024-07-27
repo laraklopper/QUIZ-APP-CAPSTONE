@@ -27,7 +27,8 @@ export default function Page2(
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(null);
   const [quizTimer, setQuizTimer] = useState(false);
-
+ //const [questionIndex, setQuestionIndex] = useState(0)
+  
     //============USE EFFECT HOOK==================
   /* useEffect to fetch quizzes when the component 
   mounts or when fetchQuizzes changes*/
@@ -50,6 +51,23 @@ export default function Page2(
     }
   };
 
+//   const handleQuizStart = () => {
+//     fetchQuiz(selectedQuizId);
+//     setQuizIndex(0);
+//     setScore()
+//     if(quizTimer){
+//       setTimer(10)
+//       const interval =((prevTimer) => {
+//         clearInterval(interval)
+//         handleNextQuestion()
+//         return null;
+//       }
+//       return prev - 1;                       
+//     })
+//   },1000)
+//     return () => clearInterval(interval)}
+// };
+  
   useEffect(() => {
     if (quizTimer && timer !== null) {
       const interval = setInterval(() => {
@@ -86,6 +104,31 @@ export default function Page2(
       handleQuizStart();
     }
   };
+  //timer
+
+  /*
+  useEffect(() => {
+  const timer = () => {
+    if(quizStarted && timer ===true){
+      const interval = setInterval (() =>{
+      setTimer(prevTimer => {
+        if(prevTimer > 0){
+            return prevTimer - 1
+        }
+        else{
+        //reset timer for next question
+        setCurrentQuestion(prevQuestion => prevQuestion + 1){
+          return 10;
+        }
+      }, 1000) 
+      return () => clearInterval(interval)
+      },[currentQuestion, quizStarted]
+    }
+
+const quizStarted = () => {
+ setQuizStarted(true)
+}
+  */
 
     // Function to handle answer selection and update the score if correct
   const handleAnswerClick = (isCorrect) => {
@@ -101,7 +144,7 @@ export default function Page2(
   const fetchQuiz = async (quizId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/quiz/quizId/${quizId}`, {
+      const response = await fetch(`http://localhost:3001/quiz/${quizId}`, {
         method: 'GET',
         mode: 'cors',
         headers: {
