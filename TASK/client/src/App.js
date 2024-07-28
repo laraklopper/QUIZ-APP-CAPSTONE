@@ -142,7 +142,34 @@ export default function App() {
       setError('Error fetching quizzes');
     }
   };
-    
+
+   // Function to fetch a single quiz
+  const fetchQuiz = async (quizId) => {
+    try {
+      const token = localStorage.getItem('token'); 
+      //Send a GET request to the server to fetch a quiz
+      const response = await fetch(`http://localhost:3001/quiz/${quizId}`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, 
+        },
+      });
+
+      if (response.ok) {
+        const quizData = await response.json(); 
+        setQuiz(quizData.quiz); 
+      } 
+      else {
+        throw new Error('Error fetching Quiz');
+      }
+    } 
+    catch (error) {
+      console.error('Error fetching quiz:', error);
+      setError('Error fetching quiz'); 
+    }
+  };  
   //---------POST---------------------------
   //Function to submit Login
   const submitLogin = async () => {//Define an async function to submitLogin
