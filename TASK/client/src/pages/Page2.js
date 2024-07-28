@@ -36,6 +36,33 @@ export default function Page2(
     fetchQuizzes();
   }, [fetchQuizzes]);
 
+     //=========REQUEST================
+  //-----------GET-----------------------
+  // Function to fetch a single quiz
+  const fetchQuiz = async (quizId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3001/quiz/${quizId}`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const quizData = await response.json();
+        setQuiz(quizData.quiz);
+      } else {
+        throw new Error('Error fetching Quiz');
+      }
+    } catch (error) {
+      console.error('Error fetching quiz:', error);
+      setError('Error fetching quiz');
+    }
+  };
+  //==========EVENT LISTENERS=================
     // Function to handle quiz selection
   const handleSelectQuiz = (event) => {
     setSelectedQuizId(event.target.value);
@@ -138,32 +165,7 @@ const quizStarted = () => {
     handleNextQuestion();
   };
 
-   //=========REQUEST================
-  //-----------GET-----------------------
-  // Function to fetch a single quiz
-  const fetchQuiz = async (quizId) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/quiz/${quizId}`, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
 
-      if (response.ok) {
-        const quizData = await response.json();
-        setQuiz(quizData.quiz);
-      } else {
-        throw new Error('Error fetching Quiz');
-      }
-    } catch (error) {
-      console.error('Error fetching quiz:', error);
-      setError('Error fetching quiz');
-    }
-  };
 
     // ==========JSX RENDERING==========
   return (
