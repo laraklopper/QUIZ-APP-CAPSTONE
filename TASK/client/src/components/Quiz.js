@@ -18,13 +18,13 @@ export default function Quiz(
   timer,
 }) {
 
-     //================EVENT LISTENERS========================
-
+//==================JSX RENDERING======================
+  
   return (
     <div id='quizDisplay'>
       <Row>
         <Col>
-          <h3 className='h3'>{quizName}</h3>
+          <h3 className='h3'>{selectedQuizName}</h3>
         </Col>
       </Row>
       <div>
@@ -47,15 +47,14 @@ export default function Quiz(
         </Col>
         <Col md={3}></Col>
       </Row>
-          {questions[questionIndex].options.map((option, index) => (
+           {questions[quizIndex].options.map((option, index) => (
             <div key={index}>
-            <input 
-            type='radio' 
-              name='answer' 
-                value={option} 
-              onClick={() => handleAnswerClick(e, questionIndex)}
-                 checked={answers[questionIndex] === option}
-            >
+              <input
+                type='radio'
+                name='answer'
+                value={option}
+                onClick={() => handleAnswerClick(option === questions[quizIndex].correctAnswer)}
+              />
               {option}
             </div>
           ))}
@@ -68,20 +67,8 @@ export default function Quiz(
           </Col>
           <Col xs={6} md={4}></Col>
           <Col xs={6} md={4}>
-            <Button
-              variant='primary'
-              type='button'
-              onClick={handleNextQuestion}
-            >
-              NEXT QUESTION
-            </Button>
-            <Button
-              variant='primary'
-              type='reset'
-              onClick={handleRestart}
-            >
-              RESTART
-            </Button>
+            <Button variant='primary' type='button' onClick={handleNextQuestion}>NEXT QUESTION</Button>
+            <Button variant='primary' type='reset' onClick={handleRestart}>RESTART</Button>
           </Col>
         </Row>
       </div>
