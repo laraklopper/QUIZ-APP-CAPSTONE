@@ -14,7 +14,8 @@ router.use(express.json()); // Parse incoming JSON requests
 //==============CUSTOM MIDDLEWARE======================
 //Middleware to verify the JWT token
 const checkJwtToken = (req, res, next) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');// Extract the token from the Authorization header
+    // const token = req.header('Authorization')?.replace('Bearer ', '');// Extract the token from the Authorization header
+    const token = req.headers.authorization;
 
     //Conditional rendering to check if JWT token is present
     if (!token) {
