@@ -35,7 +35,6 @@ export default function Page2(
   // const [timeLeft, setTimeLeft] = useState(null)
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false)
- const [questionIndex, setQuestionIndex] = useState(0)
 
    //========================================================
   // Fisher-Yates shuffle algorithm to randomize array elements
@@ -78,6 +77,7 @@ export default function Page2(
     } else {
       setQuiz(null);
       setTimer(null);
+      setShowScore(true);
     }
   };
 
@@ -86,6 +86,7 @@ export default function Page2(
     setQuizIndex(0);
     setScore(0);
     setTimer(null);
+    setShowScore(false);
     if (quizTimer) {
       handleQuizStart();
     }
@@ -125,24 +126,24 @@ export default function Page2(
       const shuffledQuestions = shuffleArray(data.questions); // Shuffle the questions      
       setQuizList(prevQuizList => prevQuizList.map(q => q._id === quizId ? fetchedQuiz : q));
       setQuizName(fetchedQuiz.quizName);
-      setQuestions(fetchedQuiz.questions);
+      setQuestions(shuffledQuestions);
     } catch (error) {
       setError(`Error fetching quiz: ${error.message}`);
       console.error(`Error fetching quiz: ${error.message}`);
     }
   };
 
-  //Function to calculate score
-    const calculateScore = () => {
-    let score = 0;
-    questions.forEach((question, index) => {
-      if (answers[index] === question.correctAnswer) {
-        score++;
-      }
-    });
-    setScore(score);
-    setShowScore(true);
-  };
+  // //Function to calculate score
+  //   const calculateScore = () => {
+  //   let score = 0;
+  //   questions.forEach((question, index) => {
+  //     if (answers[index] === question.correctAnswer) {
+  //       score++;
+  //     }
+  //   });
+  //   setScore(score);
+  //   setShowScore(true);
+  // };
   
 
 
@@ -186,13 +187,12 @@ export default function Page2(
         </div>
         <div>
                 {/* Display a form to start the selected quiz*/}
-          {questions.length  && quizName (
+           {questions.length > 0 && quizName && (
             <div id='quizDisplayForm'>
-
               <form>
                 <Row>
                   <Col md={12}>
-                        {/* Display quiz name */}
+                    {/* Display quiz name */}
                     <h3 className='quizName'>{quizName}</h3>
                   </Col>
                 </Row>
@@ -210,7 +210,7 @@ export default function Page2(
                     </label>
                   </Col>
                   <Col xs={6} md={4}>
-                  {/* Button to start quiz */}
+                    {/* Button to start quiz */}
                     <Button type='button' variant='primary' onClick={handleQuizStart}>
                       START QUIZ
                     </Button>
