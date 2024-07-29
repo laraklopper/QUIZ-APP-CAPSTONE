@@ -36,7 +36,17 @@ export default function Page2(
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false)
  const [questionIndex, setQuestionIndex] = useState(0)
-  
+
+   //========================================================
+  // Fisher-Yates shuffle algorithm to randomize array elements
+  const shuffleArray = (array) => {
+    let shuffledArray = array.slice(); // Create a copy of the array
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]]; // Swap elements
+    }
+    return shuffledArray;
+  };
 
     //============USE EFFECT HOOK==================
   /* useEffect to fetch quizzes when the component 
@@ -112,6 +122,7 @@ export default function Page2(
       }
 
       const fetchedQuiz = await response.json();
+      const shuffledQuestions = shuffleArray(data.questions); // Shuffle the questions      
       setQuizList(prevQuizList => prevQuizList.map(q => q._id === quizId ? fetchedQuiz : q));
       setQuizName(fetchedQuiz.quizName);
       setQuestions(fetchedQuiz.questions);
@@ -132,39 +143,6 @@ export default function Page2(
     setScore(score);
     setShowScore(true);
   };
-
-  //==========EVENT LISTENERS=================
-    // Function to handle quiz selection
-  // const handleSelectQuiz = (event) => {
-  //   setSelectedQuizId(event.target.value);
-  // };
-
-  // // Function to start the quiz
-  // const handleQuizStart = () => {
-  //   fetchQuiz(selectedQuizId);
-  //   setQuizIndex(0);
-  //   setScore(0);
-  //   if (quizTimer) {
-  //     setTimer(30);
-  //   }
-  // };
-
-//   const handleQuizStart = () => {
-//     fetchQuiz(selectedQuizId);
-//     setQuizIndex(0);
-//     setScore()
-//     if(quizTimer){
-//       setTimer(10)
-//       const interval =((prevTimer) => {
-//         clearInterval(interval)
-//         handleNextQuestion()
-//         return null;
-//       }
-//       return prev - 1;                       
-//     })
-//   },1000)
-//     return () => clearInterval(interval)}
-// };
   
 
 
@@ -208,7 +186,7 @@ export default function Page2(
         </div>
         <div>
                 {/* Display a form to start the selected quiz*/}
-          {selectedQuizId && quizName (
+          {questions.length  && quizName (
             <div id='quizDisplayForm'>
 
               <form>
