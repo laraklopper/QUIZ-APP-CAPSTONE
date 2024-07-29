@@ -16,7 +16,7 @@ export default function QuizLayout() {
   //=======STATE VARIABLES===============
   const [quizName, setQuizName] = useState(''); // Selected quiz name
   const [quizList, setQuizList] = useState([]); // List of quizzes fetched from the server
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Index of the current question
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Index of the current question => change state name
   const [currentQuestion, setCurrentQuestion] = useState(null); // Current question object
   const [addTimer, setAddTimer] = useState(false); // Boolean to add timer or not
   const [timeLeft, setTimeLeft] = useState(null); // Remaining time for the current question
