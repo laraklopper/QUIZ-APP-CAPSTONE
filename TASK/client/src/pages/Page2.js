@@ -27,6 +27,7 @@ export default function Page2(
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(null);
   const [quizTimer, setQuizTimer] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(null)
  //const [questionIndex, setQuestionIndex] = useState(0)
   
     //============USE EFFECT HOOK==================
@@ -126,6 +127,10 @@ export default function Page2(
     }
   }, [quizTimer, timer]);
 
+  //Function to handle checkbox change
+  /*const handleCheckbox = (e) => {
+    setQuizTimer(e.target.checked)
+  };*/
   // Function to move to the next question
   const handleNextQuestion = () => {
     if (quizIndex < quiz.questions.length - 1) {
