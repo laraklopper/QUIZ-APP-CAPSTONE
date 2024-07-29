@@ -1,9 +1,9 @@
 // Import necessary modules and packages
-import React from 'react';
+import React from 'react'; // Import React to create functional components
 //Bootstrap
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col'; 
-import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row'; // Import Row component from Bootstrap for layout
+import Col from 'react-bootstrap/Col'; // Import Col component from Bootstrap for layout
+import Button from 'react-bootstrap/Button'; // Import Button component from Bootstrap
 
 //Quiz function component
 export default function Quiz(
@@ -36,6 +36,7 @@ export default function Quiz(
           </Col>
           <Col xs={6} md={4}></Col>
           <Col xs={6} md={4} id='timerCol'>
+    {/* Conditionally display the timer */}
             {quizTimer && <div id='timer'>TIMER: {timer}</div>}
           </Col>
         </Row>
@@ -43,16 +44,19 @@ export default function Quiz(
     <Row>
         <Col md={2}></Col>
         <Col md={7}>
-          <h2>{questions[questionIndex].questionText}</h2>
+    {/* Display current question text */}
+          <h3 className='h3'>{questions[questionIndex].questionText}</h3>
         </Col>
         <Col md={3}></Col>
       </Row>
+    // Map over each option in the current question to render radio buttons
            {questions[quizIndex].options.map((option, index) => (
             <div key={index}>
               <input
-                type='radio'
-                name='answer'
+                type='radio'//Input type
+                name='answer'// All radio buttons share the same name to ensure only one can be selected
                 value={option}
+            checked={selectedAnswer === option} // Use state to manage selected option
                 onClick={() => handleAnswerClick(option === questions[quizIndex].correctAnswer)}
               />
               {option}
@@ -62,11 +66,13 @@ export default function Quiz(
         <Row>
           <Col xs={6} md={4}>
             <div>
+            {/* Display the current score */}
               <p>RESULT: {score} of {selectedQuiz.questions.length}</p>
             </div>
           </Col>
           <Col xs={6} md={4}></Col>
           <Col xs={6} md={4}>
+          {/* Buttons for moving to the next question and restarting the quiz */}
             <Button variant='primary' type='button' onClick={handleNextQuestion}>NEXT QUESTION</Button>
             <Button variant='primary' type='reset' onClick={handleRestart}>RESTART</Button>
           </Col>
