@@ -1,5 +1,5 @@
 // Import necessary modules and packages
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';// Import the React module to use React functionalities
 import '../CSS/Page2.css';
 //Bootstrap
 import Row from 'react-bootstrap/Row';
@@ -13,7 +13,7 @@ import Quiz from '../components/Quiz';
 
 // Page 2 function component
 export default function Page2(
-  {
+  {//PROPS PASSED FROM PARENT COMPONENT
   quizList,
     setQuizList,
     logout,
@@ -28,89 +28,87 @@ export default function Page2(
     setQuestions
 }) {
    // =========STATE VARIABLES====================
-  const [selectedQuizId, setSelectedQuizId] = useState('');
-  const [quizIndex, setQuizIndex] = useState(0);
-  const [timer, setTimer] = useState(null);
-  const [quizTimer, setQuizTimer] = useState(false);
-  // const [timeLeft, setTimeLeft] = useState(null)
-  const [score, setScore] = useState(0);
-  const [showScore, setShowScore] = useState(false)
+  const [selectedQuizId, setSelectedQuizId] = useState('');// Holds the ID of the selected quiz
+  const [quizIndex, setQuizIndex] = useState(0);// Index of the current question
+  //Timer variables
+  const [timer, setTimer] = useState(null);//State to store the quiz Timer
+  const [quizTimer, setQuizTimer] = useState(false);//// Boolean to indicate if the timer is enabled
+  //Score variables
+  const [score, setScore] = useState(0);//State to store the users score
+  const [showScore, setShowScore] = useState(false)//Boolean value to display user score
 
    //========================================================
   // Fisher-Yates shuffle algorithm to randomize array elements
-  const shuffleArray = (array) => {
+    const shuffleArray = (array) => {
     let shuffledArray = array.slice(); // Create a copy of the array
     for (let i = shuffledArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
+      const j = Math.floor(Math.random() * (i + 1)); // Generate a random index
       [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]]; // Swap elements
     }
     return shuffledArray;
   };
-
     //============USE EFFECT HOOK==================
   /* useEffect to fetch quizzes when the component 
   mounts or when fetchQuizzes changes*/
   useEffect(() => {
-    fetchQuizzes();
+    fetchQuizzes();// Fetch the quizzes when the component is mounted
   }, [fetchQuizzes]);
 
   //=======EVENT LISTENERS============
   // Function to handle quiz selection
   const handleSelectQuiz = (event) => {
-    setSelectedQuizId(event.target.value);
+    setSelectedQuizId(event.target.value); // Update the selected quiz ID
   };
 
-   // Function to start the quiz
+  // Function to start the quiz
   const handleQuizStart = () => {
-    setQuizIndex(0);
-    setScore(0);
+    setQuizIndex(0); // Reset the question index to 0
+    setScore(0); // Reset the score to 0
     if (quizTimer) {
-      setTimer(30);
+      setTimer(30); // Set the timer to 30 if the timer is enabled
     }
   };
 
-   // Function to move to the next question
+  // Function to move to the next question
   const handleNextQuestion = () => {
     if (quizIndex < questions.length - 1) {
-      setQuizIndex(quizIndex + 1);
-      if (quizTimer) setTimer(30);
+      setQuizIndex(quizIndex + 1); // Move to the next question
+      if (quizTimer) setTimer(30); // Reset the timer for the next question
     } else {
-      setQuiz(null);
-      setTimer(null);
-      setShowScore(true);
+      setQuiz(null); // End the quiz
+      setTimer(null); // Clear the timer
+      setShowScore(true); // Show the final score
     }
   };
-
   // Function to restart the quiz
   const handleRestart = () => {
-    setQuizIndex(0);
-    setScore(0);
-    setTimer(null);
-    setShowScore(false);
+    setQuizIndex(0); // Reset the question index to 0
+    setScore(0); // Reset the score to 0
+    setTimer(null); // Clear the timer
+    setShowScore(false); // Hide the score
     if (quizTimer) {
-      handleQuizStart();
+      handleQuizStart(); // Restart the quiz if the timer is enabled
     }
   };
 
   // Function to handle answer selection and update the score if correct
   const handleAnswerClick = (isCorrect) => {
     if (isCorrect) {
-      setScore(score + 1);
+      setScore(score + 1); // Increment the score if the answer is correct
     }
-    handleNextQuestion();
+    handleNextQuestion(); // Move to the next question
   };
-
      //=========REQUEST================
   //-----------GET-----------------------
   // Function to fetch a single quiz
-    const handleQuizChange = async (e) => {
+    const fetchQuiz = async (e) => {//Define an async function to fetch a singleQuiz
     try {
-      const quizId = e.target.value;
-      const token = localStorage.getItem('token');
+      const quizId = e.target.value;// Get the selected quiz ID
+      const token = localStorage.getItem('token');//Retrieve token from localstorage
       if (!token) return;
 
       const response = await fetch(`http://localhost:3001/quiz/findQuiz/${quizId}`, {
-        method: 'GET',
+        method: 'GET',//HTTP request method
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
@@ -119,17 +117,17 @@ export default function Page2(
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch quiz');
+        throw new Error('Failed to fetch quiz');//Throw an error message if the GET request is unsuccessful
       }
 
-      const fetchedQuiz = await response.json();
-      const shuffledQuestions = shuffleArray(data.questions); // Shuffle the questions      
-      setQuizList(prevQuizList => prevQuizList.map(q => q._id === quizId ? fetchedQuiz : q));
-      setQuizName(fetchedQuiz.quizName);
-      setQuestions(shuffledQuestions);
+       const fetchedQuiz = await response.json(); // Parse the JSON response
+      const shuffledQuestions = shuffleArray(fetchedQuiz.questions); // Shuffle the questions      
+      setQuizList(prevQuizList => prevQuizList.map(q => q._id === quizId ? fetchedQuiz : q)); // Update the quiz list
+      setQuizName(fetchedQuiz.quizName); // Set the quiz name
+      setQuestions(shuffledQuestions); // Set the questions
     } catch (error) {
-      setError(`Error fetching quiz: ${error.message}`);
-      console.error(`Error fetching quiz: ${error.message}`);
+      setError(`Error fetching quiz: ${error.message}`);// Set the ErrorState with an error message
+      console.error(`Error fetching quiz: ${error.message}`);//Log an error message in the console for debugging purposes
     }
   };
 
@@ -172,7 +170,7 @@ export default function Page2(
                 value={selectedQuizId}
                  onChange={(e) => {
                   handleSelectQuiz(e);
-                  handleQuizChange(e); // Ensure the quiz is fetched and selected
+                  fetchQuiz(e); // Ensure the quiz is fetched and selected
                 }}>
                 <option value=''>Select a quiz</option>
                 {quizList.map(quiz => (
@@ -211,9 +209,7 @@ export default function Page2(
                   </Col>
                   <Col xs={6} md={4}>
                     {/* Button to start quiz */}
-                    <Button type='button' variant='primary' onClick={handleQuizStart}>
-                      START QUIZ
-                    </Button>
+                    <Button type='button' variant='primary' onClick={handleQuizStart}>START QUIZ</Button>
                   </Col>
                 </Row>
               </form>
@@ -229,11 +225,11 @@ export default function Page2(
               score={score}
               quizTimer={quizTimer}
               timer={timer}
-            calculateScore={calculateScore}  
             />
           )}
         </div>
       </section>
+           {/*Footer*/}
       <Footer logout={logout} />
     </>
   );
