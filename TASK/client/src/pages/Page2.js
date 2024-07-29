@@ -94,7 +94,22 @@ export default function Page2(
 //   },1000)
 //     return () => clearInterval(interval)}
 // };
-  
+
+   // useEffect(() => {
+  //   if (quizTimer && timer !== null) {
+  //     const interval = setInterval(() => {
+  //       setTimer((prevTimer) => {
+  //         if (prevTimer === 1) {
+  //           clearInterval(interval);
+  //           handleNextQuestion();
+  //           return null;
+  //         }
+  //         return prevTimer - 1;
+  //       });
+  //     }, 1000);
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [quizTimer, timer]);
   useEffect(() => {
     if (quizTimer && timer !== null) {
       const interval = setInterval(() => {
