@@ -15,21 +15,29 @@ import Quiz from '../components/Quiz';
 export default function Page2(
   {
   quizList,
-  logout,
-  fetchQuizzes,
-  setError,
-  quiz,
-  setQuiz
+    setQuizList,
+    logout,
+    fetchQuizzes,
+    setError,
+    quiz,
+    currentQuestion,
+    setQuiz,
+    quizName,
+    setQuizName,
+    questions,
+    setQuestions
 }) {
    // =========STATE VARIABLES====================
   const [selectedQuizId, setSelectedQuizId] = useState('');
   const [quizIndex, setQuizIndex] = useState(0);
-  const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(null);
   const [quizTimer, setQuizTimer] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(null)
- //const [questionIndex, setQuestionIndex] = useState(0)
+  // const [timeLeft, setTimeLeft] = useState(null)
+  const [score, setScore] = useState(0);
+  const [showScore, setShowScore] = useState(false)
+ const [questionIndex, setQuestionIndex] = useState(0)
   
+
     //============USE EFFECT HOOK==================
   /* useEffect to fetch quizzes when the component 
   mounts or when fetchQuizzes changes*/
@@ -37,47 +45,109 @@ export default function Page2(
     fetchQuizzes();
   }, [fetchQuizzes]);
 
-     //=========REQUEST================
-  //-----------GET-----------------------
-  // Function to fetch a single quiz
-  const fetchQuiz = async (quizId) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/quiz/${quizId}`, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const quizData = await response.json();
-        setQuiz(quizData.quiz);
-      } else {
-        throw new Error('Error fetching Quiz');
-      }
-    } catch (error) {
-      console.error('Error fetching quiz:', error);
-      setError('Error fetching quiz');
-    }
-  };
-  //==========EVENT LISTENERS=================
-    // Function to handle quiz selection
+  //=======EVENT LISTENERS============
+  // Function to handle quiz selection
   const handleSelectQuiz = (event) => {
     setSelectedQuizId(event.target.value);
   };
 
-  // Function to start the quiz
+   // Function to start the quiz
   const handleQuizStart = () => {
-    fetchQuiz(selectedQuizId);
     setQuizIndex(0);
     setScore(0);
     if (quizTimer) {
       setTimer(30);
     }
   };
+
+   // Function to move to the next question
+  const handleNextQuestion = () => {
+    if (quizIndex < questions.length - 1) {
+      setQuizIndex(quizIndex + 1);
+      if (quizTimer) setTimer(30);
+    } else {
+      setQuiz(null);
+      setTimer(null);
+    }
+  };
+
+  // Function to restart the quiz
+  const handleRestart = () => {
+    setQuizIndex(0);
+    setScore(0);
+    setTimer(null);
+    if (quizTimer) {
+      handleQuizStart();
+    }
+  };
+
+  // Function to handle answer selection and update the score if correct
+  const handleAnswerClick = (isCorrect) => {
+    if (isCorrect) {
+      setScore(score + 1);
+    }
+    handleNextQuestion();
+  };
+
+     //=========REQUEST================
+  //-----------GET-----------------------
+  // Function to fetch a single quiz
+    const handleQuizChange = async (e) => {
+    try {
+      const quizId = e.target.value;
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`http://localhost:3001/quiz/findQuiz/${quizId}`, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch quiz');
+      }
+
+      const fetchedQuiz = await response.json();
+      setQuizList(prevQuizList => prevQuizList.map(q => q._id === quizId ? fetchedQuiz : q));
+      setQuizName(fetchedQuiz.quizName);
+      setQuestions(fetchedQuiz.questions);
+    } catch (error) {
+      setError(`Error fetching quiz: ${error.message}`);
+      console.error(`Error fetching quiz: ${error.message}`);
+    }
+  };
+
+  //Function to calculate score
+    const calculateScore = () => {
+    let score = 0;
+    questions.forEach((question, index) => {
+      if (answers[index] === question.correctAnswer) {
+        score++;
+      }
+    });
+    setScore(score);
+    setShowScore(true);
+  };
+
+  //==========EVENT LISTENERS=================
+    // Function to handle quiz selection
+  // const handleSelectQuiz = (event) => {
+  //   setSelectedQuizId(event.target.value);
+  // };
+
+  // // Function to start the quiz
+  // const handleQuizStart = () => {
+  //   fetchQuiz(selectedQuizId);
+  //   setQuizIndex(0);
+  //   setScore(0);
+  //   if (quizTimer) {
+  //     setTimer(30);
+  //   }
+  // };
 
 //   const handleQuizStart = () => {
 //     fetchQuiz(selectedQuizId);
@@ -95,96 +165,7 @@ export default function Page2(
 //   },1000)
 //     return () => clearInterval(interval)}
 // };
-
-   // useEffect(() => {
-  //   if (quizTimer && timer !== null) {
-  //     const interval = setInterval(() => {
-  //       setTimer((prevTimer) => {
-  //         if (prevTimer === 1) {
-  //           clearInterval(interval);
-  //           handleNextQuestion();
-  //           return null;
-  //         }
-  //         return prevTimer - 1;
-  //       });
-  //     }, 1000);
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [quizTimer, timer]);
-  useEffect(() => {
-    if (quizTimer && timer !== null) {
-      const interval = setInterval(() => {
-        setTimer((prevTimer) => {
-          if (prevTimer === 1) {
-            clearInterval(interval);
-            handleNextQuestion();
-            return null;
-          }
-          return prevTimer - 1;
-        });
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [quizTimer, timer]);
-
-  //Function to handle checkbox change
-  /*const handleCheckbox = (e) => {
-    setQuizTimer(e.target.checked)
-  };*/
-  // Function to move to the next question
-  const handleNextQuestion = () => {
-    if (quizIndex < quiz.questions.length - 1) {
-      setQuizIndex(quizIndex + 1);
-      if (quizTimer) setTimer(30);
-    } else {
-      setQuiz(null);
-      setTimer(null);
-    }
-  };
-
-    // Function to restart the quiz
-  const handleRestart = () => {
-    setQuizIndex(0);
-    setScore(0);
-    setTimer(null);
-    if (quizTimer) {
-      handleQuizStart();
-    }
-  };
-  //timer
-
-  /*
-  useEffect(() => {
-  const timer = () => {
-    if(quizStarted && timer ===true){
-      const interval = setInterval (() =>{
-      setTimer(prevTimer => {
-        if(prevTimer > 0){
-            return prevTimer - 1
-        }
-        else{
-        //reset timer for next question
-        setCurrentQuestion(prevQuestion => prevQuestion + 1){
-          return 10;
-        }
-      }, 1000) 
-      return () => clearInterval(interval)
-      },[currentQuestion, quizStarted]
-    }
-
-const quizStarted = () => {
- setQuizStarted(true)
-}
-  */
-
-    // Function to handle answer selection and update the score if correct
-  const handleAnswerClick = (isCorrect) => {
-    if (isCorrect) {
-      setScore(score + 1);
-    }
-    handleNextQuestion();
-  };
-
+  
 
 
     // ==========JSX RENDERING==========
@@ -203,14 +184,19 @@ const quizStarted = () => {
           <Row>
             <Col md={4}></Col>
             <Col xs={6} md={4} id='selectQuizCol'>
-    {/* Form to select quiz */}
-              <label htmlFor='quizSelect'><p className='labelText'>SELECT: </p></label>
+          {/* Form to select quiz */}
+              <label htmlFor='quizSelect'>
+                <p className='labelText'>SELECT: </p>
+              </label>
               <Form.Select
                 id='quizSelect'
                 value={selectedQuizId}
-                onChange={handleSelectQuiz}>
+                 onChange={(e) => {
+                  handleSelectQuiz(e);
+                  handleQuizChange(e); // Ensure the quiz is fetched and selected
+                }}>
                 <option value=''>Select a quiz</option>
-                {quizList.map((quiz) => (
+                {quizList.map(quiz => (
                   <option key={quiz._id} value={quiz._id}>
                     {quiz.name}
                   </option>
@@ -222,13 +208,14 @@ const quizStarted = () => {
         </div>
         <div>
                 {/* Display a form to start the selected quiz*/}
-          {selectedQuizId && (
+          {selectedQuizId && quizName (
             <div id='quizDisplayForm'>
-            {/* Display quiz name */}
+
               <form>
                 <Row>
                   <Col md={12}>
-                    <h3 className='quizName'>{quiz?.name}</h3>
+                        {/* Display quiz name */}
+                    <h3 className='quizName'>{quizName}</h3>
                   </Col>
                 </Row>
                 <Row>
@@ -254,7 +241,7 @@ const quizStarted = () => {
               </form>
             </div>
           )}
-          {quiz && (
+          {questions.length > 0 && (
             <Quiz
               selectedQuiz={quiz}
               quizIndex={quizIndex}
@@ -264,6 +251,7 @@ const quizStarted = () => {
               score={score}
               quizTimer={quizTimer}
               timer={timer}
+            calculateScore={calculateScore}  
             />
           )}
         </div>
