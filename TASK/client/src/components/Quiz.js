@@ -49,19 +49,14 @@ export default function Quiz(
     <div id='quizDisplay'>
       <Row>
         <Col>
-          <h3 className='h3'>{selectedQuiz.name}</h3>
+          <h3 className='h3'>{quizName}</h3>
         </Col>
       </Row>
       <div>
         <Row>
           <Col xs={6} md={4} id='questionCol'>
             <div>
-              <h3 className='h3'>
-                QUESTION {quizIndex + 1} of {selectedQuiz.questions.length}
-              </h3>
-            </div>
-            <div>
-              <p>{currentQuestion.questionText}</p>
+              <h3 className='h3'>QUESTION {quizIndex + 1} of {selectedQuiz.questions.length} </h3>           
             </div>
           </Col>
           <Col xs={6} md={4}></Col>
@@ -70,11 +65,20 @@ export default function Quiz(
           </Col>
         </Row>
         <div>
-          {randomizeOptions().map((option, index) => (
-            <Button
-              variant='primary'
-              key={index}
-              onClick={() => handleAnswerClick(option === currentQuestion.correctAnswer)}
+    <Row>
+        <Col md={2}></Col>
+        <Col md={7}>
+          <h2>{questions[questionIndex].questionText}</h2>
+        </Col>
+        <Col md={3}></Col>
+      </Row>
+          {questions[questionIndex].options.map((option, index) => (
+            <input 
+            key={index} 
+            type='radio' 
+              name='answer' 
+                value={option} 
+              onClick={() => handleAnswerClick(e, questionIndex)}
             >
               {option}
             </Button>
