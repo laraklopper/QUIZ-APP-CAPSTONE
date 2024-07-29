@@ -146,8 +146,17 @@ export default function QuizLayout() {
   //===============JSX RENDERING==========================
 
   return (
+<>
+{/* Header */}
+      <Header heading="GAME" />
+     {/* Section1 */}
+      <section className='section1'>
     <div>
-      <h1 className='h1'>Select Quiz</h1>
+  <Row>
+          <Col>
+            <h2 className='h2'>SELECT QUIZ</h2>
+          </Col>
+        </Row>
       {/* Form to select quiz */}
       <select value={quizName} onChange={e => setQuizName(e.target.value)}>
         <option value="">Select</option>
@@ -165,9 +174,7 @@ export default function QuizLayout() {
           <input type="checkbox" checked={addTimer} onChange={handleCheckboxChange} />
         </label>
       </div>
-
       <button onClick={handleStartQuiz}>Play</button>
-
       {currentQuestion && (
         <div>
           <h2>Quiz Name: {quizName}</h2>
@@ -186,6 +193,9 @@ export default function QuizLayout() {
 
       {results && <h3>{results}</h3>}
     </div>
+</section>
+<Footer logout={logout}/>
+</>
   );
 }
 ```
