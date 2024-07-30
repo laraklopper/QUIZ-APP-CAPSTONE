@@ -1,5 +1,5 @@
 // Import necessary modules and packages
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';// Import the React module to use React functionalities
 import './App.css';//Import CSS stylesheet
 // React Router components
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -17,33 +17,36 @@ import Page4 from './pages/Page4';
 export default function App() {
   //=======STATE VARIABLES===============
   //User variables
-  const [users, setUsers] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [users, setUsers] = useState([]);//State to store a list of all the users
+  const [currentUser, setCurrentUser] = useState(null);// Details of the currently logged-in user
   const [userData, setUserData] = useState({
-    username: '',
-    email: '',
-    dateOfBirth: '',
-    admin: '',
-    password: '',
+    username: '',       // Username of the current user
+    email: '',          // Email of the current user
+    dateOfBirth: '',    // Date of birth of the current user
+    admin: '',          // Admin status of the current user
+    password: '',       // Password of the current user
   });
   const [newUserData, setNewUserData] = useState({
-    newUsername: '',
-    newEmail: '',
-    newDateOfBirth: '',
-    newAdmin: false,
-    newPassword: ''
+    newUsername: '',    // Username for new user registration
+    newEmail: '',       // Email for new user registration
+    newDateOfBirth: '', // Date of birth for new user registration
+    newAdmin: false,    // Admin status for new user registration
+    newPassword: '',    // Password for new user registration
   });
   //Quiz variables
-  const [quizList, setQuizList] = useState([]); 
-  const [questions, setQuestions] = useState([])
-  const [quiz, setQuiz] = useState(null);
-  const [quizName, setQuizName] = useState('');
-  const [currentQuestion, setCurrentQuestion] = useState(
-    { questionText: '', correctAnswer: '', options: ['', '', ''] })
+  const [quizList, setQuizList] = useState([]); // List of all available quizzes
+  const [questions, setQuestions] = useState([]) // List of questions for the current quiz
+  const [quiz, setQuiz] = useState(null); // Details of the currently selected quiz
+  const [quizName, setQuizName] = useState('');// Name of the new quiz being create
+   const [currentQuestion, setCurrentQuestion] = useState({
+    questionText: '',   // Text of the current question being created
+    correctAnswer: '',  // Correct answer for the current question
+    options: ['', '', ''], // Options for the current question
+  });
   //Event variables
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null);//State to handle any error messages
   //State variables to manage user Login
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false); // State to track if the user is logged in
 
   //============USE EFFECT HOOK TO FETCH USERS======================
   //Fetch users when the component mounts or when loggedIn changes
@@ -51,30 +54,30 @@ export default function App() {
     //Function to fetch users
     const fetchUsers = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (!token || !loggedIn) return;
+        const token = localStorage.getItem('token');//Retrieve the token from local storage
+        if (!token || !loggedIn) return;//Exit the function if there is no token
 
-        //Send a GET request to the server 
+        // Send a GET request to the server to fetch details of the current user
         const response = await fetch('http://localhost:3001/users/findUsers', {
-          method: 'GET',
+          method: 'GET',//HTTP request method
           mode: 'cors',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`,// Include the token in the request header for authentication
           }
         });
 
         //Response handling
         if (!response.ok) {
-          throw new Error('Failed to fetch users');
+          throw new Error('Failed to fetch users');//Throw an error message if the GET request is unsucessful
         }
 
-        const fetchedUsers = await response.json();
-        setUsers(fetchedUsers);
+        const fetchedUsers = await response.json();// Parse the JSON response
+        setUsers(fetchedUsers); // Update the state with the fetched users
       } 
       catch (error) {
-        console.error('Error fetching users', error.message);
-        setError('Error fetching users');
+        console.error('Error fetching users', error.message);//Log an error message in the console for debugging purposes
+        setError('Error fetching users');//Set the error State with an error message
       }
     };
 
@@ -96,11 +99,11 @@ export default function App() {
 
         //Response handling 
         if (!response.ok) {
-          throw new Error('Failed to fetch current user');
+          throw new Error('Failed to fetch current user');//Throw an error message if the GET request is unsuccessful
         }
 
-        const fetchedCurrentUser = await response.json();
-        setCurrentUser(fetchedCurrentUser);
+        const fetchedCurrentUser = await response.json();// Parse the JSON response
+        setCurrentUser(fetchedCurrentUser);// Update the state with the fetched current user details
       } 
       catch (error) {
         console.error('Error fetching current user', error.message);
@@ -108,11 +111,12 @@ export default function App() {
       }
     };
 
+    // If the user is logged in, fetch the users and current user details
     if (loggedIn) {
       fetchUsers();
       fetchCurrentUser();
     }
-  }, [loggedIn]);
+  }, [loggedIn]);//The effect depends on the loggedIn state, so it will re-run when this state changes
 
   //==============REQUESTS========================
   //-----------GET-------------------------
