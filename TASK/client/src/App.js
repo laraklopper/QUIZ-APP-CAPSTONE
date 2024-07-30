@@ -34,7 +34,8 @@ export default function App() {
     newPassword: ''
   });
   //Quiz variables
-  const [quizList, setQuizList] = useState([]); 
+  const [quizList, setQuizList] = useState([]);
+  const [questions, setQuestions] = useState([]);
   const [quiz, setQuiz] = useState(null);
   const [quizName, setQuizName] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState(
@@ -282,7 +283,9 @@ export default function App() {
                     quiz={quiz}      
                     setQuiz={setQuiz}
                     currentQuestion={currentQuestion}
-                    setCurrentQuestion={setCurrentQuestion}                  
+                    setCurrentQuestion={setCurrentQuestion}     
+                          questions={questions}
+                    setQuestions={setQuestions}
                   />}
                 />
                 <Route path='/page3' element={//Page3: Add Questions
@@ -301,6 +304,8 @@ export default function App() {
                     currentQuestion={currentQuestion}
                     setCurrentQuestion={setCurrentQuestion}  
                     userData={userData}
+                    questions={questions}
+                    setQuestions={setQuestions}
                     setUserData={setUserData}    
                   />}
                 />
