@@ -111,8 +111,7 @@ router.get('/findQuizzes', async (req, res) => {
         //Error handling
         console.error('Error finding quizzes:', error.message);//Log an error message in the console for debugging purposes
         // Send 500(Internal Server Error) status code and error message in JSON response
-        res.status(500).json(
-            { message: error.message });
+        res.status(500).json({ message: error.message })
     }
 });
 
@@ -223,19 +222,15 @@ router.delete('/deleteQuiz/:id', async (req, res) => {
         // Conditional rendering to check if the quiz was found
         if (!quiz) {
             // Return a 404 error if the quiz does not exist
-            return res.status(404).json
-            ({message: 'Quiz not found'})
+            return res.status(404).json({message: 'Quiz not found'})
         }
-
-        res.status(200).json(// Respond with a 200 status code and success message
-            { message: 'Quiz successfully deleted' });
+// Respond with a 200 status code and success message
+        res.status(200).json({ message: 'Quiz successfully deleted' });
     } 
     catch (error) {
         //Error handling
         console.error('Error deleting quiz:', error);//Log an error message in the console for debugging purposes
-        return res.status(500).json(// Respond with a 500 status code and the error message
-            { message: 'Internal Server Error'});
-    }
+        return res.status(500).json({ message: 'Internal Server Error'});}// Respond with a 500 status code and the error message
 });
 
 // Export the router to be used in other parts of the application
