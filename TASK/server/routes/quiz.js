@@ -76,7 +76,7 @@ router.get('/quizId/:id',  async (req, res) => {
     console.log('Finding Quiz');// Log message in the console for debugging purposes
     try {
         // Find the quiz by ID and populate the user field
-        const quiz = await Quiz.findById(req.params.id).populate('user');
+        const quiz = await Quiz.findById(req.params.id).populate('user', 'username');
 
         //Conditional rendering to check if the quiz exists
         if (!quiz) {
@@ -103,7 +103,7 @@ router.get('/quizId/:id',  async (req, res) => {
 router.get('/findQuizzes', async (req, res) => {
     console.log('Finding Quizzes')//Log a message in the console for debugging purposes
     try {
-        const quizzes = await Quiz.find({})//Find all quizzes
+        const quizzes = await Quiz.find({}).populate('user', 'username')//Find all quizzes
         res.status(200).json(quizzes);// Respond with the quizzes data in JSON format        
         // console.log(quizzes);//Log the quizzes in the database for debugging purposes
     } 
@@ -122,12 +122,12 @@ router.post('/addQuiz',  async (req, res) => {
     console.log(req.body);// Log the request body in the console for debugging purposes.
     console.log('Add Quiz'); // Log a static message in the console for debugging purposes
      
-    const { name, questions } = req.body;//Extract the name and question from the request body
+    const { name, questions, userId } = req.body;//Extract the name and question from the request body
 
     //  const { name, questions, user } = req.body;
     
     //Conditional rendering to check if the name and questions fields are provided
-    if (!name || !questions) {
+    if (!name || !questions || !userId) {
         /* Respond with a 400 status code and an error 
         message if they are missing*/
         return res.status(400).json(
@@ -136,9 +136,9 @@ router.post('/addQuiz',  async (req, res) => {
 
     try {
         // Create a new quiz instance
-        // const newQuiz = new Quiz({ name, questions, user });
+        const newQuiz = new Quiz({ name, questions, userId });
         // Create a new quiz instance with the provided name and questions
-        const newQuiz = new Quiz({ name, questions });
+        // const newQuiz = new Quiz({ name, questions });
         /*  const newQuiz = new Quiz(
       { 
           name, 
