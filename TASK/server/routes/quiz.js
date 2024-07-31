@@ -3,7 +3,7 @@ const express = require('express'); // Import Express framework
 const router = express.Router(); // Create a router object
 const cors = require('cors');// Import CORS middleware to enable cross-origin requests
 // Import JSON Web Token for authentication
-const jwt = require('jsonwebtoken');// Import CORS middleware to enable cross-origin requests
+const jwt = require('jsonwebtoken');
 //Schemas
 const Quiz = require('../models/quizModel');//Import the QuizSchema
 
