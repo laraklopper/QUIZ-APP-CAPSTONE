@@ -16,6 +16,22 @@ export default function LoginForm(//Export default LoginForm function component
   }
 ) {
 
+    //============EVENT LISTENER===============
+  // Event listener for handling user login data changes
+  const handleUserLogin = (event) => {
+    const { name, value } = event.target;
+    // Update userData state with new values
+    setUserData((prevState) => (
+      { ...prevState, [name]: value }
+    ));
+  };
+
+    // Function to handle user Login
+    const handleLogin = (e) => {
+        e.preventDefault()
+        console.log('logging In');
+        submitLogin();
+    }
   //============JSX RENDERING================
 
   return (
