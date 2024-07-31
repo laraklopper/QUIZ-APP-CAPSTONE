@@ -32,16 +32,13 @@ const quizSchema = new mongoose.Schema({
         ],
         required: true,
         validate: [arrayLimit5, '{PATH} must have exactly 5 questions']
-    }//,
-    // user: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'user',
-    //     required: true
-    // }
-}, { timestamps: true }
-    /*Enable timestamps to automatically add createdAt
-           and updatedAt fields*/
-);
+    },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }
+}, { timestamps: true });
 
 // Custom validation function to ensure each question has exactly 3 options
 function arrayLimit(val) {
@@ -54,10 +51,5 @@ function arrayLimit5(val) {
     return val.length === 5;
 }
 
-// // Create a virtual field for username
-// quizSchema.virtual('username').get(function () {
-//     return this.user.username;
-// });
-
 // Export the mongoose model for 'Quiz' using the defined schema
-module.exports = mongoose.model('quiz', quizSchema);
+module.exports = mongoose.model('Quiz', quizSchema);
