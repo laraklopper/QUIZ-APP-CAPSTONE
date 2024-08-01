@@ -66,64 +66,68 @@ const addUsername = (req, res, next) => {
 
 //------------------GET---------------
 //Route to GET a specific quiz using the quiz Id
-router.get('/quizId/:id', async (req, res) => {
+router.get('/findQuiz/:id', async (req, res) => {
+    console.log('Finding Quiz'); // Log a message in the console for debugging purposes
     try {
+        // Find quiz by ID and populate the 'user' field with 'username'
         const quiz = await Quiz.findById(req.params.id).populate('user', 'username');
+        /*.populate('user', 'username'): Populates the user field with 
+        the username of the user who created the quiz.*/
+
+        //Conditional rendering to check if the quiz exists
         if (!quiz) {
+            //If no Quiz is found respond with a 404 response
             return res.status(404).json({ message: 'quiz not found' });
         }
-        res.json({ quiz });
+        res.json({ quiz }); // Send the found quiz as a JSON response
+        console.log(quiz); // Log the quiz data in the console for debugging purposes
     } catch (error) {
-        console.error('Error finding quiz:', error.message);
-        res.status(500).json({ message: error.message });
+        console.error('Error finding quiz:', error.message);//Log an error message in the console for debugging purposes
+        res.status(500).json({ message: error.message });//If an error occurs, respond with a 500 Internal Server Error response.
     }
 });
 
 // Route to fetch all the quizzes from the database
-
 router.get('/findQuizzes', async (req, res) => {
-    console.log('Finding Quizzes')
+    console.log('Finding Quizzes');//Log a message in the console for debugging purposes
     try {
+        // Find all quizzes with optional filtering from request body and populate the 'user' field with 'username
         const quizzes = await Quiz.find({}).populate('user', 'username');
-        res.status(200).json(quizzes);
-        console.log(quizzes);
+        res.json(quizzes);// Send the list of quizzes as a JSON response
+        console.log(quizzes);// Log the quizzes data for debugging
     } 
     catch (error) {
-        console.error('Error finding quizzes:', error.message);
-        res.status(500).json({ message: error.message });
+        console.error('Error finding quizzes:', error.message);//Log an error message in the console for debugging purposes
+        res.status(500).json({ message: error.message });//If an error occurs, it sends a 500 Internal Server Error response.
     }
 });
-
-Quiz.findOne({ name: 'Sample Quiz' })
-    .populate('user', 'username') 
-    .exec((err, quiz) => {
-        if (err) {
-            console.error(err);
-        } else {
-            console.log(quiz);
-        }
-        mongoose.connection.close();
-    });
 
 //------------POST--------------
 //Route to add new quiz
 router.post('/addQuiz', async (req, res) => {
-  const { name, questions, userId } = req.body;
-    console.log('Add Quiz'); 
+   console.log(req.body); // Log the request body for debugging
+    console.log('Add Quiz'); // Log message for debugging
+     
+    const { name, questions } = req.body;// Extract 'name' and 'questions' from the request body  
+    const userId = req.user.id;// Retrieve user ID from the JWT token
 
+     // Conditional rendering to check if 'name', 'questions', and 'userId' are provided
   if (!name || !questions || !userId) {
     return res.status(400).json({ message: 'Quiz name, questions, and user ID are required' });
   }
 
   try {
-    const existingQuiz = await Quiz.findOne({ name });
-    if (existingQuiz) {
-      return res.status(400).json({ message: 'Quiz name already exists' });
-    }
-
-    const newQuiz = new Quiz({ name, questions, user: userId });
-    const savedQuiz = await newQuiz.save();
+        // Create a new quiz object
+       const newQuiz = new Quiz({ name, questions, user: userId }); // Save the new quiz to the database
+      // Check if a quiz with the same name already exists
+        const existingQuiz = await Quiz.findOne({ name });
+        if (existingQuiz) {
+            return res.status(400).json({ message: 'Quiz name already exists' });
+        }
+    
+    const savedQuiz = await newQuiz.save();// Respond with the saved quiz and a 201 status code
     res.status(201).json(savedQuiz);
+      console.log(savedQuiz)
   } catch (error) {
     console.error('Error occurred while adding new quiz:', error);
     res.status(400).json({ error: error.message });
