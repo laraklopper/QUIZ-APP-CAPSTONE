@@ -94,6 +94,17 @@ router.get('/findQuizzes', async (req, res) => {
     }
 });
 
+Quiz.findOne({ name: 'Sample Quiz' })
+    .populate('user', 'username') 
+    .exec((err, quiz) => {
+        if (err) {
+            console.error(err);
+        } else {
+            console.log(quiz);
+        }
+        mongoose.connection.close();
+    });
+
 //------------POST--------------
 //Route to add new quiz
 router.post('/addQuiz', async (req, res) => {
