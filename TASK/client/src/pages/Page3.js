@@ -206,13 +206,20 @@ export default function Page3(//Export default Page3 function component
           </Col>
         </Row>
         {/* QUIZ Output */}
-        <div id='quizOutput'>
+        <div id='quizOutput' style="padding: 10px; background-color: aquamarine; border: 1px  solid #000000;">
           {/* Display the list of quizes*/}
           {quizList.map((quiz) => (//Iterate over the quizList
-            <div className='quizItem' key = {quiz._id}>
+            <div className='quizItem' key = {quiz._id}
+            style="
+              margin-top: 2px;
+           margin-bottom: 2px;
+           margin-left: 1px;
+           margin-right: 1px;
+              "
+            >
               <Row className='quizListRow' 
             style="
-            background-color: aquamarine;
+            background-color: #0987b;
            margin-top: 2px;
            margin-bottom: 2px;
            margin-left: 1px;
