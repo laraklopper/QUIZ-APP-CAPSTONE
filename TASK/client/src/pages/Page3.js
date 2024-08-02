@@ -1,5 +1,5 @@
 // Import necessary modules and packages
-import React, { useEffect, useState/*, useCallback*/ } from 'react';// Import the React module to use React functionalities
+import React, { useEffect, useState } from 'react';// Import the React module to use React functionalities
 import '../CSS/Page3.css';//Import CSS stylesheet
 // Bootstrap
 import Row from 'react-bootstrap/Row'; // Import the Row component from react-bootstrap
@@ -14,14 +14,20 @@ import EditQuiz from '../components/EditQuiz';//Import the EditQuiz component fr
 // Page3 function component
 export default function Page3(//Export default Page3 function component
   {//PROPS PASSED FROM PARENT COMPONENT
-  quizList, 
+   quizList, 
   setQuizList, 
   setError, 
   fetchQuizzes, 
   logout, 
-  loggedIn,
   userData,
-  setUserData
+  setUserData,
+  quizName,
+  setQuizName,
+  currentQuestion,
+  setCurrentQuestion,
+  questions,
+  // currentUser,
+  setQuestions  
 }) {
   
   // ========STATE VARIABLES===============
@@ -46,22 +52,8 @@ export default function Page3(//Export default Page3 function component
   // Form error message variables
   const [formError, setFormError] = useState(''); // Stores and displays error messages related to form validation
 
-  //====================REACT HOOKS====================================
-  //   // Memoized callback to fetch quizzes if the user is logged in
-  //   const fetchQuizzesMemo = useCallback(() => {
-  //     if (loggedIn) { // Check if the user is logged in
-  //       fetchQuizzes(); // Fetch the quizzes from the server
-  //     }
-  //   }, [fetchQuizzes, loggedIn]); // Dependencies: fetchQuizzes function and loggedIn boolean
-
-
-  // // Fetch quizzes when the component mounts or when fetchQuizzesMemo changes
-  // useEffect(() => {
-  //   fetchQuizzesMemo(); // Call the memoized function to fetch quizzes
-  // }, [fetchQuizzesMemo]); // Dependency array: Re-run if fetchQuizzesMemo changes
-
-
-  /* useEffect to fetch quizzes when the component mounts
+//==========USE EFFECT HOOK==============
+  /* useEffect hook to fetch quizzes when the component mounts
  or when fetchQuizzes function changes*/
   useEffect(() => {
     if (loggedIn === true) {
@@ -82,7 +74,7 @@ export default function Page3(//Export default Page3 function component
     }
 
     // Create the quiz object with the quiz name and list of questions
-    // const quiz = {name: quizName, questions, username : userData.username}
+    // const quiz = {name: quizName, questions, user: currentUser}
     // Create a quiz object to send to the server
     const quiz = {name: quizName, questions}
     try {
@@ -209,7 +201,7 @@ export default function Page3(//Export default Page3 function component
       {/* Section1 */}
       <section className='page3Section1'>
         <Row className='quizRow'>
-          <Col id='outputHeading'>
+          <Col id='outputHeading'style="margin-top: 2px; margin-bottom: 2px;">
             <h2 className='h2'>QUIZZES</h2>
           </Col>
         </Row>
@@ -218,12 +210,21 @@ export default function Page3(//Export default Page3 function component
           {/* Display the list of quizes*/}
           {quizList.map((quiz) => (//Iterate over the quizList
             <div className='quizItem' key = {quiz._id}>
-              <Row className='quizListRow'>
+              <Row className='quizListRow' 
+            style="
+            background-color: aquamarine;
+           margin-top: 2px;
+           margin-bottom: 2px;
+           margin-left: 1px;
+           margin-right: 1px;
+           display: flex;
+            align-items: center;
+            ">
                 <Col className='quizCol'  md={3} >
                    <p className='itemText'>Quiz Name: {quiz.name}</p>
                 </Col>
                 <Col md={3}>
-                <p className='itemText'>{quiz.user}</p>
+              {/* <p className='itemText'>{quiz.user}</p>*/}
               </Col>
                 <Col  md={3} className='buttonCol'> 
                   <div>
