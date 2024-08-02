@@ -16,7 +16,7 @@ export default function AddQuiz(
   addNewQuiz,
   currentQuestion,
   setCurrentQuestion,
-  userData,
+  // userData,
 }) {
   //===========STATE VARIABLES====================
   // State to manage the error message displayed to the user
@@ -285,10 +285,8 @@ export default function AddQuiz(
                       <Col md={5}> 
                         <p className='options'>{q.options.join(', ')}</p></Col> 
                       <Col md={2}>
-                          <Button 
-                            variant='danger' 
-                           type='button' 
-                     
+              {/* Button to delete a new Question */}
+                          <Button variant='danger' type='button'                    
                             onClick={() => 
                             deleteNewQuestion(index)}
                           >
@@ -307,7 +305,7 @@ export default function AddQuiz(
               <Button 
                 variant='primary' 
                 type='button'  
-                /*/ Call the handleAddNewQuiz 
+                /* Call the handleAddNewQuiz 
                 function when the button is clicked*/
                 onClick={handleAddNewQuiz}
               >
