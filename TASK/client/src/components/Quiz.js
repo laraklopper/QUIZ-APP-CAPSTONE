@@ -1,5 +1,5 @@
 // Import necessary modules and packages
-import React from 'react'; // Import React to create functional components
+import React, { useEffect, useState } from 'react'; // Import React to create functional components
 //Bootstrap
 import Row from 'react-bootstrap/Row'; // Import Row component from Bootstrap for layout
 import Col from 'react-bootstrap/Col'; // Import Col component from Bootstrap for layout
@@ -16,15 +16,49 @@ export default function Quiz(
   score,
   quizTimer,
   timer,
+    quizName
 }) {
+    //=============STATE VARIABLES=====================
+const [timeLeft, setTimeLeft] = useState(10);// State to track the remaining time for the timer
 
+    // useEffect to handle the countdown logic
+  useEffect(() => {
+    if (quizTimer) {
+      // Set up an interval to decrement the timer every second
+      const interval = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(interval); // Clear interval when timer reaches 0
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+
+      // Cleanup the interval on component unmount
+      return () => clearInterval(interval);
+    }
+  }, [quizTimer]);
+  
+    if (!selectedQuiz || !questions || questions.length === 0) {
+    return <div>Loading...</div>
+  }
+
+  
+    //Function to format timer
+  const formatTimer = (time) => {
+    if (time === null) return '00:00';// Return '00:00' if time is null
+    const minutes = Math.floor(time / 60);// Calculate minutes
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
 //==================JSX RENDERING======================
   
   return (
     <div id='quizDisplay'>
       <Row>
         <Col>
-          <h3 className='h3'>{selectedQuizName}</h3>
+          <h3 className='h3'>{selectedQuiz.quizName}</h3>
         </Col>
       </Row>
       <div>
@@ -36,25 +70,24 @@ export default function Quiz(
           </Col>
           <Col xs={6} md={4}></Col>
           <Col xs={6} md={4} id='timerCol'>
-    {/* Conditionally display the timer */}
-            {quizTimer && <div id='timer'>TIMER: {timer}</div>}
+          {/*Display the timer if enabled */}
+            {quizTimer && <div id='timer'>TIMER: {formatTimer(timer)}</div>}
           </Col>
         </Row>
         <div>
     <Row>
         <Col md={2}></Col>
         <Col md={7}>
-    {/* Display current question text */}
           <h3 className='h3'>{questions[questionIndex].questionText}</h3>
         </Col>
         <Col md={3}></Col>
       </Row>
     // Map over each option in the current question to render radio buttons
            {questions[quizIndex].options.map((option, index) => (
-            <div key={index}>
+            <div key={option}>
               <input
-                type='radio'//Input type
-                name='answer'// All radio buttons share the same name to ensure only one can be selected
+                type='radio'
+                name='answer'
                 value={option}
             checked={selectedAnswer === option} // Use state to manage selected option
                 onClick={() => handleAnswerClick(option === questions[quizIndex].correctAnswer)}
