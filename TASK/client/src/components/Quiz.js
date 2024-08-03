@@ -81,6 +81,7 @@ const [timeLeft, setTimeLeft] = useState(10);// State to track the remaining tim
     <div id='quizDisplay'>
       <Row>
         <Col>
+    {/* Display quiz name */}
           <h3 className='h3'>{selectedQuiz.quizName}</h3>
         </Col>
       </Row>
@@ -88,6 +89,7 @@ const [timeLeft, setTimeLeft] = useState(10);// State to track the remaining tim
         <Row>
           <Col xs={6} md={4} id='questionCol'>
             <div>
+    {/* Display current question text */}
               <h3 className='h3'>QUESTION {quizIndex + 1} of {selectedQuiz.questions.length} </h3>           
             </div>
           </Col>
