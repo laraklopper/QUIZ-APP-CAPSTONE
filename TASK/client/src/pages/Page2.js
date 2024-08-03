@@ -41,15 +41,28 @@ export default function Page2(
     // Ref to manage timer intervals
   const timerRef = useRef(null);
    //========================================================
-  // Fisher-Yates shuffle algorithm to randomize array elements
+  // Fisher-Yates shuffle algorithm to randomize options and correct answer elements
     const shuffleArray = (array) => {
-    let shuffledArray = array.slice(); // Create a copy of the array
+    let shuffledArray = options.slice(); // Create a copy of the array 
     for (let i = shuffledArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1)); // Generate a random index
       [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]]; // Swap elements
     }
     return shuffledArray;
   };
+
+  //Function to shuffle all the possible answers
+  /*const shuffleAnswers = () => {
+    const options = [/*array of alternative options*/]
+    const correctAnswer = options.push(/*correct Answer*/);
+    const shuffledArray = [/*array containing the corrent answer and alternative answers*/]
+    while(answers.length > 0){
+      return randomOptions [Math.floor(Math.random() * answers.length)]//randomise the answers
+    }
+    if(correctAnswer){
+      //logic for correct answer
+    }
+  }*/
     //============USE EFFECT HOOK==================
   /* useEffect to fetch quizzes when the component 
   mounts or when fetchQuizzes changes*/
