@@ -14,43 +14,66 @@ export default function Quiz(
   handleNextQuestion,
   handleRestart,
   score,
+    setScore,
   quizTimer,
   timer,
     quizName
 }) {
     //=============STATE VARIABLES=====================
 const [timeLeft, setTimeLeft] = useState(10);// State to track the remaining time for the timer
-
-    // useEffect to handle the countdown logic
-  useEffect(() => {
-    if (quizTimer) {
-      // Set up an interval to decrement the timer every second
-      const interval = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          if (prevTime <= 1) {
-            clearInterval(interval); // Clear interval when timer reaches 0
-            return 0;
-          }
-          return prevTime - 1;
-        });
-      }, 1000);
-
-      // Cleanup the interval on component unmount
-      return () => clearInterval(interval);
-    }
-  }, [quizTimer]);
+  const [selectedOption, setSelectedOption] = useState(null);  // State to keep track of the selected option
   
-    if (!selectedQuiz || !questions || questions.length === 0) {
-    return <div>Loading...</div>
+  const optionIds = ['A', 'B', 'C', 'D'];// Option identifiers (e.g., A, B, C, D)
+
+  // Effect hook to manage countdown timer
+  useEffect(() => {
+    if (!quizTimer) return; // Exit if timer is not enabled
+
+    // Initialize timer with the provided timer value
+    setTimeLeft(timer);
+    
+    // Set up an interval to decrement the timer every second
+    const interval = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(interval); // Stop the interval when time is 0
+          handleNextQuestion(); // Move to the next question when time is up
+          return 0;
+        }
+        return prevTime - 1; // Decrement the timer
+      });
+    }, 1000); // 1000 milliseconds = 1 second
+    
+    /* Cleanup function to clear the interval when the component unmounts or dependencies change*/
+    return () => clearInterval(interval);
+  }, [quizTimer, timer, handleNextQuestion]);
+  
+  // Conditional rendering if the quiz data or questions are not loaded yet
+  if (!selectedQuiz || !questions || questions.length === 0) {
+    return <div>Loading...</div>;
   }
 
-  
-    //Function to format timer
+  // Function to format the timer into mm:ss format
   const formatTimer = (time) => {
-    if (time === null) return '00:00';// Return '00:00' if time is null
-    const minutes = Math.floor(time / 60);// Calculate minutes
-    const seconds = time % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    if (time === null) return '00:00'; // Return default if time is null
+    const minutes = Math.floor(time / 60); // Calculate minutes
+    const seconds = time % 60; // Calculate seconds
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`; // Format timer
+  };
+  //============EVENT LISTENERS=================
+   // Function to handle answer selection and update the score if correct
+  const handleAnswerClick = (isCorrect) => {
+    if (isCorrect) {
+      setScore(score + 1); 
+    }
+    handleNextQuestion(); 
+  };
+
+   // Function to handle option click and update the selected option
+  const handleOptionClick = (option) => {
+    setSelectedOption(option);  // Update the state to reflect the selected option
+    handleAnswerClick(option);  // Call the provided handler function with the selected option
+
   };
 //==================JSX RENDERING======================
   
@@ -84,15 +107,17 @@ const [timeLeft, setTimeLeft] = useState(10);// State to track the remaining tim
       </Row>
     // Map over each option in the current question to render radio buttons
            {questions[quizIndex].options.map((option, index) => (
-            <div key={option}>
+            <div key={index}>
+             {/* Render a radio button for each option */}
               <input
-                type='radio'
-                name='answer'
-                value={option}
-            checked={selectedAnswer === option} // Use state to manage selected option
-                onClick={() => handleAnswerClick(option === questions[quizIndex].correctAnswer)}
+                type='radio'// Input type is 'radio' to allow only one selection per group
+                name='answer'// All radio buttons share the same name so only one can be selected at a time
+                value={option}// The value of the radio button is set to the text of the option
+                checked={selectedOption === option} // Ensure radio button reflects selected state
+                onClick={() => handleOptionClick(option === questions[quizIndex].correctAnswer)}
               />
-              {option}
+              {/* Display option label with identifier (e.g., A, B, C, D) */}
+              {optionIds[index]} {option} 
             </div>
           ))}
         </div>
