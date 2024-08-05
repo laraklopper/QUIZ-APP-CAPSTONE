@@ -36,8 +36,6 @@ export default function Page2(
   //Timer variables
   const [timer, setTimer] = useState(null);
   const [quizTimer, setQuizTimer] = useState(false);
-
-  
   
   //============USE EFFECT HOOK==================
   /* useEffect to fetch quizzes when the component 
