@@ -17,6 +17,7 @@ export default function Quiz(
     setScore,
   quizTimer,
   timer,
+    addScore,
     quizName
 }) {
     //=============STATE VARIABLES=====================
@@ -75,6 +76,14 @@ const [timeLeft, setTimeLeft] = useState(10);// State to track the remaining tim
     handleAnswerClick(option);  // Call the provided handler function with the selected option
 
   };
+  
+// Function to add new score to the database 
+  const addNewScore = () => {
+      if (questionIndex === 5) {
+      alert(`Quiz completed: ${score} out 5`)
+      addScore()
+    }
+  }
 //==================JSX RENDERING======================
   
   return (
