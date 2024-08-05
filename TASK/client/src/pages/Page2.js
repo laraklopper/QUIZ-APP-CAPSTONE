@@ -48,14 +48,22 @@ export default function Page2(
 
 //==========================================
   // Fisher-Yates shuffle algorithm to randomize array elements
-  const shuffleArray = (array) => {
-    let shuffledArray = array.slice(); 
-    for (let i = shuffledArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1)); 
-      [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-    }
-    return shuffledArray;  // Return the shuffled array
-  };
+const shuffleArray = (array) => {
+  let shuffledArray = array.slice(); 
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)); 
+    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+  }
+  return shuffledArray;  // Return the shuffled array
+};
+
+const shuffleQuestions = (questions) => {
+  return questions.map((question) => {
+    const options = shuffleArray(
+      [...question.incorrectAnswers, question.correctAnswer]);
+    return { ...question, options };
+  });
+};
 
   //=======EVENT LISTENERS============
   // Function to handle quiz selection
@@ -144,6 +152,7 @@ export default function Page2(
       setTimer(30);
     }
   }, [selectedQuizId, quizTimer, fetchQuiz]);
+  
   // ==========JSX RENDERING==========
   return (
     <>
