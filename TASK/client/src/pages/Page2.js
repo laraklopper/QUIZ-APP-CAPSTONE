@@ -55,13 +55,13 @@ const shuffleArray = (array) => {
   return shuffledArray;  // Return the shuffled array
 };
 
-const shuffleQuestions = (questions) => {
-  return questions.map((question) => {
-    const options = shuffleArray(
-      [...question.incorrectAnswers, question.correctAnswer]);
-    return { ...question, options };
-  });
-};
+// const shuffleQuestions = (questions) => {
+//   return questions.map((question) => {
+//     const options = shuffleArray(
+//       [...question.incorrectAnswers, question.correctAnswer]);
+//     return { ...question, options };
+//   });
+// };
 
   //=======EVENT LISTENERS============
   // Function to handle quiz selection
@@ -104,6 +104,7 @@ const shuffleQuestions = (questions) => {
      
       if (!quizId) return;// If no quiz ID is selected, exit the function
       const token = localStorage.getItem('token');
+      
       if(!token) return
       // Send a GET request to fetch quiz data from the server
       const response = await fetch(`http://localhost:3001/quiz/findQuiz/${quizId}`, {
@@ -137,6 +138,44 @@ const shuffleQuestions = (questions) => {
     }
   }, [setQuizList, setError, setQuestions, setQuizName, setQuiz])
 
+  //----------POST--------------------------------
+ /* useEffect(() => {
+     //Function to save score
+  const addScore = async() => {
+  // console.log('quiz Completed' + score);
+    try {
+        //Send a POST request to the server 
+        const response = await fetch('http://localhost:3001/quiz/addScore', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username:,
+            quizName:,
+            score:,
+          })
+        }
+    )
+
+    if (!response.ok) {
+      throw new Error('Error saving user score')
+    }
+    //logic to save user score
+
+    } catch (error) {
+      console.error('Error saving score');
+      setError('Error saving score' + error.message)
+    }
+  }
+    if (questionIndex === 5) {
+      alert(`Quiz completed: ${score} out 5`)
+      addScore()
+    }
+  },[/*score*/])*/
+   
+  
   // Function to start the quiz
   const handleQuizStart = useCallback(async(e) => {
     e.preventDefault()
