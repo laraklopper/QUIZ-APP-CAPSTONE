@@ -41,14 +41,6 @@ const checkJwtToken = (req, res, next) => {
     }
 }
 
-// Middleware to add username of the currently logged-in user when creating a quiz
-const addUsername = (req, res, next) => {
-    if (!req.user) {
-        return res.status(401).json({ message: 'User not authenticated' });
-    }
-    req.body.username = req.user.username;
-    next();
-};
 //=============ROUTES=====================
 /*
 |================================================|
@@ -102,6 +94,10 @@ router.get('/findQuizzes', async (req, res) => {
     }
 });
 
+const handleError = (res, error) => {
+    console.error('Error:', error.message);
+    res.status(500).json({ message: error.message });
+};
 //------------POST--------------
 //Route to add new quiz
 router.post('/addQuiz', async (req, res) => {
