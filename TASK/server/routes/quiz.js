@@ -4,14 +4,16 @@ const router = express.Router();
 const cors = require('cors');
 // Import JSON Web Token for authentication
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 //Schemas
 const Quiz = require('../models/quizModel');
 const Score = requir('../models/scoreSchema')
 // const {checkJwtToken} = require('./middleware')
 
 //=======SETUP MIDDLEWARE===========
+mongoose.set('strictPopulate', false)//optional boolean, set to false to allow populating paths that aren't in the schema
 router.use(cors()); // Enable CORS for all routes
-router.use(express.json());
+router.use(express.json());//Built-in middleware to parse incoming requests with JSON payloads
 
 //==============CUSTOM MIDDLEWARE======================
 // Middleware to verify the JWT token
@@ -86,22 +88,22 @@ const handleError = (res, error) => {
 };
 //------------POST--------------
 //Route to add new quiz
-router.post('/addQuiz',/*checkJwtToken,*/ async (req, res) => {
+router.post('/addQuiz', checkJwtToken, async (req, res) => {
    console.log(req.body); 
     console.log('Add Quiz'); 
      
      const { name, questions } = req.body;   
-    // const userId = req.user.id;// Retrieve user ID from the JWT token
-    if (!name || !questions /*|| !userId */) {      
+    const userId = req.user.id;// Retrieve user ID from the JWT token
+    if (!name || !questions || !userId ) {      
         return res.status(400).json(
-            // { message: 'Quiz name, questions and user ID are required' }
-         { message: 'Quiz name and questions are required' }
+            { message: 'Quiz name, questions and user ID are required' }
+         // { message: 'Quiz name and questions are required' }
         )
     } 
     
   try {
            // Create a new quiz object
-        const newQuiz = new Quiz( { name, questions/*, user: userId*/}
+        const newQuiz = new Quiz( { name, questions, user: userId}
         );
 
       const existingQuiz = await Quiz.findOne({ name });
