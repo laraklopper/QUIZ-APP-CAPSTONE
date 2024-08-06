@@ -97,7 +97,6 @@ router.post('/addQuiz', checkJwtToken, async (req, res) => {
     if (!name || !questions || !userId ) {      
         return res.status(400).json(
             { message: 'Quiz name, questions and user ID are required' }
-         // { message: 'Quiz name and questions are required' }
         )
     } 
     
@@ -145,21 +144,23 @@ router.post('/addScore', async (req, res) => {
 // Route to edit a quiz
 router.put('/editQuiz/:id', checkJwtToken,  async (req, res) => {
     const { id } = req.params;
-    const { name, questions } = req.body;
-   
-    if (!name || !questions || questions.length !== 5) {
-        
-        return res.status(400).json(
-            { message: 'Quiz name and exactly 5 questions are required' });
-    }
+    // const { name, questions } = req.body;
+    const { name, questions, user } = req.body;
 
-    for (const question of questions) {
-        if (!question.questionText || !question.correctAnswer || !question.options || question.options.length !== 3) {
-            return res.status(400).json(
-                { message: 'Each question must have a question, a correct answer, and exactly 3 options' });
-        }
+    // if (!name || !questions || questions.length !== 5) {        
+    //     return res.status(400).json(
+    //         { message: 'Quiz name and exactly 5 questions are required' });
+    // }
+
+    // for (const question of questions) {
+    //     if (!question.questionText || !question.correctAnswer || !question.options || question.options.length !== 3) {
+    //         return res.status(400).json(
+    //             { message: 'Each question must have a question, a correct answer, and exactly 3 options' });
+    //     }
+    // }
+   if (!name || !questions || !user) {
+        return res.status(400).json({ message: 'Quiz name, questions, and user ID are required' });
     }
-  
     try {
         const updatedQuiz = await Quiz.findByIdAndUpdate(
             id, 
@@ -184,9 +185,9 @@ router.delete('/deleteQuiz/:id', async (req, res) => {
     const { id } = req.params;
     
     try {
-        const quiz = await Quiz.findByIdAndDelete(id);
+        const deletedQuiz = await Quiz.findByIdAndDelete(id);
         
-        if (!quiz) {
+        if (!deletedQuiz) {
             return res.status(404).json({message: 'Quiz not found'})
         }
         res.status(200).json({ message: 'Quiz successfully deleted' });
