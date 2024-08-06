@@ -55,13 +55,6 @@ const shuffleArray = (array) => {
   return shuffledArray;  // Return the shuffled array
 };
 
-// const shuffleQuestions = (questions) => {
-//   return questions.map((question) => {
-//     const options = shuffleArray(
-//       [...question.incorrectAnswers, question.correctAnswer]);
-//     return { ...question, options };
-//   });
-// };
 
   //=======EVENT LISTENERS============
   // Function to handle quiz selection
