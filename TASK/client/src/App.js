@@ -121,7 +121,7 @@ export default function App() {
   //==============REQUESTS========================
   //-----------GET-------------------------
 // Function to fetch quizzes
-  const fetchQuizzes = async () => {
+  const fetchQuizzes = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       //Send a GET request to the server to find all quizzes
@@ -142,7 +142,7 @@ export default function App() {
 
       if (quizData && quizData.quizList) {
         setQuizList(quizData.quizList);
-        console.log(quizData);
+      //  console.log(quizData);
       }
 
       
@@ -151,7 +151,7 @@ export default function App() {
       console.error('Error fetching quizzes:', error);
       setError('Error fetching quizzes');
     }
-  };
+  },[]);
     
 //===========EVENT LISTENERS============================
 
