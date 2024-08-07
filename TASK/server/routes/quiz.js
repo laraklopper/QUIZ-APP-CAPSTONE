@@ -7,11 +7,12 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 //Schemas
 const Quiz = require('../models/quizModel');
-const Score = requir('../models/scoreSchema')
+//const Score = requir('../models/scoreSchema')
 // const {checkJwtToken} = require('./middleware')
 
+
 //=======SETUP MIDDLEWARE===========
-mongoose.set('strictPopulate', false)//optional boolean, set to false to allow populating paths that aren't in the schema
+mongoose.set('strictPopulate', false)//Optional boolean, set to false to allow populating paths that aren't in the schema
 router.use(cors()); // Enable CORS for all routes
 router.use(express.json());//Built-in middleware to parse incoming requests with JSON payloads
 
