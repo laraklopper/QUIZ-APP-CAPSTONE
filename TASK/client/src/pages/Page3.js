@@ -64,7 +64,6 @@ export default function Page3(//Export default Page3 function component
   // ----------POST-------------------
   //Function to add a new quiz
   const addNewQuiz = async () => {
-  // console.log('add new Quiz');
   
   if (questions.length !== 5) {
     alert('You must add exactly 5 questions.');
@@ -74,7 +73,7 @@ export default function Page3(//Export default Page3 function component
   const quiz = { name: quizName, questions };
 
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');//Retrieve token from localStorage
           //Send a POST request to the server to add a new quiz
     const response = await fetch('http://localhost:3001/quiz/addQuiz', {
       method: 'POST',
@@ -89,7 +88,7 @@ export default function Page3(//Export default Page3 function component
     if (response.ok) {
       alert('New Quiz successfully added');
       const newQuiz = await response.json();
-      setQuizList([...quizList, newQuiz]);
+      setQuizList((prevQuizList) => [...prevQuizList, newQuiz]);
       setQuizName('');
       setQuestions([]);
     } else {
