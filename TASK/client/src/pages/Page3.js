@@ -16,7 +16,6 @@ export default function Page3(//Export default Page3 function component
   {//PROPS PASSED FROM PARENT COMPONENT
    quizList, 
   setQuizList, 
-  setError, 
   fetchQuizzes, 
   logout, 
   userData,
@@ -64,53 +63,45 @@ export default function Page3(//Export default Page3 function component
   // ==============REQUESTS=======================
   // ----------POST-------------------
   //Function to add a new quiz
-  const addNewQuiz = async () => {//Define an async function to add a new Quiz
-    console.log('add new Quiz');//Log a message in the console for debugging purposes
-    
-    if (questions.length !== 5) {
-      alert('You must add exactly 5 questions.');
-      return;
+  const addNewQuiz = async () => {
+  // console.log('add new Quiz');
+  
+  if (questions.length !== 5) {
+    alert('You must add exactly 5 questions.');
+    return;
+  }
+// Create the quiz object with the quiz name and list of questions
+  const quiz = { name: quizName, questions };
 
+  try {
+    const token = localStorage.getItem('token');
+          //Send a POST request to the server to add a new quiz
+    const response = await fetch('http://localhost:3001/quiz/addQuiz', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(quiz)
+    });
+
+    if (response.ok) {
+      alert('New Quiz successfully added');
+      const newQuiz = await response.json();
+      setQuizList([...quizList, newQuiz]);
+      setQuizName('');
+      setQuestions([]);
+    } else {
+      throw new Error('There was an error creating the quiz');
     }
 
-    // Create the quiz object with the quiz name and list of questions
-    // const quiz = {name: quizName, questions, user: currentUser}
-    // Create a quiz object to send to the server
-    const quiz = {name: quizName, questions}
-    try {
-      const token = localStorage.getItem('token');// Retrieve token from localStorage
-      //Send a POST request to the server to add a new quiz
-      const response = await fetch('http://localhost:3001/quiz/addQuiz', {
-        method: 'POST',//HTTP request method
-        mode: 'cors',//Set the mode to cors, allowing cross-origin requests 
-        headers: {
-          'Content-Type': 'application/json',// Specify the Content-Type being sent in the request payload. 
-          'Authorization': `Bearer ${token}`,// Include the token in the authorization header
-        },
-        body: JSON.stringify(quiz)// Convert quiz object to JSON format for the request body
-      });
-
-      //Response handling
-            // Conditional rendering if the response indicates success (status code 200-299)
-      if (response.ok) {
-        alert('New Quiz successfully added')// Alert user upon successful addition of the quiz
-        const newQuiz = await response.json(); // Parse the response JSON to get the new quiz data
-        setQuizList([...quizList, newQuiz]);// Update the quiz list with the new quiz
-        setQuizName('');     // Reset the quiz name input field
-        setQuestions([]);// Clear the questions array
-        // console.log('Quiz created:', newQuiz);
-      } 
-      else {
-        throw new Error('There was an error creating the quiz');// Throw an error if the POST request is unsuccessful
-      }
-
-    } 
-    catch (error) {
-      console.error('There was an error creating the quiz:', error);//Log an error message in the console for debugging purposes
-      setError('There was an error creating the quiz:', error);// Set error state with error message
-    }
-  };
-
+  } catch (error) {
+    console.error('There was an error creating the quiz:', error);
+    setFormError('There was an error creating the quiz:', error);
+  }
+};
+  
   // ---------------PUT-----------------------
   //Function to edit a quiz
   const editQuiz = async (quizId) => {
@@ -123,7 +114,7 @@ export default function Page3(//Export default Page3 function component
       const token = localStorage.getItem('token');
       //Send a PUT request to the server to edit a quiz
       const response = await fetch(`http://localhost:3001/quiz/editQuiz/${quizId}`, {
-        method: 'PUT',//HTTP request method
+        method: 'PUT',
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
@@ -153,7 +144,7 @@ export default function Page3(//Export default Page3 function component
       }
     } catch (error) {
       console.error(`Error editing the quiz: ${error}`);
-      setError(`Error editing the quiz: ${error}`);
+      setFormError(`Error editing the quiz: ${error}`);
     }
   }
 
@@ -180,7 +171,7 @@ export default function Page3(//Export default Page3 function component
       }
     } 
     catch (error) {
-      setError('Error deleting quiz:', error);
+      setFormError('Error deleting quiz:', error);
       console.error('Error deleting quiz:', error);
     }
   }
@@ -201,32 +192,16 @@ export default function Page3(//Export default Page3 function component
       {/* Section1 */}
       <section className='page3Section1'>
         <Row className='quizRow'>
-          <Col id='outputHeading'style="margin-top: 2px; margin-bottom: 2px;">
+          <Col id='outputHeading'>
             <h2 className='h2'>QUIZZES</h2>
           </Col>
         </Row>
         {/* QUIZ Output */}
-        <div id='quizOutput' style="padding: 10px; background-color: aquamarine; border: 1px  solid #000000;">
+        <div id='quizOutput'>
           {/* Display the list of quizes*/}
           {quizList.map((quiz) => (//Iterate over the quizList
-            <div className='quizItem' key = {quiz._id}
-            style="
-              margin-top: 2px;
-           margin-bottom: 2px;
-           margin-left: 1px;
-           margin-right: 1px;
-              "
-            >
-              <Row className='quizListRow' 
-            style="
-            background-color: #0987b;
-           margin-top: 2px;
-           margin-bottom: 2px;
-           margin-left: 1px;
-           margin-right: 1px;
-           display: flex;
-            align-items: center;
-            ">
+            <div className='quizItem' key = {quiz._id}>
+              <Row className='quizListRow'>
                 <Col className='quizCol'  md={3} >
                    <p className='itemText'>Quiz Name: {quiz.name}</p>
                 </Col>
