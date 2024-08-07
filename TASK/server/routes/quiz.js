@@ -1,5 +1,5 @@
 // Import necessary modules and packages
-const express = require('express'); // Import Express framework
+const express = require('express'); 
 const router = express.Router(); 
 const cors = require('cors');
 // Import JSON Web Token for authentication
@@ -7,12 +7,13 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 //Schemas
 const Quiz = require('../models/quizModel');
-//const Score = requir('../models/scoreSchema')
 // const {checkJwtToken} = require('./middleware')
 
 
 //=======SETUP MIDDLEWARE===========
 mongoose.set('strictPopulate', false)//Optional boolean, set to false to allow populating paths that aren't in the schema
+/*The populate method in Mongoose is used to replace the 
+specified path in the document with other documents from another collection.*/
 router.use(cors()); // Enable CORS for all routes
 router.use(express.json());//Built-in middleware to parse incoming requests with JSON payloads
 
@@ -94,8 +95,8 @@ router.post('/addQuiz', checkJwtToken, async (req, res) => {
     console.log('Add Quiz'); 
      
      const { name, questions } = req.body;   
-    const userId = req.user.id;// Retrieve user ID from the JWT token
-    if (!name || !questions || !userId ) {      
+    // const userId = req.user.id;// Retrieve user ID from the JWT token
+    if (!name || !questions /*|| !userId */) {      
         return res.status(400).json(
             { message: 'Quiz name, questions and user ID are required' }
         )
@@ -103,8 +104,11 @@ router.post('/addQuiz', checkJwtToken, async (req, res) => {
     
   try {
            // Create a new quiz object
-        const newQuiz = new Quiz( { name, questions, user: userId}
-        );
+        const newQuiz = new Quiz( { 
+            name, 
+            questions, 
+            // user: userId
+        });
 
       const existingQuiz = await Quiz.findOne({ name });
         if (existingQuiz) {
@@ -121,32 +125,12 @@ router.post('/addQuiz', checkJwtToken, async (req, res) => {
   }
 });
 
-// Route to add a score
-router.post('/addScore', async (req, res) => {
-    console.log(req.body);
-    const { quizName, username, score } = req.body;
-
-    try {
-        const quiz = await Quiz.findOne({ name: quizName });
-        if (!quiz) {
-            return res.status(404).json({ message: 'Quiz not found' });
-        }
-        const newScore = new Score({ quizName, username, score });
-        const savedScore = await newScore.save();
-        res.status(201).json(savedScore);
-        console.log(savedScore);
-    } catch (error) {
-        console.error('Error occurred while saving user score:', error);
-        res.status(400).json({ error: error.message });
-    }
-});
 
 //-------------------PUT--------------------------
 // Route to edit a quiz
 router.put('/editQuiz/:id', checkJwtToken,  async (req, res) => {
     const { id } = req.params;
-    // const { name, questions } = req.body;
-    const { name, questions, user } = req.body;
+    const { name, questions } = req.body;
 
     // if (!name || !questions || questions.length !== 5) {        
     //     return res.status(400).json(
@@ -159,8 +143,8 @@ router.put('/editQuiz/:id', checkJwtToken,  async (req, res) => {
     //             { message: 'Each question must have a question, a correct answer, and exactly 3 options' });
     //     }
     // }
-   if (!name || !questions || !user) {
-        return res.status(400).json({ message: 'Quiz name, questions, and user ID are required' });
+   if (!name || !questions) {
+        return res.status(400).json({ message: 'Quiz name and questions are required' });
     }
     try {
         const updatedQuiz = await Quiz.findByIdAndUpdate(
