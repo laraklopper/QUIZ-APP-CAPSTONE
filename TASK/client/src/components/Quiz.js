@@ -60,7 +60,10 @@ const [timeLeft, setTimeLeft] = useState(10);// State to track the remaining tim
     const minutes = Math.floor(time / 60); // Calculate minutes
     const seconds = time % 60; // Calculate seconds
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`; // Format timer
+    /*`minutes.toString().padStart(2, '0')` converts the `minutes` value to a string and 
+    ensures it has at least two digits by padding with a leading zero if necessary*/
   };
+  
   //============EVENT LISTENERS=================
    // Function to handle answer selection and update the score if correct
   const handleAnswerClick = (isCorrect) => {
