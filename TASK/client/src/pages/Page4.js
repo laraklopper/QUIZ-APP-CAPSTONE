@@ -123,9 +123,17 @@ export default function Page4(
     setUpdateUser(userId === updateUser ? null : userId);
   };
 
-  // Function to toggle the display of the users list
+    /* Function to toggle the display of the users list if 
+  the current user is an admin user*/
+  //=>middleware?
   const toggleViewUsers = () => {
-    setViewUsers(!viewUsers);
+    if (currentUser.admin) {
+      setViewUsers(!viewUsers);
+    }
+    else{
+      console.log('Unauthorized');
+      alert('Unauthorized');
+    }
   };
   //=======JSX RENDERING==================
 
