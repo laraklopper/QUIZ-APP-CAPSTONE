@@ -21,6 +21,7 @@ export default function Page2(
     setError,
     quiz,
     setQuiz,  
+    quizName,
     setQuizName,
     setQuestions,
     questions
@@ -132,9 +133,16 @@ const shuffleArray = (array) => {
   }, [setQuizList, setError, setQuestions, setQuizName, setQuiz])
 
   //----------POST--------------------------------
- /* useEffect(() => {
+ const handleAnswerClick = (isCorrect) => {
+    if (isCorrect) {
+      setScore(score + 1);// Increment the score if the selected answer is correct
+    }
+    handleNextQuestion();// Move to the next question
+  };
+
      //Function to save score
   const addScore = async() => {
+    // alert('Quiz Completed' + score )
   // console.log('quiz Completed' + score);
     try {
         //Send a POST request to the server 
@@ -145,30 +153,28 @@ const shuffleArray = (array) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            username:,
+            username: currentUser,
             quizName:,
             score:,
           })
         }
     )
 
-    if (!response.ok) {
-      throw new Error('Error saving user score')
+    if (response.ok) {
+      const userScore = await response.json();
+      
     }
-    //logic to save user score
+      else{
+      throw new Error('Error saving user score');
+    }
 
     } catch (error) {
       console.error('Error saving score');
       setError('Error saving score' + error.message)
     }
   }
-    if (questionIndex === 5) {
-      alert(`Quiz completed: ${score} out 5`)
-      addScore()
-    }
-  },[/*score*/])*/
-   
-  
+
+
   // Function to start the quiz
   const handleQuizStart = useCallback(async(e) => {
     e.preventDefault()
