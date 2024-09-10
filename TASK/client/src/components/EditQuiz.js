@@ -19,9 +19,20 @@ export default function EditQuiz(
   setNewQuestions
 }
 ) {
-  //=============STATE VARIABLES======================
+  //=============STATE VARIABLES======================  
+  // State to track the index of the current question being edited
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  
+
+    useEffect(() => {
+    if (quiz) {
+      setEditQuizIndex({
+        editQuestionText: quiz.questions[currentQuestionIndex]?.question || '',
+        editCorrectAnswer: quiz.questions[currentQuestionIndex]?.correctAnswer || '',
+        editOptions: quiz.questions[currentQuestionIndex]?.options || ['', '', '']
+      });
+    }
+  }, [currentQuestionIndex, quiz, setEditQuizIndex]);
+
   //============EVENT LISTENERS=================
 
 //Function to edit a question
