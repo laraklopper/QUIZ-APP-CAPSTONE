@@ -1,9 +1,9 @@
 // Import necessary modules and packages
-import React, { useState } from 'react';
+import React, { useState } from 'react';// Import the React module to use React functionalities
 //Bootstrap
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row'; // Import the Row component from react-bootstrap
+import Col from 'react-bootstrap/Col'; // Import the Col component from react-bootstrap
+import Button from 'react-bootstrap/Button'; // Import the Button component from react-bootstrap
 
 
 //Add quiz function component
@@ -16,7 +16,6 @@ export default function AddQuiz(
   addNewQuiz,
   currentQuestion,
   setCurrentQuestion,
-  // userData,
 }) {
   //===========STATE VARIABLES====================
   // State to manage the error message displayed to the user
@@ -30,28 +29,32 @@ export default function AddQuiz(
       console.log('You must add up to 5 questions.');
       return;// Exit the function to prevent adding more questions
     }
-    if (!currentQuestion.questionText || !currentQuestion.correctAnswer || currentQuestion.options.some(opt => !opt)) {
+    if (!currentQuestion.questionText  || !currentQuestion.correctAnswer  || currentQuestion.options.some(opt => !opt)) {
       // Set an error message if any field is empty
       setErrorMessage('Please fill in all fields before adding a question.');
       return;// Exit the function to prevent adding incomplete questions
     }
     setQuestions([...questions, currentQuestion]);
     setCurrentQuestion(  
-      { questionText: '', correctAnswer: '', options: ['', '', ''] });
+      { 
+        questionText: '', 
+        correctAnswer: '', 
+        options: ['', '', ''] 
+      }
+    );
   };
 
   // Function to delete a question
   const deleteNewQuestion =(index) => {
-    // Create a new array excluding the question at the specified index
     const newQuestions = questions.filter((_, i) => i !== index); 
-    setQuestions(newQuestions)// Update the state with the new array of questions
+    setQuestions(newQuestions)
   }
 
   // Function to handle form submission
   const handleAddNewQuiz = () => {
     if (!quizName || questions.length === 0) {
       setErrorMessage('Please enter a quiz name and add at least one question.');
-      return;// Exit the function to prevent further execution
+      return;
     }
     // Call the addNewQuiz function passed as a prop
     addNewQuiz();
@@ -65,38 +68,42 @@ export default function AddQuiz(
         <h2 className='h2'>ADD QUIZ</h2>
         </Col>
       </Row>
+      {/*  */}
       <div id='newQuizForm'>
         <Row>
           <Col xs={6} md={4}>
           {/* QuizForm Input */}
-            <label className='addQuizLabel'>
-              <p className='labelText'>QUIZ NAME:</p>             
-            <input
-                type='text'
-                name='quizName'
-                value={quizName}
-                onChange={(e) =>
-                  /* Event handler for the onChange event, 
-                  triggered when the input value changes*/
-                  setQuizName(e.target.value)
-                }
-                autoComplete='off'
-                placeholder='QUIZ NAME'
-                required
-                className='addQuizInput'
-                id='addQuizName'
-            />
-            </label>
+          <div className='addQuizField'>
+              <label className='addQuizLabel' htmlFor='addQuizName'>
+                <p className='labelText'>QUIZ NAME:</p> 
+              </label>
+                <input
+                  type='text'
+                  name='quizName'
+                  value={quizName}
+                  onChange={(e) =>
+                    /* Event handler for the onChange event, 
+                    triggered when the input value changes*/
+                    setQuizName(e.target.value)
+                  }
+                  autoComplete='off'
+                  placeholder='QUIZ NAME'
+                  required
+                  className='addQuizInput'
+                  id='addQuizName'
+                />             
+          </div>
           </Col>
-          <Col xs={12} md={8}>
-          </Col>
+          <Col xs={12} md={8}></Col>
         </Row>
         <div id='quizInput'>
           <Row className='quizFormRow'>
             <Col xs={6} className='quizFormCol'>
-            {/* Question Input */}
-              <label className='addQuizLabel'>
-                <p className='labelText'>QUESTION:</p>
+            <div className='addQuizField' >              
+                <label className='addQuizLabel' id='questionInput'>
+                  <p className='labelText'>QUESTION:</p>
+                </label>
+                {/* Question Input */}
                 <input
                   type='text'
                   name='questionText'
@@ -112,14 +119,16 @@ export default function AddQuiz(
                   required
                   className='addQuizInput'
                 />
-              </label>
+            </div>         
             </Col>
-            <Col xs={6} className='quizFormInput'>
-            {/* Correct Answer input */}
+            <Col xs={6} className='quizFormCol'>
+            <div className='addQuizField'>
               <label 
-              className='addQuizLabel' 
+              className='addQuizLabel'
+              htmlFor='correctAnswer' 
               >
                 <p className='labelText'>CORRECT ANSWER:</p>
+              </label>
                 {/* Input for the correct answer */}
               <input
                   type='text'
@@ -138,35 +147,33 @@ export default function AddQuiz(
                   required
                   className='addQuizInput'
                   id='correctAnswer'
-              />
-              </label>
+              />              
+            </div>
             </Col>
           </Row>
+          {/* Alternative answers */}
           <Row className='quizFormRow'>
             <Col xs={6} className='quizFormCol'>
-            {/* Alternative Answer Input */}
-            <label 
+            <div className='addQuizField'>
+                {/* First Alternative Answer  */}
+             <label 
                 className='addQuizLabel'
+                htmlFor='optionOne'
             >
               <p className='labelText'>1.ALTERNATIVE ANSWER:</p>
+              </label> 
                 {/* Input field for the first alternative answer */}
             <input
                   type='text'
                   name='options[0]'
                   value={currentQuestion.options[0]}
                   onChange={(e) => {
-                  // Handle input change to update the state
                     const options = [
-                      // Create a new array with the existing options
                       ...currentQuestion.options
                     ]
-                    // Update the first option with the new value from the input field
                     options[0] = e.target.value;
-                      setCurrentQuestion(
-                        {
-                          // Preserve other properties of currentQuestion
+                      setCurrentQuestion({
                           ...currentQuestion,
-                          // Update the options array with the new options
                           options
                         }
                       )}}
@@ -176,29 +183,29 @@ export default function AddQuiz(
                   className='addQuizInput'
                   id='optionOne'
             />
-            </label>
+            </div>
             </Col>
-            <Col xs={6}>
-            {/* Alternative Answer Input */}
+            <Col xs={6} className='quizFormCol'>
+            <div className='addQuizField'>
+                {/* Second Alternative Answer  */}
               <label 
                 className='addQuizLabel' 
+                htmlFor='option2'
               >
-                <p className='labelText'>2.ALTERNATIVE ANSWER</p>
+                <p className='labelText'>2.ALTERNATIVE ANSWER: </p>
+              </label>              
                 {/* Input field for the second alternative answer */}
             <input
-                  type='text'// Specify the input type 
+                  type='text'
                   value={currentQuestion.options[1]}
             onChange={(e) => {
               const options = [
-                // Create a new array with the existing options
                 ...currentQuestion.options
               ]
-              // Update the second option with the new value from the input field
               options[1] = e.target.value;
               setCurrentQuestion(
-                {// Preserve other properties of currentQuestion
+                {
                   ...currentQuestion, 
-                  // Update the options array with the modified options
                   options
                 }
               )}}
@@ -208,28 +215,27 @@ export default function AddQuiz(
                   className='addQuizInput'
                   id='option2'
                 />
-            </label>
+             </div>
             </Col>
           </Row>
           <Row className='quizFormRow'>
             <Col xs={6}></Col>
             <Col xs={6} className='quizFormCol'>
-            {/* Alternative Answer Input */}
-            <label className='addQuizLabel' >
-              <p className='labelText'> 3. ALTERNATIVE ANSWER</p>
+            <div className='addQuizField'>
+            {/* Third Alternative Answer*/}
+            <label className='addQuizLabel' htmlFor='option3' >
+              <p className='labelText'> 3.ALTERNATIVE ANSWER: </p>
                 {/* Input field for the third alternative answer */}
             <input
                   type='text'
                   name='options[2]'
                   value={currentQuestion.options[2]}
             onChange={(e) => {
-              // Create a new array with the existing options
                 const options = [...currentQuestion.options]
-              // Update the third option with the new value from the input field
                 options[2] = e.target.value;
-                    setCurrentQuestion({
-                      ...currentQuestion, // Preserve other properties of currentQuestion
-                      // Update the options array with the modified options
+                setCurrentQuestion(
+                    {
+                      ...currentQuestion, 
                       options 
                     })
                   }}
@@ -237,9 +243,10 @@ export default function AddQuiz(
                   placeholder='ALTERNATIVE ANSWER 3'
                   className='addQuizInput'
                   required
-                  id='optionTwo'
+                  id='option3'
             />
             </label>
+            </div>
             </Col>
           </Row>
           <Row>
@@ -251,7 +258,6 @@ export default function AddQuiz(
                 variant="primary" 
                 onClick={handleAddQuestion}
               >
-                {/*Text displayed on the button*/}
                 ADD QUESTION
               </Button>
             </Col>
@@ -285,10 +291,13 @@ export default function AddQuiz(
                       <Col md={5}> 
                         <p className='options'>{q.options.join(', ')}</p></Col> 
                       <Col md={2}>
-              {/* Button to delete a new Question */}
-                          <Button variant='danger' type='button'                    
+                      {/* Button to delete a new Question */}
+                          <Button 
+                            variant='danger' 
+                            type='button'                   
                             onClick={() => 
                             deleteNewQuestion(index)}
+                      aria-label={`Delete Question ${index + 1}`}
                           >
                             DELETE QUESTION
                           </Button>
@@ -305,11 +314,9 @@ export default function AddQuiz(
               <Button 
                 variant='primary' 
                 type='button'  
-                /* Call the handleAddNewQuiz 
-                function when the button is clicked*/
                 onClick={handleAddNewQuiz}
+                aria-label='Add Quiz'
               >
-                {/*Text displayed on the button*/}
                   ADD QUIZ
               </Button>
             </Col>
