@@ -90,10 +90,9 @@ const handleError = (res, error) => {
 };
 //------------POST--------------
 //Route to add new quiz
-router.post('/addQuiz', checkJwtToken, async (req, res) => {
+router.post('/addQuiz', async (req, res) => {
    console.log(req.body); 
     console.log('Add Quiz'); 
-     
      const { name, questions } = req.body;   
     // const userId = req.user.id;// Retrieve user ID from the JWT token
     if (!name || !questions /*|| !userId */) {      
@@ -130,33 +129,37 @@ router.post('/addQuiz', checkJwtToken, async (req, res) => {
 // Route to edit a quiz
 router.put('/editQuiz/:id', checkJwtToken,  async (req, res) => {
     const { id } = req.params;
+    console.log(req.body);
     const { name, questions } = req.body;
 
-    // if (!name || !questions || questions.length !== 5) {        
-    //     return res.status(400).json(
-    //         { message: 'Quiz name and exactly 5 questions are required' });
-    // }
-
-    // for (const question of questions) {
-    //     if (!question.questionText || !question.correctAnswer || !question.options || question.options.length !== 3) {
-    //         return res.status(400).json(
-    //             { message: 'Each question must have a question, a correct answer, and exactly 3 options' });
-    //     }
-    // }
+      if (!name || !Array.isArray(questions) || questions.length !== 5) {
+        //Return a 400(Bad request) 
+        return res.status(400).json(
+            {success: false, message: 'Quiz name and exactly 5 questions are required'}
+        )}
+  
    if (!name || !questions) {
         return res.status(400).json({ message: 'Quiz name and questions are required' });
     }
     try {
+          for (const question of questions) {
+            if (!question.questionText || !question.correctAnswer || !question.options || question.options.length !== 3) {
+            return res.status(400).json(
+                { message: 'Each question must have a question, a correct answer, and exactly 3 options' });
+            }
+        }
         const updatedQuiz = await Quiz.findByIdAndUpdate(
             id, 
-            { name, questions },
+            {$set : {name, questions}},
             { new: true })
 
         if (!updatedQuiz) {
             return res.status(404).json({ message: 'Quiz not found' });
         }
 
-        res.json(updatedQuiz)
+        res.status(200).json({ success: true, updatedQuiz });
+        console.log(updatedQuiz);
+        // res.json(updatedQuiz)
     } 
     catch (error) {
         console.error('Error editing quiz:', error);
