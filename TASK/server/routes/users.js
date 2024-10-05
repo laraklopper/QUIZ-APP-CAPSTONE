@@ -30,15 +30,13 @@ router.use(express.json());
 //------------------GET---------------
 //Route to handle GET requests to fetch a single user
 router.get('/userId',authenticateToken, async (req, res) => {
-    console.log('Finding User');
+    // console.log('Finding User');
     try {
         const user = await User.findById(req.user.userId);
 
          if (!user) {
-            console.error('User not found');
-            return res.status(400).json(
-                { message: 'User Not Found'}
-            )
+             console.error('User not found');
+             return res.status(400).json({ message: 'User Not Found'})
          }
 
         res.status(200).json(user);
