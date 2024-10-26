@@ -2,6 +2,8 @@ import React, {useState} from 'react'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+//Components
+import FormHeaders from '../components/FormHeaders'; 
 
 //SelectQuiz function component
 export default function SelectQuiz(
@@ -25,6 +27,8 @@ const handleFetchQuiz = async (quizId) => {
     
   return (
       <div id='selectQuiz'>
+      {/*Heading for quiz selction*/}
+      <FormHeaders fromHeading='SELECT QUIZ'/>
           <Row>
               <Col>
                   <h2 className='h2'>SELECT QUIZ</h2>
@@ -44,7 +48,7 @@ const handleFetchQuiz = async (quizId) => {
                       </select>
                   </label>
               </Col>
-              <Col xs={6} md={4}>
+              <Col xs={6} md={4}>p;
                   {/* Add Timer */}
                   <label className='timerLabel'>{/*Checkbox to add a timer*/}
                       <p className='labelText'>ADD TIMER:</p>
