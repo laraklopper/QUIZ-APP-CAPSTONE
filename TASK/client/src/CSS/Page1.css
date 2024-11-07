@@ -1,0 +1,159 @@
+/* PAGE1 */
+#page1Section1{
+margin: 0px;
+    padding: 5px;
+    background-color: #0095C7;
+    display: block;
+    border-style: solid;
+    border-color: black;
+}
+/* Welcome message */
+#welcome{
+        margin: 0px;
+            padding: 10px;
+            display: block;
+                /* background: linear-gradient(to bottom, #4991cca1 36%, #1C6EA4 45%, #1580a5 88%); */
+                    font-family: sans-serif;
+
+}
+.welcomeRow{
+    margin: 0px;
+    display: flex;
+    padding: 10px;
+}
+/* Section2 */
+.section2{
+    border: solid;
+        border-color: black;
+}
+#scoresDisplayHeadRow{
+    margin: 0px;
+}
+.scoreDisplayRow {
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    padding: 5px;
+   
+}
+#scoreList{
+        display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 33%;
+            text-align: center;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            margin-top: 5px;
+            margin-left: 0px;
+            margin-right: 0px;
+}
+#welcomeMsg{
+    text-align: left;
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+}
+#welcomeLabel{
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    margin: 5px;
+}
+#welcomeHeading{
+    font-weight: 800;
+    margin-right: 10px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+}
+#username{
+    font-weight: 800;
+    margin-right: 10px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        text-transform: uppercase;
+
+}
+/* Instructions */
+#instructionsHeading{
+    font-weight: 700;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 28px;
+}
+#instructions{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0px;
+    padding: 10px;
+    border: black;
+        border-style: solid;
+            background-color: #0086b3;
+}
+#instructText{
+font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+font-weight: 500;
+}
+/* section2  */
+.section2 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 10px;
+    display: block;
+    background-color: #0095C7
+}
+/* score display */
+#scoreDisplayCol {
+    display: flex;
+}
+#pastScoresDisplay{
+    display: flex;
+        flex-direction: column;
+        align-items: center;
+        display: flex;
+            border: black solid;
+        background-color: cadetblue;
+        padding: 10px;
+}
+#scoreDisplayOutput{
+    display: flex;
+    border: black solid;
+}
+#scoreDisplay{
+    width: 100%;
+    display: flex;
+}
+.pastScoreField{
+    display: flex;
+    align-items: baseline;
+        padding: 10px;
+            margin: 10px;
+            font-weight: 500;
+            width: 33%;
+}
+.scoreDisplayRow {
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    padding-top: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    /* background-color: cadetblue; */
+}
+/* Footer */
+.pageFooter {
+    background-color: #0095C7;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+}
