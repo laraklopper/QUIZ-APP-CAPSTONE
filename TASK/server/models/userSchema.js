@@ -14,7 +14,7 @@ let userSchema = new mongoose.Schema({
     email:{
         type: String,//Indicate data type as a string
         required: [true, 'User email is required'],
-        unique: true,// Ensures no duplicate emails in the database
+        // unique: true,// Ensures no duplicate emails in the database
         // Automatically converts the email to lowercase before saving
         set: (v) => v.toLowerCase(),
     },
