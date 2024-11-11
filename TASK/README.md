@@ -6,11 +6,14 @@ React.js allows you to write code use it an unlimited number of times therefore 
 Therefore, `MongoDB` will handle the database, `Express.js` will provide the web application framework to develop the server-side, `React.js`, (create-react-app) will be used to create the front-end, user-interface and `Node.js` will be used as the `JavaScript` runtime environment. 
 
 **GLOSSARY**
-- **JSON (JavaScript Object Notation):**
+- **Environmental Variables:** key-value pairs that store configuration settings outside the code.
+- **JSON (JavaScript Object Notation):** a lightweight data-interchange format for data exchange between the client and the server.
 -	**Middleware:** In MERN stack, middleware refers to the different types of software components that facilitates communication between the application.
 -	**Proxy Server:** a proxy server is an intermediatory between the front-end(client) and the back-end(server) that works by intercepting web access between a sender and the receiver.
 -	**Express middleware:** Middleware in express Express.js is essentially on its own a routing and middleware web framework that has minimal functionality on its own and is therefore essentially a series of middleware function calls.
--	**REST APIS (REPRESENTATIONAL STATE TRANSER):** A REST API is request sent from the front-end to backend. 
+-	**REST APIS (REPRESENTATIONAL STATE TRANSER):** A REST API is request sent from the front-end to backend.
+-	**URI (Uniform Resource Identifiers’):** the resources used to identify “resources” on the web. They are commonly used as targets of HTTP requests. 
+-	**URL (Uniform Resource Locator):** the URL specifies the location of a resource on the internet and how to access it.
 -	**Web stack:** a web stack refers to the combination of tools and technologies used create a website or web application.
 
 ## TABLE OF CONTENTS
@@ -41,13 +44,9 @@ However, although Heroku is a ‘platform as a service (PaaS)’ that simplifies
 
 ### Link to the deployed application
 ## REFERENCES
-- https://www.nobledesktop.com/classes-near-me/blog/
-- https://www.geeksforgeeks.org/nextjs-vs-reactjs-which-one-to-choose/#is-next-better-than-react
+
+-	https://developer.mozilla.org/en-US/docs/Web/URI#syntax_of_uniform_resource_identifiers_uris
+-	https://vercel.com/docs/cli/domains#usage
 - https://www.geeksforgeeks.org/folder-structure-for-a-node-js-project/
 - https://www.geeksforgeeks.org/what-is-package-json-in-node-js/?ref=ml_lbp
-- https://www.geeksforgeeks.org/what-are-functional-requirements-in-system-design-examples-definition/
-- https://www.geeksforgeeks.org/what-are-non-functional-requirements-in-system-design-examples-definition/?ref=next_article
-- https://www.geeksforgeeks.org/software-engineering-classification-of-software-requirements/
-- https://vercel.com/docs/cli/domains#usage
-- https://docs.netlify.com/
-- https://devcenter.heroku.com/categories/reference 
+- https://www.geeksforgeeks.org/nextjs-vs-reactjs-which-one-to-choose/#is-next-better-than-react
