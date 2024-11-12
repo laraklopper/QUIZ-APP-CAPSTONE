@@ -6,12 +6,6 @@
 3. [REFERENCES](#references)
 
 
-| CRUD OPERATION | HTTP VERB | EXPRESS METHOD    |
-|----------------|-----------|-------------------|
-|CREATE          | POST      |  router.post()    |
-|READ            | GET       |  router.get()     |  
-|UPDATE          | PUT       |  router.put()     |
-|DELETE          | DELETE    |  router.delete()  |
 
 # SOFTWARE REQUIREMENTS
 
@@ -88,6 +82,13 @@ Functional requirements are the activities required of the program. These requir
 - Users are able to logout on each page and the application stores the data securely after user logout.
 
 Functional requirements also include the `CRUD` (Create (POST), Read (GET), Update (PUT) and, Delete) operations which are requests made to the database to either add(POST), retrieve(GET), update(PUT), or delete(DELETE) documents from the database. 
+
+| CRUD OPERATION | HTTP VERB | EXPRESS METHOD    |
+|----------------|-----------|-------------------|
+|CREATE          | POST      |  router.post()    |
+|READ            | GET       |  router.get()     |  
+|UPDATE          | PUT       |  router.put()     |
+|DELETE          | DELETE    |  router.delete()  |
 
 **CRUD operations in the application include:**
 
