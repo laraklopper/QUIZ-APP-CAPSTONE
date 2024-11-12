@@ -6,6 +6,15 @@
 3. [REFERENCES](#references)
 
 
+| CRUD OPERATION | HTTP VERB | EXPRESS METHOD    |
+|----------------|-----------|-------------------|
+|CREATE          | POST      |  router.post()    |
+|READ            | GET       |  router.get()     |  
+|UPDATE          | PUT       |  router.put()     |
+|DELETE          | DELETE    |  router.delete()  |
+
+# SOFTWARE REQUIREMENTS
+
 ## SYSTEM ARCHITECTURE
 ### WEB STACK
 
