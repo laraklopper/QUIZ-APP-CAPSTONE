@@ -65,6 +65,35 @@ export default function EditQuiz(//Export default editQuiz Function component
   }, [quiz, setNewQuestions]);
 
   //============EVENT LISTENERS=================
+/*
+  //Form input Change functions
+  // Function to handleQuizNameChange
+  const handleNewQuizName = (e) => {setNewQuizName(e.target.value)};
+  
+  // Function to handleQuestionChange
+  const handleQuestionChange = (e) => {
+    setEditQuizIndex({ 
+      ...editQuizIndex, 
+      editQuestionText: e.target.value });
+  };
+
+  // Function to handleCorrectAnswerChange
+  const handleAnswerChange = (e) => { 
+    setEditQuizIndex({ 
+      ...editQuizIndex, 
+      editCorrectAnswer: e.target.value })}
+
+  // Function to handleOptionChange
+ const handleOptionChange = (e, optionIndex, value) => {
+   const updatedOptions = [...(editQuizIndex.editOptions //Copy of the edit questions array  
+      || ['', '', ''])];//Ensure three options
+    updatedOptions[optionIndex] = value; // Update the specific option in the editOptions array
+    setEditQuizIndex({ 
+      ...editQuizIndex, 
+      editOptions: updatedOptions });
+  };*/
+
+  
   // Function to edit a question
 const handleEditQuestion =(useCallback((e) => {
   e.preventDefault()// Prevent default form submission
