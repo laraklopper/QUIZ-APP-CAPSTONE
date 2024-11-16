@@ -1,6 +1,14 @@
 // Import necessary modules and packages
-// Import the Mongoose library
-const mongoose = require('mongoose');
+const mongoose = require('mongoose');// Import the Mongoose library
+
+// Function to adjust to GMT+2 and format the date as dd/mm/yyyy
+const formatDateToGMT2 = (date) => {
+    const gmt2Date = new Date(date.getTime() + 2 * 60 * 60 * 1000);// Convert the given date to GMT+2 by adding 2 hours (2 * 60 * 60 * 1000 milliseconds)
+    const day = String(gmt2Date.getUTCDate()).padStart(2, '0');// Extract and format the day as a two-digit string
+    const month = String(gmt2Date.getUTCMonth() + 1).padStart(2, '0');// Extract and format the month as a two-digit string (months are 0-indexed, so add 1)
+    const year = gmt2Date.getUTCFullYear();// Extract the four-digit year
+    return `${day}/${month}/${year}`;// Return the formatted date string in dd/mm/yyyy format
+};
 
 //Define the score schema
 const scoreSchema = new mongoose.Schema({
@@ -36,14 +44,20 @@ const scoreSchema = new mongoose.Schema({
         default: 1,// Set the default value to 1 for the first attempt
         set: (v) => Math.floor(v),
     },
-    //Field for the date of the current attempt
+ //Field for the date of the current attempt
     date: {
         type: Date,//Define the dataType as a date
-        default: Date.now,// Set the default to the current date and time
-        required: true,
+        default: Date.now, // Set the default to the current date and time
+        // default: () => formatDateToGMT2(new Date()),// Set the default date to GMT+2 
+        required: true,// Mark the field as required
     },
-},);
+},{timestamps:true});// Add timestamps for createdAt and updatedAt fields
 
+// Pre-save middleware to ensure the date is formatted correctly
+scoreSchema.pre('save', function (next) {  
+    this.date = formatDateToGMT2(new Date());// Reformat the date to GMT+2 before saving the document
+    next(); // Proceed with saving the document
+});
 
 // Export the score model based on the scoreSchema
 module.exports = mongoose.model('Score', scoreSchema);
