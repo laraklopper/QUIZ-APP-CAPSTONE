@@ -134,7 +134,8 @@ const handleEditQuestion =useCallback((e) => {
   },[editQuiz, quiz._id, setQuizToUpdate, setError])
 
     //==================CONDITIONAL RENDERING=================
-  // Display a loading message if quiz data isn't available yet
+  /*
+  //  Display a loading message if quiz data isn't available yet
   if (!quiz || !Array.isArray(quiz.questions)) {
     return <div>Loading...</div>;// Handle loading or error states
   }
@@ -142,6 +143,7 @@ const handleEditQuestion =useCallback((e) => {
   if (currentQuestionIndex >= quiz.questions.length) {
     return <div>Invalid question index</div>
   }
+*/
 
   //==============JSX RENDERING====================
   
@@ -204,7 +206,7 @@ const handleEditQuestion =useCallback((e) => {
                   ...editQuizIndex, 
                   editQuestionText: e.target.value
                 })}
-                autoComplete='off'//Disable browser autocomplete
+                autoComplete='off'
                   placeholder={quiz.questions[currentQuestionIndex]?.questionText || ''}
                   id='editQuestionText'
                 />
@@ -235,6 +237,8 @@ const handleEditQuestion =useCallback((e) => {
         </Row>
         {/* Input for each option */}
         {[0, 1, 2].map((optionIndex)=> (
+          const optionValue = editQuizIndex?.editOptions?.[optionIndex] || '';
+          return(
           <Row className='editQuizRow' key={optionIndex}>
             <Col xs={6} className='editQuizCol' >
               <div className='editField'>
@@ -247,8 +251,8 @@ const handleEditQuestion =useCallback((e) => {
                   type='text'//Specify the datatype as text
                   className='editQuizInput'
                   name={`editOptions${optionIndex + 1}`}
-                  value={editQuizIndex.editOptions[optionIndex] || ''}//Value bound to the corresponding option in state
-                  onChange={(e) => {
+                  // value={editQuizIndex.editOptions[optionIndex] || ''}//Value bound to the corresponding option in state
+                  onChange={(e) => {//Copy of the edit questions array
                     const updatedOptions = [...(editQuizIndex.editOptions || //Copy of the edit questions array
                       [' ', ' ', ' '])]//Ensure three elements
                     updatedOptions[optionIndex] = e.target.value
