@@ -53,6 +53,11 @@ export default function Page3(//Export default Page3 function component
   /* useEffect to fetch quizzes when the component mounts
  or when fetchQuizzes function changes*/
   useEffect(() => {
+    fetchQuizzes())// Call the function to fetch quizzes
+    // console.log(newQuestions);//Log an message in the console for debugging purposes
+  }, [fetchQuizzes/*,newQuestions*/]) 
+  /*
+  useEffect(() => {
     const displayQuizzes = async () => {
       try {
         await fetchQuizzes()// Call the function to fetch quizzes
@@ -64,7 +69,7 @@ export default function Page3(//Export default Page3 function component
     }
     displayQuizzes()//Call the displayQuizzes function
   }, [fetchQuizzes, setError])
-
+*/
   // ==============REQUESTS=======================
   // ----------POST-------------------
   //Function to add a new quiz
@@ -105,7 +110,6 @@ export default function Page3(//Export default Page3 function component
         setQuizName('');
         console.log('New Quiz added');//Log a success message in the console for debugging purposes
       }
-   
     }
     catch (error) {
       //Error handling
@@ -126,7 +130,7 @@ export default function Page3(//Export default Page3 function component
       }
       
       //Send a PUT request to the server to edit a quiz
-      const response = await fetch(`http://localhost:3001/quiz/editQuiz/${quizId}`, {
+      const response = await fetch(`http://localhost:3001/quiz/edit/${quizId}`, {
         method: 'PUT',//HTTP request method
         mode: 'cors',// Enable Cross-origin resource sharing
         headers: {
