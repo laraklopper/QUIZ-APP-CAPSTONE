@@ -1,5 +1,21 @@
 const jwt = require('jsonwebtoken');
 
+/*
+|====================|==================================|====================|=======================|
+| Feature            | `req.body`                       | `req.params`       | `req.query`           |
+|====================|==================================|====================|=======================|
+| Source             | Request body                     | URL path           | URL query string      |
+|--------------------|----------------------------------|--------------------|-----------------------|
+| Data Type          | JSON or form data                | Named placeholders | Key-value pairs       |
+|--------------------|----------------------------------|--------------------|-----------------------|
+| Common Methods     | `POST`, `PUT`, `PATCH`           | All HTTP methods   | Usually `GET`         |
+|--------------------|----------------------------------|--------------------|-----------------------|
+| Use Case           | Structured or large data         | Mandatory values   | Optional parameters   |
+|--------------------|----------------------------------|--------------------|-----------------------|
+| Middleware         | `express.json()` or `urlencoded` | None               | None                  |
+=====================|==================================|====================|=======================|    
+*/
+
 // Middleware to verify JWT and extract user info
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
