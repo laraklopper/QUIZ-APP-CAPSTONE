@@ -6,13 +6,14 @@ const checkJwtToken = (req, res, next) => {
     const authHeader = req.headers.authorization// Retrieve the authorization header from the request
 
     const token = authHeader && authHeader.split(' ')[1];// Extract the authorization header
-    if (!token) return res.status(401).json({ message: 'Access denied. No token provided.' })// Respond with a 401 (Unauthorised) status code
-    
+    if (!token) return res.status(401).json(
+        { message: 'Access denied. No token provided.' })// Respond with a 401 (Unauthorised) status code
     try {
         // Verify the token using the secret key
         const decoded = jwt.verify(
             token,
-            /*process.env.JWT_SECRET ||*/'secretKey',//secret key used for signing the token stored in enviromental variables
+            /*process.env.JWT_SECRET ||*/
+            'secretKey',//Secret key used for signing the token stored in enviromental variables
         );
         req.user = decoded;// Attach decoded user information to the request object
         console.log('Token provided');//Log a message in the console for debugging purposes
