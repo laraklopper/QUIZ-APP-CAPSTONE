@@ -12,23 +12,27 @@ import NavigationBtns from './NavigationBtns';//Import NavigationBtns function c
 //EditQuiz function component
 export default function EditQuiz(//Export default editQuiz Function component
   {//PROPS PASSED FROM PARENT COMPONENT
-    quiz, 
-    quizList,
-    setQuizList, 
-    editQuizIndex,
-    setEditQuizIndex, 
-    setQuizToUpdate,
-    setNewQuizName,
-    newQuizName,
-    editQuiz,
-    newQuestions,       
-    setNewQuestions,  
-    currentQuestion,
+    quiz,   //The quiz object being edited.
+    quizList,// List of all quizzes
+    currentUser,// Current logged-in user
+    setQuizList, // Setter for updating quiz list
+    editQuizIndex,// State for editing question fields
+    setEditQuizIndex, // Setter for updating editQuizIndex
+    setQuizToUpdate,// Setter to clear quiz being updated
+    setNewQuizName,// Setter for new quiz name
+    newQuizName,  // New quiz name
+    editQuiz,     // Function to edit quiz on the server
+    newQuestions,       // List of updated questions
+    setNewQuestions,  // Setter for updated questions
+    currentQuestion,// Current question being displayed
   }
 ) {
   //=============STATE VARIABLES======================
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);// State to track the index of the current question being edited
+const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);// State to track the index of the current question being edited
   const [error, setError] = useState(null);  // State for tracking any error messages  
+  const [successMessage, setSuccessMessage] =useState(null); //State used to track successMessages
+  const [isLoading, setIsLoading] = useState(false);//Loading state for submission
+
  
   //=========USE EFFECT HOOK==================
   /* Effect to initialize and update the editQuizIndex 
@@ -39,7 +43,7 @@ export default function EditQuiz(//Export default editQuiz Function component
         quiz.questions.length > 0 && 
         currentQuestionIndex < quiz.questions.length) 
         {
-          console.log('questions found');          
+          // console.log('questions found'); //Log a message in the console for debugging purposes         
         const currentQuestion = quiz.questions[currentQuestionIndex];// Retrieve the current question based on currentQuestionIndex
 
       //Conditional rendering to check if the the currentQuestion exists
@@ -50,12 +54,11 @@ export default function EditQuiz(//Export default editQuiz Function component
           editQuestionText: currentQuestion.questionText || '',// Set question text or empty string
           editCorrectAnswer: currentQuestion.correctAnswer || '',   // Set correct answer or empty string 
           editOptions: Array.isArray(currentQuestion.options) && currentQuestion.options.length === 3 
-          ? currentQuestion.options:  // Set options if exactly 3 are present    
-          ['', '', ''] // Otherwise, default to three empty strings
+          ? currentQuestion.options  // Set options if exactly 3 are present    
+         : ['', '', ''] // Otherwise, default to three empty strings
       })
         setError(null)// Reset any previous error
     }   
-
     }}, [ currentQuestion, currentQuestionIndex, setEditQuizIndex, quiz])
 
   //Effect to synchronize newQuestions state with quiz.questions
@@ -66,30 +69,47 @@ export default function EditQuiz(//Export default editQuiz Function component
     }
   }, [quiz, setNewQuestions]);
 
-  //============EVENT LISTENERS=================
+//=================UTILITY FUNCTION===========================
+  //Function to check if the current user is authorised to edit the quiz
+  const editAuthorisation = useCallback(()=>{
+    return currentUser?.admin || currentUser?.username === quiz?.username;
+  },[currentUser?.admin, currentUser?.username, quiz?.username])
 
-  // Function to edit a question
+  
+  //Function to validate formData
+  const validateForm = useCallback( () => {
+    if (!newQuizName.trim) {
+      setError('Quiz name cannot be empty')
+      return false
+    }
+    if (!Array.isArray(newQuestions) || newQuestions.length === 0){
+      setError('Questions cannot be empty.');
+      return false;
+    }
+  },[newQuestions, newQuizName.trim])
+  //============EVENT LISTENERS=================
+ // Function to edit a question
 const handleEditQuestion =useCallback((e) => {
   e.preventDefault()// Prevent default form submission
-  if (!Array.isArray(quizList) || quizList.length === 0) {
+  /*if (!Array.isArray(quizList) || quizList.length === 0) {
     console.error('No quizzes to update');//Log an error message in the console for debugging purposes
     setError('No quizzes available to update')// Update the error state to display an error message in the UI
     return;
+  }*/
+  // Conditional rendering to check if the quiz has any questions available to update
+  if (!quiz.questions || quiz.questions.length === 0) {
+      console.error('No questions available to update');//Log an error message in the console if no questions exist for debugging purposes
+    setError('No questions available to update.');// Update the error state to display an error message in the UI
+    return;// Stop execution if there are no questions
   }
-  else if (!quiz.questions || quiz.questions.length === 0) {
-    console.error('No questions available to update');//Log an error message in the console if no questions exist for debugging purposes
-    setError('No questions available to update')// Display error in UI
-      return;
-    }
   else if (currentQuestionIndex >= quiz.questions.length) {
-    console.error('Invalid question Index');//Log an error message in the console for debugging purposes
-    // Log error message in the console if the question index is out of bounds
-    setError('Invalid question Index')// Update the error state to display an error message in the UI
-    return;
+      console.error('Invalid question Index');//Log an error message in the console for debugging purposes
+    setError('Invalid question index.');// Update the error state to display an error message in the UI
+    return;// Stop execution 
   }
 
   const updatedQuestions = [...newQuestions]; //Copy the newQuestions array to avoid mutaing state
-  console.log(updatedQuestions);//Log the updated questions in the console for debugging purposes 
+  // console.log(updatedQuestions);//Log the updated questions in the console for debugging purposes 
   /* Update the specific question being edited 
   with the current editQuizIndex state*/
   updatedQuestions[currentQuestionIndex] = {
@@ -108,19 +128,19 @@ const handleEditQuestion =useCallback((e) => {
         : q  // If it doesn't match, return the quiz unchanged
       ));
       setError(null);//Clear any existing errors
+      setSuccessMessage('Question successfully updated')
   },[
-    currentQuestionIndex, 
-    quizList, 
-    setNewQuestions, 
-    setQuizList, 
+  currentQuestionIndex, // Dependency: Index of the question being edited
+  quizList,            // Dependency: Current list of quizzes
+  setNewQuestions,     // Dependency: Function to update the new questions state
+  setQuizList,         // Dependency: Function to update the quiz list
     quiz.questions, 
     newQuestions, 
-    quiz._id, 
-    editQuizIndex.editCorrectAnswer, 
-    editQuizIndex.editOptions, 
-    editQuizIndex.editQuestionText
+  quiz._id,   // Dependency: Quiz ID to identify the quiz being edited
+    editQuizIndex        // Dependency: Object containing the updated question details
+  
   ])
-    
+    /*
   //Function to handle form submission
   const handleEditQuiz= useCallback(async (e) => {  
     e.preventDefault()// Prevent default form submission behaviour
@@ -131,7 +151,33 @@ const handleEditQuestion =useCallback((e) => {
       console.error(`Failed to edit quiz: ${error.message}`);//Log an error message in the console for debugging purposes
       setError(`Failed to edit quiz: ${error.message}`)// Update the error state with the error message
     }
-  },[editQuiz, quiz._id, setQuizToUpdate, setError])
+  },[editQuiz, quiz._id, setQuizToUpdate, setError])*/
+
+   // Function to handle quiz edit submission with authorization
+  const authoriseEdit = useCallback(async (e) => {
+    e.preventDefault()// Prevent default form submission behaviour
+    if (!validateForm()) {
+      setIsLoading(true)
+    }
+    //Conditional rendering
+    if (editAuthorisation()) {
+      try {
+        await editQuiz(quiz._id);// Call the editQuiz function with the current quiz's ID      
+        setQuizToUpdate(null);// Reset the quiz to update state
+        setSuccessMessage('Quiz Successfully Edited')
+        setError(null);//Clear any existing errors
+      } catch (error) {
+        console.error('Edit failed:', error);//Log an error message in the console for debugging purposes
+        setError('Failed to edit quiz. Please try again.');// Set the error state to display the error in the UI
+      }
+    } else {
+      console.error(`Failed to edit quiz`);//Log an error message in the console for debugging purposes
+      setError(`Failed to edit quiz`)// Update the error state with the error message
+      alert('You are not authorised to edit this quiz');//Notify the user
+    }
+    setIsLoading(false);
+  },[ editQuiz, setQuizToUpdate, quiz._id, editAuthorisation, validateForm])
+
 
   //==============JSX RENDERING====================
   
@@ -139,13 +185,17 @@ const handleEditQuestion =useCallback((e) => {
     // Edit quiz
     <div id='editQuiz'>      
     {/* Form heading */}
+      {/* Render the FormHeaders component formHeading='EDIT QUIZ' as the heading */}
       <FormHeaders formHeading='EDIT QUIZ'/>
       {/* Error Message */}
       {error && <div className="error-message">{error}</div>}
+        {/* Success message */}
+      {successMessage && <div className="success-message">{successMessage}</div>}
       {/* FORM TO EDIT QUIZ */}
       <form 
         className='editQuizForm' 
-        onSubmit={handleEditQuiz}// Call the handleEditQuiz function
+       onSubmit={authoriseEdit}// Call the authoriseEdit function
+        // onSubmit={handleEditQuiz}
         >         
         <Row className='editQuizRow'>
           <Col xs={6} className='editQuizCol'>
@@ -159,8 +209,8 @@ const handleEditQuestion =useCallback((e) => {
               <input
               type='text'
               name='newQuizName'
-              value={newQuizName}
-                onChange={(e) => setNewQuizName(e.target.value) }
+              value={newQuizName || ''}
+               onChange={(e) => setNewQuizName(e.target.value) }
               autoComplete='off'
               placeholder={quiz.name}
               id='newQuizName'
@@ -189,7 +239,7 @@ const handleEditQuestion =useCallback((e) => {
                 <input
                 type='text'
                 name='editQuestionText'
-                value={editQuizIndex.editQuestionText}
+                value={editQuizIndex.editQuestionText || ''}
                 onChange={(e) => setEditQuizIndex({
                   ...editQuizIndex, 
                   editQuestionText: e.target.value
@@ -210,7 +260,7 @@ const handleEditQuestion =useCallback((e) => {
                 <input
                   type='text'//Specify the Content type
                   name='editCorrectAnswer'
-                  value={editQuizIndex.editCorrectAnswer}
+                  value={editQuizIndex.editCorrectAnswer || ''}
                   onChange={(e) => setEditQuizIndex({
                   ...editQuizIndex,
                   editCorrectAnswer: e.target.value
@@ -288,8 +338,11 @@ const handleEditQuestion =useCallback((e) => {
               variant='warning' 
               type='submit' 
               className='editQuizButton' 
-              aria-label='EDIT QUIZ AND SAVE'>
-              EDIT QUIZ AND SAVE
+              aria-label='EDIT QUIZ AND SAVE'
+                disabled={isLoading}
+                >
+                {isLoading ? 'Saving...': 'EDIT QUIZ AND SAVE'}
+              // EDIT QUIZ AND SAVE
             </Button>
           </Col>
        </Row>
