@@ -70,7 +70,23 @@ const checkPasswordLength = (req, res, next) => {
 }
 
 
-
+const changePassword = (req, res, next) {
+    if (
+        req.body.newPassword == req.body.confirmPassword && req.body.length >= 6
+    ) {
+       req.newUserpassword = req.body.newPassword;
+       next(); 
+    } else if(req.body.newPassword.length < 6){
+        res.send({
+            message: "The new password needs to be longer than six characters.",
+        })
+    }else{
+        res.send({
+            message: "Conformation Password and New Password does not match."
+        })
+        res.send();
+    }
+}
 
 //Export middleware to be used in other parts of the application
 module.exports = {checkJwtToken, checkAge, checkPasswordLength}
