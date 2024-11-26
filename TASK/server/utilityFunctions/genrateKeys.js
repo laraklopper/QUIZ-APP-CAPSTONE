@@ -1,8 +1,20 @@
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path')
 
-const key1 = crypto.randomBytes(64).toString('hex');
-const key2 = crypto.randomBytes(64).toString('hex');
 
-// console.log(key1)
-// console.log(key2)
+let jwtKey = crypto.randomBytes(64).toString('hex');
 
+console.log(jwtKey);
+
+const filePath = path.join(__dirname, '../.env');
+
+const jwtSecretLine = `JWT_SECRET_KEY=${jwtKey}\n`;
+
+fs.appendFile(filePath, jwtSecretLine, (err) => {
+    if (err) {
+        console.error('Error writing to .env file:', err);
+    } else {
+        console.log('JWT_SECRET added to .env file');
+    }
+});
