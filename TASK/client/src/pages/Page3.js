@@ -10,6 +10,7 @@ import Header from '../components/Header';//Import the Header function component
 import AddQuiz from '../components/AddQuiz';//Import the AddQuiz function component
 import Footer from '../components/Footer';//Import the Footer function component
 import EditQuiz from '../components/EditQuiz';//Import the EditQuiz function component
+import EditInstructions from '../components/EditInstructions';//Import the EditInstructions function component
 
 // Page3 function component
 export default function Page3(//Export default Page3 function component 
@@ -314,6 +315,7 @@ export default function Page3(//Export default Page3 function component
             </div>
           ))}
         </div>
+          <EditInstructions/>
       </section> 
       {/* Section 2: Form to Add Quiz  */}
       <section id='page3Section2'>
