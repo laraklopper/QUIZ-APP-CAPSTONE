@@ -57,8 +57,11 @@ const checkAge = (req, res, next) => {
 const checkPasswordLength = (req, res, next) => {
     const {password} = req.body;//Extract the password from the request body
 
-    // Regular expression to check password length (at least 8 characters)
-    const passwordRegex = /^.{8,}$/;
+  // Regular expression to check password requirements:
+    // At least 8 characters and at least one special character
+    // const passwordRegex = /^.{8,}$/;
+    const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+    
     //Conditional rendering to test the password against the regular expression
     if (!passwordRegex.test(password)) {
         console.error('Invalid password length');//Log an error message in the console for debugging purposes
