@@ -139,14 +139,24 @@ router.put('/editQuiz/:id', checkJwtToken, async (req, res) => {
         const user = await User.findOne({username})
         console.log(user);
 
-        /* Conditional rendering to check if the logged-in user is the 
-        same as the creator of the quiz or an admin user*/
+      /*
+      //AUTHORISATION
+        // Conditional rendering to check if the logged-in user is the 
+        // same as the creator of the quiz or an admin user
+        const user = await User.findOne({ username })
+        console.log(user);
+
         if (quiz.username !== username && !user.admin) {
             return res.status(403).json({
                 message: 'Access denied. You do not have permission to modify this quiz.',
             });
         }
-        
+
+        if (quiz.username !== username ) {
+            return res.status(403).json({
+                message: 'Access denied. You do not have permission to modify this quiz.',
+            });
+        }*/
 
         const updatedQuiz = {}//Create the updated quiz object
    
