@@ -12,6 +12,7 @@ Therefore, `MongoDB` will handle the database, `Express.js` will provide the web
 -	**Proxy Server:** a proxy server is an intermediatory between the front-end(client) and the back-end(server) that works by intercepting web access between a sender and the receiver.
 -	**Express middleware:** Middleware in express Express.js is essentially on its own a routing and middleware web framework that has minimal functionality on its own and is therefore essentially a series of middleware function calls.
 -	**REST APIS (REPRESENTATIONAL STATE TRANSER):** A REST API is request sent from the front-end to backend.
+-	 **Runtime Enviroment:** the software environment in which the code executes. It ensures that the program runs consistently across different systems
 -	**URI (Uniform Resource Identifiers’):** the resources used to identify “resources” on the web. They are commonly used as targets of HTTP requests. 
 -	**URL (Uniform Resource Locator):** the URL specifies the location of a resource on the internet and how to access it.
 -	**Web stack:** a web stack refers to the combination of tools and technologies used create a website or web application.
@@ -23,17 +24,23 @@ Therefore, `MongoDB` will handle the database, `Express.js` will provide the web
 4. [REFERENCES](#references)
 
 ## HOW TO USE THE APPLICATION
+To use the application users are required to register(sign up) and login. Users are also able to register as admin users subject to certain age restrictions controlled by custom middleware. 
 
 ## HOW TO RUN THE APPLICATION
 A proxy server is included in the front-end to allow the front and back-end to run together. The application uses ‘nodemon’ third-party middleware in the back-end to allow the application to run the back-end and front-end in the command line interface(CLI) or terminal using `npm start`.
-The application is connected to the MongoDB database using mongoose third-party middleware in the `app.js` file in the back-end (server) folder. The code uses `mongoose.connect()` to establish a connection between the application and the MongoDB database.
+The application is connected to the MongoDB database using mongoose third-party middleware in the `app.js` file in the back-end (server) folder. The code uses _`mongoose.connect()`_ to establish a connection between the application and the MongoDB database.
 The MongoDB connection URI is constructed using the username, password, cluster URL and the database name. These are stored as environmental variables in the .env file. The `.env` file is configured using `dotenv` middleware.
 
 ### **How to modify MongoDB URI's and API Keys**
 
 ### **Application security**
 
-To ensure security the application uses several third-party middleware libraries, custom-middleware in the back-end and general user authentication and authorisation in the front and backend code.
+To ensure security the application uses several third-party middleware libraries, custom-middleware in the back end and general user authentication and authorisation in the front and backend code. 
+
+#### The application uses the following third-party middleware for security
+- **`JWT(JsonWebToken)`:** A JSON web token (JWT) is an open standard that securely relays information between client and servers as a compact, self-contained JSON object. A JWT is attached to each request in the backend and is attached in the authorisation header. The benefit of JWT is that it is stateless since it does server does not have to remember the user’s information in session storage which significantly reduces the amount of work required to manage the state. 
+- **`Helmet`:** Helmet is an Express.js third-party middleware package that enables Express to enhance security through `Cross-Site-Scripting protection(XSS)` and helps secure the application by setting up various HTTP response headers in the Express backend. 
+- **`CORS (Cross-Origin-Resource Sharing)`:** CORS is a http-header based mechanism that indicates the origins (domain, schema or port) that the which the browser should permit loading resources.
 
 ## DEPLOYMENT
 ### Platforms
@@ -50,3 +57,4 @@ However, although Heroku is a ‘platform as a service (PaaS)’ that simplifies
 - https://www.geeksforgeeks.org/folder-structure-for-a-node-js-project/
 - https://www.geeksforgeeks.org/what-is-package-json-in-node-js/?ref=ml_lbp
 - https://www.geeksforgeeks.org/nextjs-vs-reactjs-which-one-to-choose/#is-next-better-than-react
+- https://expressjs.com/en/5x/api.html#app.listen_path_callback
